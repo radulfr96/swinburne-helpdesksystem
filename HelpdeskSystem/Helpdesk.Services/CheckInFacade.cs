@@ -63,11 +63,12 @@ namespace Helpdesk.Services
                     request.StudentID = addStudentResponse.StudentID;
                 }
 
-                using (helpdesksystemContext context = new helpdesksystemContext())
-                {
-                    if (context.Nicknames.FirstOrDefault(n => n.StudentId == request.StudentID) == null)
-                        throw new NotFoundException("No student found for id " + request.StudentID);
-                }
+                StudentDatalayer studentDatalayer = new StudentDatalayer();
+
+                var existingByID = studentDatalayer.GetStudentNicknameByStudentID(request.SID);
+
+                if (existingByID == null)
+                    throw new NotFoundException("No student found for id " + request.StudentID);
 
                 CheckInDataLayer dataLayer = new CheckInDataLayer();
                 int checkInID = dataLayer.CheckIn(request);

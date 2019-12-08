@@ -11,15 +11,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Helpdesk.DataLayer
 {
-    /// <summary>
-    /// Used to handle CRUD for student records in the database
-    /// </summary>
     public class StudentDatalayer
     {
-        /// <summary>
-        /// used to retreive all nicknames in the database
-        /// </summary>
-        /// <returns>The list of nicknames as DTOs</returns>
         public List<NicknameDTO> GetAllNicknames()
         {
             List<NicknameDTO> nicknameDTOs = new List<NicknameDTO>();
@@ -37,11 +30,6 @@ namespace Helpdesk.DataLayer
             return nicknameDTOs;
         }
 
-        /// <summary>
-        /// Used to get a student nickname by the nickname
-        /// </summary>
-        /// <param name="nickname">The nickname to look up</param>
-        /// <returns>The nickname</returns>
         public NicknameDTO GetStudentNicknameByNickname(string nickname)
         {
             NicknameDTO nicknameDTO = null;
@@ -59,11 +47,6 @@ namespace Helpdesk.DataLayer
             return nicknameDTO;
         }
 
-        /// <summary>
-        /// Used to get a student nickname by their studentId
-        /// </summary>
-        /// <param name="studentId">The studentId to look up</param>
-        /// <returns>The nickname</returns>
         public NicknameDTO GetStudentNicknameByStudentID(string studentId)
         {
             NicknameDTO nicknameDTO = null;
