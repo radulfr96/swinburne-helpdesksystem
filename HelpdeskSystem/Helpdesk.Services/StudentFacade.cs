@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
-using HelpdeskSystem.DataLayer.Contracts;
+using Helpdesk.DataLayer.Contracts;
 
 namespace Helpdesk.Services
 {

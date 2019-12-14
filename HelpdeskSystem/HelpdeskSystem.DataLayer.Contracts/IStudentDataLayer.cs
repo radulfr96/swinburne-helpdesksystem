@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace HelpdeskSystem.DataLayer.Contracts
+namespace Helpdesk.DataLayer.Contracts
 {
     /// <summary>
     /// Used to handle CRUD for student records in the database

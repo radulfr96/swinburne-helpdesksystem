@@ -8,7 +8,7 @@ using Helpdesk.Common.DTOs;
 using Helpdesk.Common.Requests.Students;
 using Helpdesk.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using HelpdeskSystem.DataLayer.Contracts;
+using Helpdesk.DataLayer.Contracts;
 
 namespace Helpdesk.DataLayer
 {

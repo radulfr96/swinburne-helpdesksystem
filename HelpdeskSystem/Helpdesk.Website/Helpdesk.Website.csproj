@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Helpdesk.Common\Helpdesk.Common.csproj" />
+    <ProjectReference Include="..\Helpdesk.DataLayer\Helpdesk.DataLayer.csproj" />
     <ProjectReference Include="..\Helpdesk.Services\Helpdesk.Services.csproj" />
   </ItemGroup>
 

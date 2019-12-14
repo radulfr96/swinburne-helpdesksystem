@@ -15,7 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Helpdesk.Common\Helpdesk.Common.csproj" />
     <ProjectReference Include="..\Helpdesk.DataLayer\Helpdesk.DataLayer.csproj" />
-    <ProjectReference Include="..\HelpdeskSystem.DataLayer.Contracts\HelpdeskSystem.DataLayer.Contracts.csproj" />
+    <ProjectReference Include="..\HelpdeskSystem.DataLayer.Contracts\Helpdesk.DataLayer.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
