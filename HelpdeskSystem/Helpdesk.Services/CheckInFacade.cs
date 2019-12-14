@@ -42,7 +42,7 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                StudentFacade studentFacade = new StudentFacade();
+                StudentFacade studentFacade = new StudentFacade(new StudentDatalayer());
 
                 if (!request.StudentID.HasValue)
                 {
@@ -65,7 +65,7 @@ namespace Helpdesk.Services
 
                 StudentDatalayer studentDatalayer = new StudentDatalayer();
 
-                var existingByID = studentDatalayer.GetStudentNicknameByStudentID(request.SID);
+                var existingByID = studentDatalayer.GetStudentNicknameByStudentID(request.StudentID.Value);
 
                 if (existingByID == null)
                     throw new NotFoundException("No student found for id " + request.StudentID);

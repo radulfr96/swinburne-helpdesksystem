@@ -101,7 +101,8 @@ namespace Helpdesk.Services.Test
             CheckInRequest request = new CheckInRequest()
             {
                 UnitID = unit.UnitId,
-                StudentID = nickname.StudentId
+                StudentID = nickname.StudentId,
+                SID = nickname.Sid
             };
 
             CheckInFacade facade = new CheckInFacade();

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using HelpdeskSystem.DataLayer.Contracts;
 
 namespace Helpdesk.Services
 {
@@ -22,7 +23,12 @@ namespace Helpdesk.Services
     {
         private static Logger s_logger = LogManager.GetCurrentClassLogger();
 
-        private readonly AppSettings _appSettings;
+        public IStudentDataLayer StudentDataLayer { get; set; }
+
+        public StudentFacade(IStudentDataLayer studentDataLayer)
+        {
+            StudentDataLayer = studentDataLayer;
+        }
 
         /// <summary>
         /// Used to get all of the student nicknames
@@ -34,8 +40,7 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new StudentDatalayer();
-                response.Nicknames = dataLayer.GetAllNicknames();
+                response.Nicknames = StudentDataLayer.GetAllNicknames();
 
                 if (response.Nicknames.Count > 0)
                     response.Status = HttpStatusCode.OK;
@@ -62,8 +67,7 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new StudentDatalayer();
-                var nicknameDTO = dataLayer.GetStudentNicknameByNickname(nickname);
+                var nicknameDTO = StudentDataLayer.GetStudentNicknameByNickname(nickname);
 
                 if (nicknameDTO == null)
                 {
@@ -100,9 +104,7 @@ namespace Helpdesk.Services
 
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
-
-                StudentDatalayer studentDatalayer = new StudentDatalayer();
-                var nickname = studentDatalayer.GetStudentNicknameByNickname(request.Nickname);
+                var nickname = StudentDataLayer.GetStudentNicknameByNickname(request.Nickname);
 
                 if (nickname != null)
                 {
@@ -146,9 +148,7 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                var dataLayer = new StudentDatalayer();
-
-                var nickname = dataLayer.GetStudentNicknameByNickname(request.Nickname);
+                var nickname = StudentDataLayer.GetStudentNicknameByNickname(request.Nickname);
 
                 if (nickname != null)
                 {
@@ -157,7 +157,7 @@ namespace Helpdesk.Services
                     return response;
                 }
 
-                bool result = dataLayer.EditStudentNickname(id, request);
+                bool result = StudentDataLayer.EditStudentNickname(id, request);
 
                 if (result == false)
                     throw new NotFoundException("Unable to find student!");
@@ -192,15 +192,13 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new StudentDatalayer();
-
-                var existingNickname = dataLayer.GetStudentNicknameByNickname(request.Name);
+                var existingNickname = StudentDataLayer.GetStudentNicknameByNickname(request.Name);
 
                 if (existingNickname == null)
                 {
                     if (!string.IsNullOrEmpty(request.SID))
                     {
-                        existingNickname = dataLayer.GetStudentNicknameByStudentID(request.SID);
+                        existingNickname = StudentDataLayer.GetStudentNicknameBySID(request.SID);
 
                         if (existingNickname == null)
                         {
@@ -252,14 +250,12 @@ namespace Helpdesk.Services
             {
                 string nickname = AlphaNumericStringGenerator.GetString(20);
 
-                var dataLayer = new StudentDatalayer();
-
-                var existingUsername = dataLayer.GetStudentNicknameByNickname(nickname);
+                var existingUsername = StudentDataLayer.GetStudentNicknameByNickname(nickname);
 
                 while (existingUsername != null)
                 {
                     nickname = AlphaNumericStringGenerator.GetString(20);
-                    existingUsername = dataLayer.GetStudentNicknameByNickname(nickname);
+                    existingUsername = StudentDataLayer.GetStudentNicknameByNickname(nickname);
                 }
 
                 response.Nickname = nickname;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Helpdesk.Common.Requests.Students;
+using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -33,7 +34,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new StudentFacade();
+                var facade = new StudentFacade(new StudentDatalayer());
                 var response = facade.GetAllNicknames();
 
                 switch (response.Status)
@@ -68,7 +69,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new StudentFacade();
+                var facade = new StudentFacade(new StudentDatalayer());
                 var response = facade.GetStudentByNickname(nickname);
 
                 switch (response.Status)
@@ -104,7 +105,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new StudentFacade();
+                var facade = new StudentFacade(new StudentDatalayer());
                 var response = facade.EditStudentNickname(id, request);
 
                 switch (response.Status)
@@ -139,7 +140,7 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new StudentFacade();
+                var facade = new StudentFacade(new StudentDatalayer());
                 var response = facade.ValidateNickname(request);
 
                 switch (response.Status)
@@ -174,7 +175,7 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new StudentFacade();
+                var facade = new StudentFacade(new StudentDatalayer());
                 var response = facade.GenerateNickname();
 
                 switch (response.Status)

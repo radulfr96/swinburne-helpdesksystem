@@ -13,6 +13,7 @@ using Helpdesk.Common.Responses.Queue;
 using Helpdesk.Common.Responses.Students;
 using Helpdesk.Common.Responses.Units;
 using Helpdesk.Common.Utilities;
+using Helpdesk.DataLayer;
 
 namespace Helpdesk.Services.Test
 {
@@ -117,7 +118,7 @@ namespace Helpdesk.Services.Test
             TopicsFacade = new TopicsFacade();
             QueueFacade = new QueueFacade();
             CheckInFacade = new CheckInFacade();
-            StudentFacade = new StudentFacade();
+            StudentFacade = new StudentFacade(new StudentDatalayer());
         }
 
         /// <summary>

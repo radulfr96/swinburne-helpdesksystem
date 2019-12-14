@@ -37,7 +37,7 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                StudentFacade studentFacade = new StudentFacade();
+                StudentFacade studentFacade = new StudentFacade(new StudentDatalayer());
 
                 if (!request.StudentID.HasValue)
                 {

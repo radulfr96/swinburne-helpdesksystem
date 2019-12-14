@@ -8,10 +8,11 @@ using Helpdesk.Common.DTOs;
 using Helpdesk.Common.Requests.Students;
 using Helpdesk.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using HelpdeskSystem.DataLayer.Contracts;
 
 namespace Helpdesk.DataLayer
 {
-    public class StudentDatalayer
+    public class StudentDatalayer : IStudentDataLayer
     {
         public List<NicknameDTO> GetAllNicknames()
         {
@@ -47,13 +48,13 @@ namespace Helpdesk.DataLayer
             return nicknameDTO;
         }
 
-        public NicknameDTO GetStudentNicknameByStudentID(string studentId)
+        public NicknameDTO GetStudentNicknameBySID(string sid)
         {
             NicknameDTO nicknameDTO = null;
 
             using (helpdesksystemContext context = new helpdesksystemContext())
             {
-                var nicknameDAO = context.Nicknames.FirstOrDefault(p => p.Sid == studentId);
+                var nicknameDAO = context.Nicknames.FirstOrDefault(p => p.Sid == sid);
 
                 if (nicknameDAO == null)
                     return null;
@@ -64,10 +65,23 @@ namespace Helpdesk.DataLayer
             return nicknameDTO;
         }
 
-        /// <summary>
-        /// Used to get a datatable with all of the helpdesk records
-        /// </summary>
-        /// <returns>Datatable with the helpdesk records</returns>
+        public NicknameDTO GetStudentNicknameByStudentID(int studentId)
+        {
+            NicknameDTO nicknameDTO = null;
+
+            using (helpdesksystemContext context = new helpdesksystemContext())
+            {
+                var nicknameDAO = context.Nicknames.FirstOrDefault(p => p.StudentId == studentId);
+
+                if (nicknameDAO == null)
+                    return null;
+
+                nicknameDTO = DAO2DTO(nicknameDAO);
+            }
+
+            return nicknameDTO;
+        }
+
         public DataTable GetStudentsAsDataTable()
         {
             DataTable nicknames = new DataTable();
@@ -106,11 +120,6 @@ namespace Helpdesk.DataLayer
             return nicknames;
         }
 
-        /// <summary>
-        /// Used to add a nickname to the database
-        /// </summary>
-        /// <param name="request">The nickname information</param>
-        /// <returns>The id of the nickname added</returns>
         public int AddStudentNickname(AddStudentRequest request)
         {
 
@@ -130,12 +139,6 @@ namespace Helpdesk.DataLayer
             return nickname.StudentId;
         }
 
-        /// <summary>
-        /// Used to edit the specified student's nickname in the databse with the request's information
-        /// </summary>
-        /// <param name="id">The StudentID of the student to be updated</param>
-        /// <param name="request">The request that contains the student's new nickname</param>
-        /// <returns>A boolean that indicates whether the operation was a success</returns>
         public bool EditStudentNickname(int id, EditStudentNicknameRequest request)
         {
             using (helpdesksystemContext context = new helpdesksystemContext())
