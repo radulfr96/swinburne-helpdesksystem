@@ -7,6 +7,7 @@ using Helpdesk.Common.Extensions;
 using Helpdesk.Common.Responses;
 using Helpdesk.Common.Responses.Topics;
 using Helpdesk.DataLayer;
+using Helpdesk.DataLayer.Contracts;
 using Microsoft.Extensions.Logging;
 using NLog;
 
@@ -19,10 +20,13 @@ namespace Helpdesk.Services
     {
         private static Logger s_logger = LogManager.GetCurrentClassLogger();
 
+        public ITopicsDataLayer TopicsDataLayer;
+
         private readonly AppSettings _appSettings;
 
-        public TopicsFacade()
+        public TopicsFacade(ITopicsDataLayer topicsDataLayer)
         {
+            TopicsDataLayer = topicsDataLayer;
             _appSettings = new AppSettings();
         }
 
@@ -37,8 +41,7 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new TopicsDataLayer();
-                List<TopicDTO> topics = dataLayer.GetTopicsByUnitID(id);
+                List<TopicDTO> topics = TopicsDataLayer.GetTopicsByUnitID(id);
 
                 if (topics.Count == 0)
                 {

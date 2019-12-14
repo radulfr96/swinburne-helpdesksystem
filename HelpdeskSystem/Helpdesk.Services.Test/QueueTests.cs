@@ -12,6 +12,7 @@ using NLog;
 using Helpdesk.Common.DTOs;
 using Helpdesk.Common.Responses.Topics;
 using Microsoft.EntityFrameworkCore;
+using Helpdesk.DataLayer;
 
 namespace Helpdesk.Services.Test
 {
@@ -656,7 +657,7 @@ namespace Helpdesk.Services.Test
             Assert.IsTrue(unitData.Response.UnitID > 0);
 
             // Get topics for the unit that was just created.
-            TopicsFacade topicsFacade = new TopicsFacade();
+            TopicsFacade topicsFacade = new TopicsFacade(new TopicsDataLayer());
             GetTopicsByUnitIDResponse topicResponse = topicsFacade.GetTopicsByUnitID(unitData.Response.UnitID);
 
             // Check that there are two units in the response (Layouts, Lifecycle).
@@ -738,7 +739,7 @@ namespace Helpdesk.Services.Test
             Assert.IsTrue(unitData.Response.UnitID > 0);
 
             // Get topics for the unit that was just created.
-            TopicsFacade topicsFacade = new TopicsFacade();
+            TopicsFacade topicsFacade = new TopicsFacade(new TopicsDataLayer());
             GetTopicsByUnitIDResponse topicResponse = topicsFacade.GetTopicsByUnitID(unitData.Response.UnitID);
 
             // Check that there are two units in the response (Layouts, Lifecycle).
@@ -790,7 +791,7 @@ namespace Helpdesk.Services.Test
             Assert.IsTrue(unitData.Response.UnitID > 0);
 
             // Get topics for the unit that was just created.
-            TopicsFacade topicsFacade = new TopicsFacade();
+            TopicsFacade topicsFacade = new TopicsFacade(new TopicsDataLayer());
             GetTopicsByUnitIDResponse topicResponse = topicsFacade.GetTopicsByUnitID(unitData.Response.UnitID);
 
             // Check that there are two units in the response (Layouts, Lifecycle).
@@ -916,7 +917,7 @@ namespace Helpdesk.Services.Test
             Assert.IsTrue(unitData.Response.UnitID > 0);
 
             // Get topics for the unit that was just created.
-            TopicsFacade topicsFacade = new TopicsFacade();
+            TopicsFacade topicsFacade = new TopicsFacade(new TopicsDataLayer());
             GetTopicsByUnitIDResponse topicResponse = topicsFacade.GetTopicsByUnitID(unitData.Response.UnitID);
 
             // Check that there are two units in the response (Layouts, Lifecycle).

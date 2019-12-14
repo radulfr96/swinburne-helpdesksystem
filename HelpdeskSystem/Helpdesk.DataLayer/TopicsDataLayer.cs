@@ -5,24 +5,17 @@ using System.Data.Common;
 using System.Linq;
 using Helpdesk.Common.DTOs;
 using Helpdesk.Data.Models;
+using Helpdesk.DataLayer.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NLog;
 
 namespace Helpdesk.DataLayer
 {
-    /// <summary>
-    /// Used to handle CRUD for topic records in the database
-    /// </summary>
-    public class TopicsDataLayer
+    public class TopicsDataLayer : ITopicsDataLayer
     {
         private static Logger s_Logger = LogManager.GetCurrentClassLogger();
 
-        /// <summary>
-        /// This method retrieves all topics of a specific unit from the database
-        /// </summary>
-        /// <param name="id">ID of the unit to retrieve topics of</param>
-        /// <returns>A list of topics</returns>
         public List<TopicDTO> GetTopicsByUnitID(int id)
         {
             List<TopicDTO> topicDTOs = new List<TopicDTO>();
@@ -39,10 +32,6 @@ namespace Helpdesk.DataLayer
             return topicDTOs;
         }
 
-        /// <summary>
-        /// Used to get a datatable with all of the topic records
-        /// </summary>
-        /// <returns>Datatable with the topic records</returns>
         public DataTable GetTopicsAsDataTable()
         {
             DataTable topics = new DataTable();

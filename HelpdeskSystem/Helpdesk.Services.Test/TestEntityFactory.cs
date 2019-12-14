@@ -115,7 +115,7 @@ namespace Helpdesk.Services.Test
         {
             HelpdeskFacade = new HelpdeskFacade();
             UnitsFacade = new UnitsFacade();
-            TopicsFacade = new TopicsFacade();
+            TopicsFacade = new TopicsFacade(new TopicsDataLayer());
             QueueFacade = new QueueFacade();
             CheckInFacade = new CheckInFacade();
             StudentFacade = new StudentFacade(new StudentDatalayer());
