@@ -1,4 +1,5 @@
-﻿using Helpdesk.Services;
+﻿using Helpdesk.DataLayer;
+using Helpdesk.Services;
 using NLog;
 using Quartz;
 using System;
@@ -20,8 +21,13 @@ namespace Helpdesk.Website
         {
             try
             {
-                var facade = new HelpdeskFacade();
-                if(facade.ExportDatabase().Status != HttpStatusCode.OK)
+                var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
+                if (facade.ExportDatabase().Status != HttpStatusCode.OK)
                 {
                     s_logger.Error("Unable to export database.");
                 }

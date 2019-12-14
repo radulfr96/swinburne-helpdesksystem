@@ -9,19 +9,13 @@ using Helpdesk.Common.Extensions;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
+using Helpdesk.DataLayer.Contracts;
 
 namespace Helpdesk.DataLayer
 {
-    /// <summary>
-    /// This is used to perform CRUD actions for the helpdesks and timespans
-    /// </summary>
-    public class HelpdeskDataLayer
+
+    public class HelpdeskDataLayer : IHelpdeskDataLayer
     {
-        /// <summary>
-        /// This method is used to add a new helpdesk to the database
-        /// </summary>
-        /// <param name="request">The information of the helpdesk</param>
-        /// <returns>The id of the helpdesk that was added</returns>
         public int? AddHelpdesk(AddHelpdeskRequest request)
         {
             int? helpdeskId = null;
@@ -40,12 +34,6 @@ namespace Helpdesk.DataLayer
 
             return helpdeskId;
         }
-
-        /// <summary>
-        /// Used to get a helpdesk from the database
-        /// </summary>
-        /// <param name="id">The id of the helpdesk requested</param>
-        /// <returns>The resulting DTO of the helpdesk</returns>
         public HelpdeskDTO GetHelpdesk(int id)
         {
             HelpdeskDTO helpdeskDTO = null;
@@ -62,10 +50,6 @@ namespace Helpdesk.DataLayer
                 return helpdeskDTO;
         }
 
-        /// <summary>
-        /// Used to retreive all the helpdesks
-        /// </summary>
-        /// <returns>The list of all the helpdesks as DTOs</returns>
         public List<HelpdeskDTO> GetHelpdesks()
         {
             List<HelpdeskDTO> helpdeskDTOs = new List<HelpdeskDTO>();
@@ -83,10 +67,6 @@ namespace Helpdesk.DataLayer
             return helpdeskDTOs;
         }
 
-        /// <summary>
-        /// Used to get a datatable with all of the helpdesk records
-        /// </summary>
-        /// <returns>Datatable with the helpdesk records</returns>
         public DataTable GetHelpdesksAsDataTable()
         {
             DataTable helpdesks = new DataTable();
@@ -125,10 +105,6 @@ namespace Helpdesk.DataLayer
             return helpdesks;
         }
 
-        /// <summary>
-        /// Used to get a datatable with all of the helpdeskunit records
-        /// </summary>
-        /// <returns>Datatable with the helpdeskunit records</returns>
         public DataTable GetHelpdeskUnitsAsDataTable()
         {
             DataTable helpdeskunits = new DataTable();
@@ -167,9 +143,6 @@ namespace Helpdesk.DataLayer
             return helpdeskunits;
         }
 
-        /// Used to get a datatable with all of the timespan records
-        /// </summary>
-        /// <returns>Datatable with the timespans records</returns>
         public DataTable GetTimeSpansAsDataTable()
         {
             DataTable timespans = new DataTable();
@@ -208,10 +181,6 @@ namespace Helpdesk.DataLayer
             return timespans;
         }
 
-        /// <summary>
-        /// Used to retreive all the active helpdesks
-        /// </summary>
-        /// <returns>The list of all the active helpdesks as DTOs</returns>
         public List<HelpdeskDTO> GetActiveHelpdesks()
         {
             List<HelpdeskDTO> helpdeskDTOs = new List<HelpdeskDTO>();
@@ -229,12 +198,6 @@ namespace Helpdesk.DataLayer
             return helpdeskDTOs;
         }
 
-        /// <summary>
-        /// This method is used to update the relevent helpdesk
-        /// </summary>
-        /// <param name="id">The id of the helpdesk to be updated</param>
-        /// <param name="request">The information to update the helpdesk</param>
-        /// <returns>Result the indicates whether or not the update was successful</returns>
         public bool UpdateHelpdesk(int id, UpdateHelpdeskRequest request)
         {
             bool result = false;
@@ -257,13 +220,6 @@ namespace Helpdesk.DataLayer
             return result;
         }
 
-        /// <summary>
-        /// Used to force-checkout users and remove queue items.
-        /// Takes optional DateTime parameter. Will use DateTime.Now if not provided.
-        /// Used by DailyCleanupJob.
-        /// </summary>
-        /// <param name="dateTime"></param>
-        /// <returns></returns>
         public bool ForceCheckoutQueueRemove(int id)
         {
             using (helpdesksystemContext context = new helpdesksystemContext())
@@ -303,11 +259,6 @@ namespace Helpdesk.DataLayer
             return true;
         }
 
-        /// <summary>
-        /// This method adds a timespan to the database.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
         public int AddTimeSpan(AddTimeSpanRequest request)
         {
             int spanId;
@@ -357,10 +308,6 @@ namespace Helpdesk.DataLayer
             return timespanDTO;
         }
 
-        /// <summary>
-        /// This method retrieves a list of all the timespans in the database
-        /// </summary>
-        /// <returns>A list of timespans retrieved from the database</returns>
         public List<TimeSpanDTO> GetTimeSpans()
         {
             List<TimeSpanDTO> timespanDTOs = new List<TimeSpanDTO>();
@@ -384,12 +331,6 @@ namespace Helpdesk.DataLayer
             return timespanDTOs;
         }
 
-        /// <summary>
-        /// This method updates a specified timespan's information in the database
-        /// </summary>
-        /// <param name="id">The SpanId of the timespan to be updated</param>
-        /// <param name="request">The request that contains the timespan's new information</param>
-        /// <returns>A bool indicating whether the operation was a success</returns>
         public bool UpdateTimeSpan(int id, UpdateTimeSpanRequest request)
         {
 
@@ -420,11 +361,6 @@ namespace Helpdesk.DataLayer
             return true;
         }
 
-        /// <summary>
-        /// Used to delete a specific timespan from the database
-        /// </summary>
-        /// <param name="id">The SpanID of the timespan to be deleted</param>
-        /// <returns>Boolean indicating success or failure</returns>
         public bool DeleteTimeSpan(int id)
         {
             using (helpdesksystemContext context = new helpdesksystemContext())

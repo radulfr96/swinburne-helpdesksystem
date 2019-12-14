@@ -8,6 +8,7 @@ using Helpdesk.Common.Requests.Helpdesk;
 using Helpdesk.Common.Responses.Helpdesk;
 using Helpdesk.Common.Utilities;
 using Helpdesk.Data.Models;
+using Helpdesk.DataLayer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Helpdesk.Services.Test
@@ -53,7 +54,12 @@ namespace Helpdesk.Services.Test
                 HasQueue = true
             };
 
-            var facade = new HelpdeskFacade();
+            var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
             var response = facade.AddHelpdesk(request);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, response.Status);
@@ -69,7 +75,12 @@ namespace Helpdesk.Services.Test
 
             var data = factory.AddHelpdesk(AlphaNumericStringGenerator.GetString(10));
 
-            var facade = new HelpdeskFacade();
+            var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
             var response = facade.GetHelpdesks();
 
             Assert.AreEqual(HttpStatusCode.OK, response.Status);
@@ -95,7 +106,12 @@ namespace Helpdesk.Services.Test
                 context.SaveChanges();
             }
 
-            var facade = new HelpdeskFacade();
+            var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
             var response = facade.GetActiveHelpdesks();
 
             Assert.AreEqual(HttpStatusCode.OK, response.Status);
@@ -117,7 +133,12 @@ namespace Helpdesk.Services.Test
 
             var data = factory.AddHelpdesk(AlphaNumericStringGenerator.GetString(10));
 
-            var facade = new HelpdeskFacade();
+            var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
             var response = facade.GetHelpdesk(data.Response.HelpdeskID);
 
             Assert.AreEqual(HttpStatusCode.OK, response.Status);
@@ -130,7 +151,12 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void GetHelpdeskNotFound()
         {
-            var facade = new HelpdeskFacade();
+            var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
             var response = facade.GetHelpdesk(-1);
 
             Assert.AreEqual(HttpStatusCode.NotFound, response.Status);
@@ -151,7 +177,12 @@ namespace Helpdesk.Services.Test
                 Name = AlphaNumericStringGenerator.GetString(10)
             };
 
-            var facade = new HelpdeskFacade();
+            var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
             var response = facade.AddHelpdesk(request);
 
             Assert.AreEqual(HttpStatusCode.OK, response.Status);
@@ -192,7 +223,12 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void UpdateNotFoundHelpdesk()
         {
-            var facade = new HelpdeskFacade();
+            var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
             var updateRequest = new UpdateHelpdeskRequest()
             {
                 HasCheckIn = true,
@@ -374,7 +410,12 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void AddTimespanEndBeforeStart()
         {
-            HelpdeskFacade helpdeskFacade = new HelpdeskFacade();
+            HelpdeskFacade helpdeskFacade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
 
             DateTime startDate = DateTime.Today;
             DateTime endDate = startDate.AddYears(-1);
@@ -398,7 +439,12 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void AddTimespanStartDatePredatesSystem()
         {
-            HelpdeskFacade helpdeskFacade = new HelpdeskFacade();
+            HelpdeskFacade helpdeskFacade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
 
             AddTimeSpanRequest addTimeSpanRequest = new AddTimeSpanRequest();
             addTimeSpanRequest.HelpdeskId = 1;
@@ -507,7 +553,12 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void UpdateTimespanNotFound()
         {
-            HelpdeskFacade helpdeskFacade = new HelpdeskFacade();
+            HelpdeskFacade helpdeskFacade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
 
             UpdateTimeSpanRequest updateTimespanRequest = new UpdateTimeSpanRequest()
             {
@@ -527,7 +578,12 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void UpdateTimespanNoInformation()
         {
-            HelpdeskFacade helpdeskFacade = new HelpdeskFacade();
+            HelpdeskFacade helpdeskFacade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
 
             AddTimeSpanRequest addTimeSpanRequest = new AddTimeSpanRequest()
             {
@@ -554,7 +610,12 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void UpdateTimespanNoName()
         {
-            HelpdeskFacade helpdeskFacade = new HelpdeskFacade();
+            HelpdeskFacade helpdeskFacade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
 
             AddTimeSpanRequest addTimeSpanRequest = new AddTimeSpanRequest()
             {
@@ -592,7 +653,12 @@ namespace Helpdesk.Services.Test
                 Name = AlphaNumericStringGenerator.GetString(10)
             };
 
-            HelpdeskFacade helpdeskFacade = new HelpdeskFacade();
+            HelpdeskFacade helpdeskFacade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
             AddHelpdeskResponse addHelpdeskResponse = helpdeskFacade.AddHelpdesk(addHelpdeskRequest);
 
             Assert.AreEqual(HttpStatusCode.OK, addHelpdeskResponse.Status);
@@ -635,7 +701,12 @@ namespace Helpdesk.Services.Test
                 Name = AlphaNumericStringGenerator.GetString(10)
             };
 
-            HelpdeskFacade helpdeskFacade = new HelpdeskFacade();
+            HelpdeskFacade helpdeskFacade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
             AddHelpdeskResponse addHelpdeskResponse = helpdeskFacade.AddHelpdesk(addHelpdeskRequest);
 
             Assert.AreEqual(HttpStatusCode.OK, addHelpdeskResponse.Status);
@@ -673,7 +744,12 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void GetTimespanNotFound()
         {
-            HelpdeskFacade helpdeskFacade = new HelpdeskFacade();
+            HelpdeskFacade helpdeskFacade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
 
             GetTimeSpanResponse getTimespanResponse = helpdeskFacade.GetTimeSpan(-1);
 
@@ -686,7 +762,12 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void GetDatabaseExport()
         {
-            HelpdeskFacade helpdeskFacade = new HelpdeskFacade();
+            HelpdeskFacade helpdeskFacade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
             var response = helpdeskFacade.ExportDatabase();
 
             Assert.AreEqual(HttpStatusCode.OK, response.Status);
@@ -698,7 +779,12 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void DeleteTimespan()
         {
-            HelpdeskFacade helpdeskFacade = new HelpdeskFacade();
+            HelpdeskFacade helpdeskFacade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
 
             AddTimeSpanRequest addTimeSpanRequest = new AddTimeSpanRequest()
             {
@@ -734,7 +820,12 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void DeleteTimespanNotFound()
         {
-            HelpdeskFacade helpdeskFacade = new HelpdeskFacade();
+            HelpdeskFacade helpdeskFacade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
 
             DeleteTimeSpanResponse deleteResponse = helpdeskFacade.DeleteTimeSpan(-1);
 

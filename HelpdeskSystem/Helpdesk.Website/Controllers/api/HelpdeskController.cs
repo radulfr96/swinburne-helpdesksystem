@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Helpdesk.Common.Requests.Helpdesk;
+using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -33,7 +34,12 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new HelpdeskFacade();
+                var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
                 var response = facade.GetHelpdesks();
 
                 switch (response.Status)
@@ -68,7 +74,12 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new HelpdeskFacade();
+                var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
                 var response = facade.GetActiveHelpdesks();
 
                 switch (response.Status)
@@ -103,7 +114,12 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new HelpdeskFacade();
+                var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
                 var response = facade.GetHelpdesk(id);
 
                 switch (response.Status)
@@ -143,7 +159,12 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade();
+                var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
                 var response = facade.AddHelpdesk(request);
 
                 switch (response.Status)
@@ -184,7 +205,12 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade();
+                var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
                 var response = facade.UpdateHelpdesk(id, request);
 
                 switch (response.Status)
@@ -220,7 +246,12 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade();
+                var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
                 var response = facade.GetTimeSpans();
 
                 switch (response.Status)
@@ -257,7 +288,12 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade();
+                var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
                 var response = facade.GetTimeSpan(id);
 
                 switch (response.Status)
@@ -294,7 +330,12 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade();
+                var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
                 var response = facade.AddTimeSpan(request);
 
                 switch (response.Status)
@@ -332,7 +373,12 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade();
+                var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
                 var response = facade.UpdateTimeSpan(id, request);
 
                 switch (response.Status)
@@ -369,7 +415,12 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade();
+                var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
                 var response = facade.DeleteTimeSpan(id);
 
                 switch (response.Status)
@@ -405,7 +456,12 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade();
+                var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
                 var response = facade.ExportDatabaseManual();
                 var contentType = "application/zip";
                 Response.ContentType = contentType;
@@ -428,7 +484,7 @@ namespace Helpdesk.Website.Controllers.api
             }
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
-        
+
         /// <summary>
         /// Used to force checkout students and clear queue
         /// </summary>
@@ -443,7 +499,12 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade();
+                var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
                 var response = facade.ForceCheckoutQueueRemove(id);
 
                 switch (response.Status)

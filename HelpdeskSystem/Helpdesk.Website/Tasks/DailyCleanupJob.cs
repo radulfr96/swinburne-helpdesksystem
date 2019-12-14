@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Helpdesk.Common.Responses;
 using Helpdesk.Common.Responses.Helpdesk;
+using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.Extensions.Logging;
 using NLog;
@@ -22,7 +23,12 @@ namespace Helpdesk.Website
         {
             try
             {
-                var facade = new HelpdeskFacade();
+                var facade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
                 var helpdeskIds = facade.GetHelpdesks().Helpdesks.Select(h => h.HelpdeskID).ToList();
 
                 foreach(int id in helpdeskIds)

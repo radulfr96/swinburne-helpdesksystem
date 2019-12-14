@@ -6,6 +6,7 @@ using Helpdesk.Common.Responses;
 using Helpdesk.Common.Responses.Helpdesk;
 using Helpdesk.Common.Utilities;
 using Helpdesk.DataLayer;
+using Helpdesk.DataLayer.Contracts;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -27,9 +28,26 @@ namespace Helpdesk.Services
 
         private readonly AppSettings _appSettings;
 
-        public HelpdeskFacade()
+        private IHelpdeskDataLayer _helpdeskDataLayer;
+        private IUsersDataLayer _usersDataLayer;
+        private IUnitsDataLayer _unitsDataLayer;
+        private ITopicsDataLayer _topicsDataLayer;
+        private IStudentDataLayer _studentsDataLayer;
+
+        public HelpdeskFacade(
+            IHelpdeskDataLayer helpdeskDataLayer,
+            IUsersDataLayer usersDataLayer,
+            IUnitsDataLayer unitsDataLayer,
+            ITopicsDataLayer topicsDataLayer,
+            IStudentDataLayer studentsDataLayer
+            )
         {
             _appSettings = new AppSettings();
+            _helpdeskDataLayer = helpdeskDataLayer;
+            _usersDataLayer = usersDataLayer;
+            _unitsDataLayer = unitsDataLayer;
+            _topicsDataLayer = topicsDataLayer;
+            _studentsDataLayer = studentsDataLayer;
         }
 
         /// <summary>
@@ -48,8 +66,7 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                var dataLayer = new HelpdeskDataLayer();
-                int? helpdeskId = dataLayer.AddHelpdesk(request);
+                int? helpdeskId = _helpdeskDataLayer.AddHelpdesk(request);
                 if (helpdeskId.HasValue)
                 {
                     response.HelpdeskID = helpdeskId.Value;
@@ -76,8 +93,7 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new HelpdeskDataLayer();
-                response.Helpdesks = dataLayer.GetActiveHelpdesks();
+                response.Helpdesks = _helpdeskDataLayer.GetActiveHelpdesks();
                 response.Status = HttpStatusCode.OK;
             }
             catch (NotFoundException ex)
@@ -105,8 +121,7 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new HelpdeskDataLayer();
-                response.Helpdesks = dataLayer.GetHelpdesks();
+                response.Helpdesks = _helpdeskDataLayer.GetHelpdesks();
                 response.Status = HttpStatusCode.OK;
             }
             catch (NotFoundException ex)
@@ -135,8 +150,7 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new HelpdeskDataLayer();
-                response.Helpdesk = dataLayer.GetHelpdesk(id);
+                response.Helpdesk = _helpdeskDataLayer.GetHelpdesk(id);
                 response.Status = HttpStatusCode.OK;
             }
             catch (NotFoundException ex)
@@ -171,8 +185,7 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                var dataLayer = new HelpdeskDataLayer();
-                bool result = dataLayer.UpdateHelpdesk(id, request);
+                bool result = _helpdeskDataLayer.UpdateHelpdesk(id, request);
 
                 if (result)
                     response.Status = HttpStatusCode.OK;
@@ -211,9 +224,7 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new HelpdeskDataLayer();
-
-                List<TimeSpanDTO> timespans = dataLayer.GetTimeSpans();
+                List<TimeSpanDTO> timespans = _helpdeskDataLayer.GetTimeSpans();
 
                 response.Timespans = timespans;
                 response.Status = HttpStatusCode.OK;
@@ -247,9 +258,7 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new HelpdeskDataLayer();
-
-                TimeSpanDTO timespan = dataLayer.GetTimeSpan(id);
+                TimeSpanDTO timespan = _helpdeskDataLayer.GetTimeSpan(id);
                 response.Timespan = timespan ?? throw new NotFoundException("Unable to find timespan!");
                 response.Status = HttpStatusCode.OK;
             }
@@ -287,9 +296,7 @@ namespace Helpdesk.Services
                     return response;
                 }
 
-                var dataLayer = new HelpdeskDataLayer();
-
-                int result = dataLayer.AddTimeSpan(request);
+                int result = _helpdeskDataLayer.AddTimeSpan(request);
 
                 response.SpanId = result;
                 response.Status = HttpStatusCode.OK;
@@ -328,11 +335,9 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                var dataLayer = new HelpdeskDataLayer();
-
                 //will implement unique check when get timespan by name method is implemented
 
-                bool result = dataLayer.UpdateTimeSpan(id, request);
+                bool result = _helpdeskDataLayer.UpdateTimeSpan(id, request);
 
                 if (result == false)
                     throw new NotFoundException("Unable to find timespan!");
@@ -413,33 +418,28 @@ namespace Helpdesk.Services
                 }
                 else
                 {
-                    var helpdeskDataLayer = new HelpdeskDataLayer();
-                    var unitDataLayer = new UnitsDataLayer();
-                    var usersDataLayer = new UsersDataLayer();
-                    var topicsDataLayer = new TopicsDataLayer();
-                    var studentDataLayer = new StudentDatalayer();
                     var queueDataLayer = new QueueDataLayer();
                     var checkInDataLayer = new CheckInDataLayer();
 
-                    DataTable helpdesks = helpdeskDataLayer.GetHelpdesksAsDataTable();
+                    DataTable helpdesks = _helpdeskDataLayer.GetHelpdesksAsDataTable();
                     proccessing.SaveToZIPAsCSV(fullZipPath, "helpdesks", helpdesks);
 
-                    DataTable timespans = helpdeskDataLayer.GetTimeSpansAsDataTable();
+                    DataTable timespans = _helpdeskDataLayer.GetTimeSpansAsDataTable();
                     proccessing.SaveToZIPAsCSV(fullZipPath, "timespans", timespans);
 
-                    DataTable helpdeskUnits = helpdeskDataLayer.GetHelpdeskUnitsAsDataTable();
+                    DataTable helpdeskUnits = _helpdeskDataLayer.GetHelpdeskUnitsAsDataTable();
                     proccessing.SaveToZIPAsCSV(fullZipPath, "helpdeskunits", helpdeskUnits);
 
-                    DataTable users = usersDataLayer.GetUsersAsDataTable();
+                    DataTable users = _usersDataLayer.GetUsersAsDataTable();
                     proccessing.SaveToZIPAsCSV(fullZipPath, "users", users);
 
-                    DataTable units = unitDataLayer.GetUnitsAsDataTable();
+                    DataTable units = _unitsDataLayer.GetUnitsAsDataTable();
                     proccessing.SaveToZIPAsCSV(fullZipPath, "units", units);
 
-                    DataTable topics = topicsDataLayer.GetTopicsAsDataTable();
+                    DataTable topics = _topicsDataLayer.GetTopicsAsDataTable();
                     proccessing.SaveToZIPAsCSV(fullZipPath, "topics", topics);
 
-                    DataTable students = studentDataLayer.GetStudentsAsDataTable();
+                    DataTable students = _studentsDataLayer.GetStudentsAsDataTable();
                     proccessing.SaveToZIPAsCSV(fullZipPath, "students", students);
 
                     DataTable queuesItems = queueDataLayer.GetQueueItemsAsDataTable();
@@ -498,9 +498,7 @@ namespace Helpdesk.Services
 
             try
             {
-                HelpdeskDataLayer dataLayer = new HelpdeskDataLayer();
-
-                response.Result = dataLayer.ForceCheckoutQueueRemove(id);
+                response.Result = _helpdeskDataLayer.ForceCheckoutQueueRemove(id);
 
                 if (response.Result == true)
                     response.Status = HttpStatusCode.OK;
@@ -526,9 +524,7 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new HelpdeskDataLayer();
-
-                bool result = dataLayer.DeleteTimeSpan(id);
+                bool result = _helpdeskDataLayer.DeleteTimeSpan(id);
 
                 if (result == false)
                     throw new NotFoundException("Unable to find timespan with id " + id);

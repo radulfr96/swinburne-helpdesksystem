@@ -113,7 +113,12 @@ namespace Helpdesk.Services.Test
 
         public TestEntityFactory()
         {
-            HelpdeskFacade = new HelpdeskFacade();
+            HelpdeskFacade = new HelpdeskFacade(
+                new HelpdeskDataLayer()
+                , new UsersDataLayer()
+                , new UnitsDataLayer()
+                , new TopicsDataLayer()
+                , new StudentDatalayer());
             UnitsFacade = new UnitsFacade(new UnitsDataLayer());
             TopicsFacade = new TopicsFacade(new TopicsDataLayer());
             QueueFacade = new QueueFacade();
