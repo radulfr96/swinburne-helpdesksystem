@@ -20,13 +20,13 @@ namespace Helpdesk.Services
     {
         private static Logger s_logger = LogManager.GetCurrentClassLogger();
 
-        public ITopicsDataLayer TopicsDataLayer;
+        private ITopicsDataLayer _topicsDataLayer;
 
         private readonly AppSettings _appSettings;
 
         public TopicsFacade(ITopicsDataLayer topicsDataLayer)
         {
-            TopicsDataLayer = topicsDataLayer;
+            _topicsDataLayer = topicsDataLayer;
             _appSettings = new AppSettings();
         }
 
@@ -41,7 +41,7 @@ namespace Helpdesk.Services
 
             try
             {
-                List<TopicDTO> topics = TopicsDataLayer.GetTopicsByUnitID(id);
+                List<TopicDTO> topics = _topicsDataLayer.GetTopicsByUnitID(id);
 
                 if (topics.Count == 0)
                 {

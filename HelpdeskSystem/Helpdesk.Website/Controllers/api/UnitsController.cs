@@ -2,6 +2,7 @@
 using System.Net;
 using Helpdesk.Common.Requests.Units;
 using Helpdesk.Common.Responses.Units;
+using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -36,7 +37,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UnitsFacade();
+                var facade = new UnitsFacade(new UnitsDataLayer());
                 var response = facade.AddOrUpdateUnit(id, request);
 
                 switch (response.Status)
@@ -73,7 +74,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UnitsFacade();
+                var facade = new UnitsFacade(new UnitsDataLayer());
                 var response = facade.GetUnit(id);
 
                 switch (response.Status)
@@ -110,7 +111,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UnitsFacade();
+                var facade = new UnitsFacade( new UnitsDataLayer());
                 var response = facade.GetUnitsByHelpdeskID(id, false);
 
                 switch (response.Status)
@@ -146,7 +147,7 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new UnitsFacade();
+                var facade = new UnitsFacade(new UnitsDataLayer());
                 var response = facade.GetUnitsByHelpdeskID(id, true);
 
                 switch (response.Status)
@@ -183,7 +184,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UnitsFacade();
+                var facade = new UnitsFacade(new UnitsDataLayer());
                 var response = facade.DeleteUnit(id);
 
                 switch (response.Status)

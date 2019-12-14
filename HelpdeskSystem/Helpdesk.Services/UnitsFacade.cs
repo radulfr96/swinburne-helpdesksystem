@@ -9,6 +9,7 @@ using Helpdesk.Common.Requests.Units;
 using Helpdesk.Common.Responses;
 using Helpdesk.Common.Responses.Units;
 using Helpdesk.DataLayer;
+using Helpdesk.DataLayer.Contracts;
 using NLog;
 
 namespace Helpdesk.Services
@@ -20,11 +21,11 @@ namespace Helpdesk.Services
     {
         private static Logger s_logger = LogManager.GetCurrentClassLogger();
 
-        private readonly AppSettings _appSettings;
+        private IUnitsDataLayer _unitsDataLayer;
 
-        public UnitsFacade()
+        public UnitsFacade(IUnitsDataLayer unitsDataLayer)
         {
-            _appSettings = new AppSettings();
+            _unitsDataLayer = unitsDataLayer;
         }
 
         /// <summary>
@@ -44,14 +45,11 @@ namespace Helpdesk.Services
                 response = (AddUpdateUnitResponse)request.CheckValidation(response);
 
                 if (response.Status == HttpStatusCode.BadRequest)
-                    return response;
-
-                var dataLayer = new UnitsDataLayer();
-                
+                    return response;                
 
                 if (id == 0)
                 {
-                    UnitDTO unit = dataLayer.GetUnitByNameAndHelpdeskId(request.Name, request.HelpdeskID);
+                    UnitDTO unit = _unitsDataLayer.GetUnitByNameAndHelpdeskId(request.Name, request.HelpdeskID);
 
                     if (unit != null)
                     {
@@ -60,7 +58,7 @@ namespace Helpdesk.Services
                         return response;
                     }
 
-                    unit = dataLayer.GetUnitByCodeAndHelpdeskId(request.Code, request.HelpdeskID);
+                    unit = _unitsDataLayer.GetUnitByCodeAndHelpdeskId(request.Code, request.HelpdeskID);
 
                     if (unit != null)
                     {
@@ -69,7 +67,7 @@ namespace Helpdesk.Services
                         return response;
                     }
 
-                    int? result = dataLayer.AddUnit(request);
+                    int? result = _unitsDataLayer.AddUnit(request);
 
                     if (!result.HasValue || result.Value == 0)
                     {
@@ -81,7 +79,7 @@ namespace Helpdesk.Services
                 }
                 else
                 {
-                    var existingUnit = dataLayer.GetUnit(id);
+                    var existingUnit = _unitsDataLayer.GetUnit(id);
 
                     if (existingUnit == null)
                     {
@@ -91,13 +89,13 @@ namespace Helpdesk.Services
 
                     if (!existingUnit.IsDeleted)
                     {
-                        bool updateResult = dataLayer.UpdateUnit(existingUnit.UnitId, request);
+                        bool updateResult = _unitsDataLayer.UpdateUnit(existingUnit.UnitId, request);
                         response.UnitID = existingUnit.UnitId;
                     }
                     else
                     {
                         request.IsDeleted = false;
-                        bool updateResult = dataLayer.UpdateUnit(existingUnit.UnitId, request);
+                        bool updateResult = _unitsDataLayer.UpdateUnit(existingUnit.UnitId, request);
                         response.UnitID = existingUnit.UnitId;
                     }
                 }
@@ -127,8 +125,7 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new UnitsDataLayer();
-                var result = dataLayer.GetUnit(id);
+                var result = _unitsDataLayer.GetUnit(id);
 
                 if (result != null)
                     response.Unit = result;
@@ -162,9 +159,7 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new UnitsDataLayer();
-
-                List<UnitDTO> units = dataLayer.GetUnitsByHelpdeskID(id, getActive);
+                List<UnitDTO> units = _unitsDataLayer.GetUnitsByHelpdeskID(id, getActive);
 
                 if(units.Count==0)
                     throw new NotFoundException("No units found under helpdesk "+id);
@@ -199,8 +194,7 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new UnitsDataLayer();
-                bool result = dataLayer.DeleteUnit(id);
+                bool result = _unitsDataLayer.DeleteUnit(id);
 
                 if (result)
                     response.Status = HttpStatusCode.OK;

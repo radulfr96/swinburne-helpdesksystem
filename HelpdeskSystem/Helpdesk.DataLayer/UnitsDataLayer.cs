@@ -9,21 +9,14 @@ using Microsoft.EntityFrameworkCore;
 using Helpdesk.Common.Requests.Units;
 using System.Data;
 using System.Data.Common;
+using Helpdesk.DataLayer.Contracts;
 
 namespace Helpdesk.DataLayer
 {
-    /// <summary>
-    /// Used to handle CRUD for unit records in the database
-    /// </summary>
-    public class UnitsDataLayer
+    public class UnitsDataLayer : IUnitsDataLayer
     {
         private static Logger s_Logger = LogManager.GetCurrentClassLogger();
 
-        /// <summary>
-        /// Adds a unit to the database using provided unit request.
-        /// </summary>
-        /// <param name="request">The request containing the information to add a unit.</param>
-        /// <returns>The id of the unit.</returns>
         public int? AddUnit(AddUpdateUnitRequest request)
         {
             int? unitId = null;
@@ -92,11 +85,6 @@ namespace Helpdesk.DataLayer
             return unitId;
         }
 
-        /// <summary>
-        /// Retrieves a unit from the database using provided unit id.
-        /// </summary>
-        /// <param name="id">The id of the unit to retrieve.</param>
-        /// <returns></returns>
         public UnitDTO GetUnit(int id)
         {
             UnitDTO dto = null;
@@ -112,12 +100,6 @@ namespace Helpdesk.DataLayer
             return dto;
         }
 
-
-        /// <summary>
-        /// Retrieves a unit from the database using provided unit name.
-        /// </summary>
-        /// <param name="name">The name of the unit to retrieve.</param>
-        /// <returns>The unit DTO</returns>
         public UnitDTO GetUnitByNameAndHelpdeskId(string name, int helpdeskId)
         {
             UnitDTO dto = null;
@@ -135,11 +117,6 @@ namespace Helpdesk.DataLayer
             return dto;
         }
 
-        /// <summary>
-        /// Retrieves a unit from the database using provided unit code.
-        /// </summary>
-        /// <param name="code">The name of the unit to retrieve.</param>
-        /// <returns>The unit DTO</returns>
         public UnitDTO GetUnitByCodeAndHelpdeskId(string code, int helpdeskId)
         {
             UnitDTO dto = null;
@@ -157,11 +134,6 @@ namespace Helpdesk.DataLayer
             return dto;
         }
 
-        /// <summary>
-        /// Retrieves all units under a specific helpdesk id
-        /// </summary>
-        /// <param name="id">ID of the helpdesk to retrieve from</param>
-        /// <returns>A list of unit DTOs</returns>
         public List<UnitDTO> GetUnitsByHelpdeskID(int id, bool getActive)
         {
             List<UnitDTO> unitDTOs = new List<UnitDTO>();
@@ -184,10 +156,6 @@ namespace Helpdesk.DataLayer
             return unitDTOs;
         }
 
-        /// <summary>
-        /// Used to get a datatable with all of the unit records
-        /// </summary>
-        /// <returns>Datatable with the unit records</returns>
         public DataTable GetUnitsAsDataTable()
         {
             DataTable units = new DataTable();
@@ -226,11 +194,6 @@ namespace Helpdesk.DataLayer
             return units;
         }
 
-        /// <summary>
-        /// Updates a specific unit
-        /// </summary>
-        /// <param name="id">ID of the unit to be deleted</param>
-        /// <returns>Indication of the result of the operation</returns>
         public bool UpdateUnit(int id, AddUpdateUnitRequest request)
         {
             using (helpdesksystemContext context = new helpdesksystemContext())
@@ -291,12 +254,6 @@ namespace Helpdesk.DataLayer
             }
             return true;
         }
-
-        /// <summary>
-        /// Deletes a specific unit
-        /// </summary>
-        /// <param name="id">ID of the unit to be deleted</param>
-        /// <returns>Indication of the result of the operation</returns>
         public bool DeleteUnit(int id)
         {
             using (helpdesksystemContext context = new helpdesksystemContext())

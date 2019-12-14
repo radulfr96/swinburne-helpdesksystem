@@ -28,12 +28,12 @@ namespace Helpdesk.Services
 
         private readonly AppSettings _appSettings;
 
-        public IUsersDataLayer UsersDataLayer;
+        private IUsersDataLayer _usersDataLayer;
 
         public UsersFacade(IUsersDataLayer usersDataLayer)
         {
             _appSettings = new AppSettings();
-            UsersDataLayer = usersDataLayer;
+            _usersDataLayer = usersDataLayer;
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Helpdesk.Services
 
             try
             {
-                List<UserDTO> users = UsersDataLayer.GetUsers();
+                List<UserDTO> users = _usersDataLayer.GetUsers();
 
                 response.Users = users;
                 response.Status = HttpStatusCode.OK;
@@ -83,7 +83,7 @@ namespace Helpdesk.Services
 
             try
             {
-                UserDTO user = UsersDataLayer.GetUser(id);
+                UserDTO user = _usersDataLayer.GetUser(id);
 
                 if (user == null)
                     throw new NotFoundException("Unable to find user!");
@@ -131,14 +131,14 @@ namespace Helpdesk.Services
 
                 request.Password = HashText(request.Password);
 
-                if (UsersDataLayer.GetUserByUsername(request.Username) != null)
+                if (_usersDataLayer.GetUserByUsername(request.Username) != null)
                 {
                     response.Status = HttpStatusCode.Forbidden;
                     response.StatusMessages.Add(new StatusMessage(HttpStatusCode.Forbidden, "Username already exists"));
                     return response;
                 }
 
-                int? result = UsersDataLayer.AddUser(request);
+                int? result = _usersDataLayer.AddUser(request);
 
                 if (result == null)
                 {
@@ -179,12 +179,12 @@ namespace Helpdesk.Services
 
                 request.Password = HashText(request.Password);
 
-                if (UsersDataLayer.GetUserByUsername(request.Username)!=null && UsersDataLayer.GetUserByUsername(request.Username).UserId != id)
+                if (_usersDataLayer.GetUserByUsername(request.Username)!=null && _usersDataLayer.GetUserByUsername(request.Username).UserId != id)
                 {
                     throw new Exception("Unable to update user! User with username " + request.Username + "already exists!");
                 }
 
-                bool result = UsersDataLayer.UpdateUser(id, request);
+                bool result = _usersDataLayer.UpdateUser(id, request);
 
                 if (result == false)
                     throw new NotFoundException("Unable to find user!");
@@ -220,7 +220,7 @@ namespace Helpdesk.Services
             try
             {
 
-                UserDTO user = UsersDataLayer.GetUser(id);
+                UserDTO user = _usersDataLayer.GetUser(id);
 
                 if (user.Username == currentUser)
                 {
@@ -228,7 +228,7 @@ namespace Helpdesk.Services
                     return response;
                 }
 
-                bool result = UsersDataLayer.DeleteUser(id);
+                bool result = _usersDataLayer.DeleteUser(id);
 
                 if (result)
                     response.Status = HttpStatusCode.OK;
@@ -268,7 +268,7 @@ namespace Helpdesk.Services
                     return response;
 
                 //Verify user exists
-                UserDTO user = UsersDataLayer.GetUserByUsername(request.Username);
+                UserDTO user = _usersDataLayer.GetUserByUsername(request.Username);
                 if (user == null)
                 {
                     response.Token = string.Empty;
@@ -347,9 +347,9 @@ namespace Helpdesk.Services
                 if (!int.TryParse(userId, out userID))
                     throw new Exception("Invalid user id received.");
 
-                UserDTO userFromID = UsersDataLayer.GetUser(userID);
+                UserDTO userFromID = _usersDataLayer.GetUser(userID);
 
-                UserDTO userFromUsername = UsersDataLayer.GetUserByUsername(username);
+                UserDTO userFromUsername = _usersDataLayer.GetUserByUsername(username);
 
                 if (!(userFromID.UserId == userFromUsername.UserId && userFromID.Username == userFromUsername.Username && (!userFromID.FirstTime)))
                 {
