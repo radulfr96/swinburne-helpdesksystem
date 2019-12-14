@@ -7,7 +7,6 @@ using Helpdesk.Common.Requests.Students;
 using Helpdesk.Common.Responses;
 using Helpdesk.Common.Responses.CheckIn;
 using Helpdesk.Common.Responses.Students;
-using Helpdesk.Data.Models;
 using Helpdesk.DataLayer;
 using NLog;
 using System;
@@ -16,6 +15,7 @@ using System.Net;
 using System.Linq;
 using System.Text;
 using Helpdesk.Common.Requests.Queue;
+using Helpdesk.DataLayer.Contracts;
 
 namespace Helpdesk.Services
 {
@@ -25,6 +25,18 @@ namespace Helpdesk.Services
     public class CheckInFacade
     {
         private static Logger s_logger = LogManager.GetCurrentClassLogger();
+
+        private ICheckInDataLayer _checkInDataLayer;
+        private IStudentDataLayer _studentDataLayer;
+        private IQueueDataLayer _queueDataLayer;
+
+        public CheckInFacade(ICheckInDataLayer checkInDataLayer, IStudentDataLayer studentDataLayer, IQueueDataLayer queueDataLayer)
+        {
+            _checkInDataLayer = checkInDataLayer;
+            _studentDataLayer = studentDataLayer;
+            _queueDataLayer = queueDataLayer;
+
+        }
 
         /// <summary>
         /// This method is used to check in into the helpdesk system
@@ -42,7 +54,7 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                StudentFacade studentFacade = new StudentFacade(new StudentDatalayer());
+                StudentFacade studentFacade = new StudentFacade(_studentDataLayer);
 
                 if (!request.StudentID.HasValue)
                 {
@@ -63,15 +75,12 @@ namespace Helpdesk.Services
                     request.StudentID = addStudentResponse.StudentID;
                 }
 
-                StudentDatalayer studentDatalayer = new StudentDatalayer();
-
-                var existingByID = studentDatalayer.GetStudentNicknameByStudentID(request.StudentID.Value);
+                var existingByID = _studentDataLayer.GetStudentNicknameByStudentID(request.StudentID.Value);
 
                 if (existingByID == null)
                     throw new NotFoundException("No student found for id " + request.StudentID);
 
-                CheckInDataLayer dataLayer = new CheckInDataLayer();
-                int checkInID = dataLayer.CheckIn(request);
+                int checkInID = _checkInDataLayer.CheckIn(request);
 
                 response.StudentID = request.StudentID.Value;
                 response.CheckInID = checkInID;
@@ -103,15 +112,12 @@ namespace Helpdesk.Services
 
             try
             {
-                CheckInDataLayer dataLayer = new CheckInDataLayer();
-
-                bool result = dataLayer.CheckOut(request, id);
+                bool result = _checkInDataLayer.CheckOut(request, id);
 
                 if (result == false)
                     throw new NotFoundException("Unable to find check in item!");
 
-                QueueDataLayer queueDataLayer = new QueueDataLayer();
-                var queueItems = queueDataLayer.GetQueueItemsByCheckIn(id);
+                var queueItems = _queueDataLayer.GetQueueItemsByCheckIn(id);
                 UpdateQueueItemStatusRequest removeRequest = new UpdateQueueItemStatusRequest()
                 {
                     TimeRemoved = DateTime.Now
@@ -119,7 +125,7 @@ namespace Helpdesk.Services
 
                 foreach (var item in queueItems)
                 {
-                    queueDataLayer.UpdateQueueItemStatus(item.ItemId, removeRequest);
+                    _queueDataLayer.UpdateQueueItemStatus(item.ItemId, removeRequest);
                 }
 
                 response.Result = result;
@@ -151,8 +157,7 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new CheckInDataLayer();
-                response.CheckIns = dataLayer.GetCheckinsByHelpdeskId(helpdeskId);
+                response.CheckIns = _checkInDataLayer.GetCheckinsByHelpdeskId(helpdeskId);
                 response.Status = HttpStatusCode.OK;
             }
             catch (NotFoundException ex)

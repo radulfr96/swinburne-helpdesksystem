@@ -5,7 +5,6 @@ using Helpdesk.Common.Requests.Students;
 using Helpdesk.Common.Responses;
 using Helpdesk.Common.Responses.Students;
 using Helpdesk.Common.Utilities;
-using Helpdesk.Data.Models;
 using Helpdesk.DataLayer;
 using NLog;
 using System;
@@ -113,8 +112,7 @@ namespace Helpdesk.Services
                     return response;
                 }
 
-                var dataLayer = new StudentDatalayer();
-                int id = dataLayer.AddStudentNickname(request);
+                int id = _studentDataLayer.AddStudentNickname(request);
 
                 response.StudentID = id;
                 response.Status = HttpStatusCode.OK;

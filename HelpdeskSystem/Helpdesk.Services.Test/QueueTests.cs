@@ -80,7 +80,7 @@ namespace Helpdesk.Services.Test
                 Description = "JoinQueueNoCheckInNewStudent Test"
             };
 
-            QueueFacade facade = new QueueFacade();
+            QueueFacade facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
 
             AddToQueueResponse response = facade.AddToQueue(request);
 
@@ -164,7 +164,7 @@ namespace Helpdesk.Services.Test
                 Description = "JoinQueueNoCheckOldStudent Test"
             };
 
-            QueueFacade facade = new QueueFacade();
+            QueueFacade facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
 
             AddToQueueResponse response = facade.AddToQueue(request);
 
@@ -257,7 +257,7 @@ namespace Helpdesk.Services.Test
                 Description = "JoinQueueCheckInOldStudent Test"
             };
 
-            QueueFacade facade = new QueueFacade();
+            QueueFacade facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
 
             AddToQueueResponse response = facade.AddToQueue(request);
 
@@ -333,7 +333,7 @@ namespace Helpdesk.Services.Test
                 Description = "JoinQueueNoStudentFail Test"
             };
 
-            QueueFacade facade = new QueueFacade();
+            QueueFacade facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
 
             AddToQueueResponse response = facade.AddToQueue(request);
 
@@ -385,7 +385,7 @@ namespace Helpdesk.Services.Test
                 Description = "JoinQueueNoTopicFail Test",
             };
 
-            QueueFacade facade = new QueueFacade();
+            QueueFacade facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
 
             AddToQueueResponse response = facade.AddToQueue(request);
 
@@ -446,7 +446,7 @@ namespace Helpdesk.Services.Test
                 TopicID = topic.TopicId
             };
 
-            QueueFacade facade = new QueueFacade();
+            QueueFacade facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
 
             AddToQueueResponse response = facade.AddToQueue(request);
 
@@ -509,7 +509,7 @@ namespace Helpdesk.Services.Test
                 CheckInID = 0
             };
 
-            QueueFacade facade = new QueueFacade();
+            QueueFacade facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
 
             AddToQueueResponse response = facade.AddToQueue(request);
 
@@ -561,7 +561,7 @@ namespace Helpdesk.Services.Test
                 TopicID = 0
             };
 
-            QueueFacade facade = new QueueFacade();
+            QueueFacade facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
 
             AddToQueueResponse response = facade.AddToQueue(request);
 
@@ -625,7 +625,7 @@ namespace Helpdesk.Services.Test
                 Description = "JoinInvalidCheckNotFound Test"
             };
 
-            QueueFacade facade = new QueueFacade();
+            QueueFacade facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
 
             AddToQueueResponse response = facade.AddToQueue(request);
 
@@ -707,7 +707,7 @@ namespace Helpdesk.Services.Test
             {
                 TopicID = -1
             };
-            var queueFacade = new QueueFacade();
+            var queueFacade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
             var response = queueFacade.UpdateQueueItem(-1, request);
 
             // Check that a request containing both TimeHelped and TimeRemoved is rejected.
@@ -845,7 +845,7 @@ namespace Helpdesk.Services.Test
                 TimeHelped = timeHelped,
                 TimeRemoved = null
             };
-            var queueFacade = new QueueFacade();
+            var queueFacade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
             var response = queueFacade.UpdateQueueItemStatus(-1, request);
 
             // Check that a request containing both TimeHelped and TimeRemoved is rejected.
@@ -864,7 +864,7 @@ namespace Helpdesk.Services.Test
                 TimeHelped = null,
                 TimeRemoved = null
             };
-            var queueFacade = new QueueFacade();
+            var queueFacade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
             var response = queueFacade.UpdateQueueItemStatus(-1, request);
 
             // Check that a request containing both TimeHelped and TimeRemoved is rejected.
@@ -884,7 +884,7 @@ namespace Helpdesk.Services.Test
                 TimeHelped = timeHelped,
                 TimeRemoved = timeRemoved
             };
-            var queueFacade = new QueueFacade();
+            var queueFacade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
             var response = queueFacade.UpdateQueueItemStatus(-1, request);
 
             // Check that a request containing both TimeHelped and TimeRemoved is rejected.
@@ -1015,7 +1015,7 @@ namespace Helpdesk.Services.Test
                 Description = "GetQueueItemsByHelpdeskID Test"
             };
 
-            QueueFacade facade = new QueueFacade();
+            QueueFacade facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
 
             AddToQueueResponse response = facade.AddToQueue(request);
 
@@ -1050,7 +1050,7 @@ namespace Helpdesk.Services.Test
                 context.SaveChanges();
             }
 
-            QueueFacade facade = new QueueFacade();
+            QueueFacade facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
 
             GetQueueItemsByHelpdeskIDResponse testResponse = facade.GetQueueItemsByHelpdeskID(helpdesk.HelpdeskId);
 
@@ -1063,7 +1063,7 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void GetQueueItemsByHelpdeskIDNoHelpdesk()
         {
-            QueueFacade facade = new QueueFacade();
+            QueueFacade facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
 
             GetQueueItemsByHelpdeskIDResponse testResponse = facade.GetQueueItemsByHelpdeskID(-1);
 

@@ -1,4 +1,5 @@
 ﻿using Helpdesk.Common.Requests.CheckIn;
+using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -30,7 +31,7 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new CheckInFacade();
+                var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDatalayer(), new QueueDataLayer());
                 var response = facade.CheckIn(request);
 
                 switch (response.Status)
@@ -64,7 +65,7 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new CheckInFacade();
+                var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDatalayer(), new QueueDataLayer());
                 var response = facade.CheckOut(request, id);
 
                 switch (response.Status)
@@ -98,7 +99,7 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new CheckInFacade();
+                var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDatalayer(), new QueueDataLayer());
                 var response = facade.GetCheckInsByHelpdeskId(id);
 
                 switch (response.Status)

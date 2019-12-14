@@ -26,7 +26,9 @@ namespace Helpdesk.Website
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer());
+                , new StudentDatalayer()
+                , new QueueDataLayer()
+                , new CheckInDataLayer());
                 if (facade.ExportDatabase().Status != HttpStatusCode.OK)
                 {
                     s_logger.Error("Unable to export database.");

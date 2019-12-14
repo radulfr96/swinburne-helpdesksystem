@@ -33,13 +33,17 @@ namespace Helpdesk.Services
         private IUnitsDataLayer _unitsDataLayer;
         private ITopicsDataLayer _topicsDataLayer;
         private IStudentDataLayer _studentsDataLayer;
+        private IQueueDataLayer _queueDataLayer;
+        private ICheckInDataLayer _checkInDataLayer;
 
         public HelpdeskFacade(
             IHelpdeskDataLayer helpdeskDataLayer,
             IUsersDataLayer usersDataLayer,
             IUnitsDataLayer unitsDataLayer,
             ITopicsDataLayer topicsDataLayer,
-            IStudentDataLayer studentsDataLayer
+            IStudentDataLayer studentsDataLayer,
+            IQueueDataLayer queueDataLayer,
+            ICheckInDataLayer checkInDataLayer
             )
         {
             _appSettings = new AppSettings();
@@ -48,6 +52,8 @@ namespace Helpdesk.Services
             _unitsDataLayer = unitsDataLayer;
             _topicsDataLayer = topicsDataLayer;
             _studentsDataLayer = studentsDataLayer;
+            _queueDataLayer = queueDataLayer;
+            _checkInDataLayer = checkInDataLayer;
         }
 
         /// <summary>
@@ -418,9 +424,6 @@ namespace Helpdesk.Services
                 }
                 else
                 {
-                    var queueDataLayer = new QueueDataLayer();
-                    var checkInDataLayer = new CheckInDataLayer();
-
                     DataTable helpdesks = _helpdeskDataLayer.GetHelpdesksAsDataTable();
                     proccessing.SaveToZIPAsCSV(fullZipPath, "helpdesks", helpdesks);
 
@@ -442,13 +445,13 @@ namespace Helpdesk.Services
                     DataTable students = _studentsDataLayer.GetStudentsAsDataTable();
                     proccessing.SaveToZIPAsCSV(fullZipPath, "students", students);
 
-                    DataTable queuesItems = queueDataLayer.GetQueueItemsAsDataTable();
+                    DataTable queuesItems = _queueDataLayer.GetQueueItemsAsDataTable();
                     proccessing.SaveToZIPAsCSV(fullZipPath, "queueItems", queuesItems);
 
-                    DataTable checkIns = checkInDataLayer.GetCheckInsAsDataTable();
+                    DataTable checkIns = _checkInDataLayer.GetCheckInsAsDataTable();
                     proccessing.SaveToZIPAsCSV(fullZipPath, "checkInHistory", checkIns);
 
-                    DataTable checkInQueueItems = checkInDataLayer.GetCheckInQueueItemsAsDataTable();
+                    DataTable checkInQueueItems = _checkInDataLayer.GetCheckInQueueItemsAsDataTable();
                     proccessing.SaveToZIPAsCSV(fullZipPath, "checkinqueueitem", checkInQueueItems);
 
                     response.Path = fullZipPath;

@@ -10,19 +10,12 @@ using Helpdesk.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Data.Common;
+using Helpdesk.DataLayer.Contracts;
 
 namespace Helpdesk.DataLayer
 {
-    /// <summary>
-    /// Used to handle any databases interactions for queues including CRUD, login and logout
-    /// </summary>
-    public class QueueDataLayer
+    public class QueueDataLayer : IQueueDataLayer
     {
-        /// <summary>
-        /// Used to add a queue item to the database
-        /// </summary>
-        /// <param name="request">The request with the information to be added</param>
-        /// <returns>The id of the queue item or null if not successful</returns>
         public int AddToQueue(AddToQueueRequest request)
         {
             int? id = null;
@@ -64,11 +57,6 @@ namespace Helpdesk.DataLayer
             return id.Value;
         }
 
-        /// <summary>
-        /// Used to update a queue item status in the database.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
         public bool UpdateQueueItemStatus(int id, UpdateQueueItemStatusRequest request)
         {
             using (helpdesksystemContext context = new helpdesksystemContext())
@@ -105,12 +93,6 @@ namespace Helpdesk.DataLayer
             }
         }
 
-        /// <summary>
-        /// Edits the queue details in the database.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="request"></param>
-        /// <returns></returns>
         public bool UpdateQueueItem(int id, UpdateQueueItemRequest request)
         {
             using (helpdesksystemContext context = new helpdesksystemContext())
@@ -133,11 +115,6 @@ namespace Helpdesk.DataLayer
             }
         }
 
-        /// <summary>
-        /// This method retreives all queue items in a specific helpdesk from the database
-        /// </summary>
-        /// <param name="id">ID of the helpdesk to retrieve queue items from</param>
-        /// <returns>A list of the queue items</returns>
         public List<QueueItemDTO> GetQueueItemsByHelpdeskID(int id)
         {
             List<QueueItemDTO> queueItemDTOs = new List<QueueItemDTO>();
@@ -167,11 +144,6 @@ namespace Helpdesk.DataLayer
             return queueItemDTOs;
         }
 
-        /// <summary>
-        /// Used to retreive all of the queue items for a check in
-        /// </summary>
-        /// <param name="checkInId">The id of the students check in</param>
-        /// <returns>The list of queue items for that check in</returns>
         public List<QueueItemDTO> GetQueueItemsByCheckIn(int checkInId)
         {
             List<QueueItemDTO> queueItems = new List<QueueItemDTO>();
@@ -194,10 +166,6 @@ namespace Helpdesk.DataLayer
             return queueItems;
         }
 
-        /// <summary>
-        /// Used to get a datatable with all of the helpdesk records
-        /// </summary>
-        /// <returns>Datatable with the helpdesk records</returns>
         public DataTable GetQueueItemsAsDataTable()
         {
             DataTable queueItems = new DataTable();

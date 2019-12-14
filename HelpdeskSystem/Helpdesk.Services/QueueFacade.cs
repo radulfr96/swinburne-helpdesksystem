@@ -6,6 +6,7 @@ using Helpdesk.Common.Requests.Students;
 using Helpdesk.Common.Responses;
 using Helpdesk.Common.Responses.Queue;
 using Helpdesk.DataLayer;
+using Helpdesk.DataLayer.Contracts;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,14 @@ namespace Helpdesk.Services
     public class QueueFacade
     {
         private static Logger s_logger = LogManager.GetCurrentClassLogger();
+        private IStudentDataLayer _studentDataLayer;
+        private IQueueDataLayer _queueDataLayer;
+
+        public QueueFacade(IQueueDataLayer queueDataLayer, IStudentDataLayer studentDataLayer)
+        {
+            _studentDataLayer = studentDataLayer;
+            _queueDataLayer = queueDataLayer;
+        }
 
         /// <summary>
         /// This method is used to add an item to a queue
@@ -37,7 +46,7 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                StudentFacade studentFacade = new StudentFacade(new StudentDatalayer());
+                StudentFacade studentFacade = new StudentFacade(_studentDataLayer);
 
                 if (!request.StudentID.HasValue)
                 {
@@ -57,8 +66,7 @@ namespace Helpdesk.Services
                     request.StudentID = addResponse.StudentID;
                 }
 
-                QueueDataLayer dataLayer = new QueueDataLayer();
-                int itemId = dataLayer.AddToQueue(request);
+                int itemId = _queueDataLayer.AddToQueue(request);
 
                 response.ItemId = itemId;
                 response.Status = HttpStatusCode.OK;
@@ -95,8 +103,7 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                QueueDataLayer dataLayer = new QueueDataLayer();
-                response.Result = dataLayer.UpdateQueueItem(id, request);
+                response.Result = _queueDataLayer.UpdateQueueItem(id, request);
                 response.Status = HttpStatusCode.OK;
             }
             catch (NotFoundException ex)
@@ -133,8 +140,7 @@ namespace Helpdesk.Services
                     return response;
                 }
 
-                QueueDataLayer dataLayer = new QueueDataLayer();
-                bool result = dataLayer.UpdateQueueItemStatus(id, request);
+                bool result = _queueDataLayer.UpdateQueueItemStatus(id, request);
 
                 if (result)
                 {
@@ -175,9 +181,7 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new QueueDataLayer();
-
-                List<QueueItemDTO> queueItems = dataLayer.GetQueueItemsByHelpdeskID(id);
+                List<QueueItemDTO> queueItems = _queueDataLayer.GetQueueItemsByHelpdeskID(id);
 
                 if (queueItems.Count == 0)
                     throw new NotFoundException("No queue items found under helpdesk "+id);

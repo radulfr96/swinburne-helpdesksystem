@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Helpdesk.Common.Requests.Queue;
+using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -30,7 +31,7 @@ namespace Helpdesk.Website.Controllers.api
 		{
 			try
 			{
-				var facade = new QueueFacade();
+				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
 				var response = facade.AddToQueue(request);
 
 				switch (response.Status)
@@ -64,7 +65,7 @@ namespace Helpdesk.Website.Controllers.api
 		{
 			try
 			{
-				var facade = new QueueFacade();
+				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
 				var response = facade.GetQueueItemsByHelpdeskID(id);
 
 				switch (response.Status)
@@ -99,7 +100,7 @@ namespace Helpdesk.Website.Controllers.api
 		{
 			try
 			{
-				var facade = new QueueFacade();
+				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
 				var response = facade.UpdateQueueItem(id, request);
 
 				switch (response.Status)
@@ -133,7 +134,7 @@ namespace Helpdesk.Website.Controllers.api
 		{
 			try
 			{
-				var facade = new QueueFacade();
+				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
 				var response = facade.UpdateQueueItemStatus(id, request);
 
 				switch (response.Status)

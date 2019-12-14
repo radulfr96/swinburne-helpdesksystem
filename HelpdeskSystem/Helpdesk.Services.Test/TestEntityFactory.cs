@@ -118,11 +118,13 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer());
+                , new StudentDatalayer()
+                , new QueueDataLayer()
+                , new CheckInDataLayer());
             UnitsFacade = new UnitsFacade(new UnitsDataLayer());
             TopicsFacade = new TopicsFacade(new TopicsDataLayer());
-            QueueFacade = new QueueFacade();
-            CheckInFacade = new CheckInFacade();
+            QueueFacade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
+            CheckInFacade = new CheckInFacade(new CheckInDataLayer(), new StudentDatalayer(), new QueueDataLayer());
             StudentFacade = new StudentFacade(new StudentDatalayer());
         }
 

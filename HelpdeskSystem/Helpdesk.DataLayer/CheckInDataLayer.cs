@@ -2,6 +2,7 @@
 using Helpdesk.Common.Extensions;
 using Helpdesk.Common.Requests.CheckIn;
 using Helpdesk.Data.Models;
+using Helpdesk.DataLayer.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,16 +13,8 @@ using System.Text;
 
 namespace Helpdesk.DataLayer
 {
-    /// <summary>
-    /// Used to handle any database interactions involving checking in and out of a helpdesk
-    /// </summary>
-    public class CheckInDataLayer
+    public class CheckInDataLayer : ICheckInDataLayer
     {
-        /// <summary>
-        /// Checks a new item into the database
-        /// </summary>
-        /// <param name="request">Request containing the unit id of the check in item</param>
-        /// <returns>The id of the new check in item</returns>
         public int CheckIn(CheckInRequest request)
         {
             int id = 0;
