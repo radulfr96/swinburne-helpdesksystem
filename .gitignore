@@ -12,7 +12,7 @@ HelpdeskSystem/Helpdesk.Services/bin/
 HelpdeskSystem/Helpdesk.DataLayer/obj/
 HelpdeskSystem/Helpdesk.Services.Test/obj/
 HelpdeskSystem/Helpdesk.Services.Test/bin/
-HelpdeskSystem/Helpdesk.DataLayer.Contracts/bin/
-HelpdeskSystem/Helpdesk.DataLayer.Contracts/obj/
+HelpdeskSystem/HelpdeskSystem.DataLayer.Contracts/bin/
+HelpdeskSystem/HelpdeskSystem.DataLayer.Contracts/obj/
 appsettings.json
 .idea
