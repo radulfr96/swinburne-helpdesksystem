@@ -59,14 +59,14 @@ namespace Helpdesk.Website.Controllers.api
         /// </summary>
         /// <param name="request">Request containing the specific CheckInID to be associated with checking out</param>
         /// <returns>A response indicating success or failure</returns>
-        [HttpPost]
-        [Route("{id}")]
-        public IActionResult CheckOut([FromBody] CheckOutRequest request, [FromRoute] int id)
+        [HttpPatch]
+        [Route("")]
+        public IActionResult CheckOut([FromBody] CheckOutRequest request)
         {
             try
             {
                 var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDatalayer(), new QueueDataLayer());
-                var response = facade.CheckOut(request, id);
+                var response = facade.CheckOut(request);
 
                 switch (response.Status)
                 {

@@ -139,11 +139,11 @@ namespace Helpdesk.DataLayer
             return nickname.StudentId;
         }
 
-        public bool EditStudentNickname(int id, EditStudentNicknameRequest request)
+        public bool EditStudentNickname(EditStudentNicknameRequest request)
         {
             using (helpdesksystemContext context = new helpdesksystemContext())
             {
-                Nicknames nickname = context.Nicknames.FirstOrDefault(n => n.StudentId == id);
+                Nicknames nickname = context.Nicknames.FirstOrDefault(n => n.StudentId == request.StudentID);
 
                 if (nickname == null)
                     return false;

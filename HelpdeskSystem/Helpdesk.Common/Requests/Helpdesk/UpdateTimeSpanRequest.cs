@@ -13,6 +13,8 @@ namespace Helpdesk.Common.Requests.Helpdesk
         [Required(AllowEmptyStrings = false, ErrorMessage = "You must enter in a timespan name.")]
         public string Name { get; set; }
 
+        public int TimeSpanID { get; set; }
+
         public DateTime StartDate { get; set; }
 
         public DateTime EndDate { get; set; }

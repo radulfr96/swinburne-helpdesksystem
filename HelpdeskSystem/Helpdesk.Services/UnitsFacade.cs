@@ -34,7 +34,7 @@ namespace Helpdesk.Services
         /// <param name="id">The id of the user to be updated if requested</param>
         /// <param name="request">Request that contains the new user information</param>
         /// <returns>Response which indicates success or failure</returns>
-        public AddUpdateUnitResponse AddOrUpdateUnit(int id, AddUpdateUnitRequest request)
+        public AddUpdateUnitResponse AddOrUpdateUnit(AddUpdateUnitRequest request)
         {
             s_logger.Info("Adding unit to helpdesk");
 
@@ -47,7 +47,7 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;                
 
-                if (id == 0)
+                if (request.UnitID == 0)
                 {
                     UnitDTO unit = _unitsDataLayer.GetUnitByNameAndHelpdeskId(request.Name, request.HelpdeskID);
 
@@ -79,7 +79,7 @@ namespace Helpdesk.Services
                 }
                 else
                 {
-                    var existingUnit = _unitsDataLayer.GetUnit(id);
+                    var existingUnit = _unitsDataLayer.GetUnit(request.UnitID);
 
                     if (existingUnit == null)
                     {

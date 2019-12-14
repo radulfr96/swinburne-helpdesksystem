@@ -12,5 +12,7 @@ namespace Helpdesk.Common.Requests.Students
     {
         [Required(AllowEmptyStrings = false, ErrorMessage = "You must enter a nickname")]
         public string Nickname { get; set; }
+
+        public int StudentID { get; set; }
     }
 }

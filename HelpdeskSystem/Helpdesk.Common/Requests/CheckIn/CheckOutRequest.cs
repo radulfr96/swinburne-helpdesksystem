@@ -9,6 +9,7 @@ namespace Helpdesk.Common.Requests.CheckIn
     /// </summary>
     public class CheckOutRequest
     {
+        public int CheckInID { get; set; }
         public bool? ForcedCheckout { get; set; }
     }
 }

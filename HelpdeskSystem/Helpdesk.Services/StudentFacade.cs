@@ -133,7 +133,7 @@ namespace Helpdesk.Services
         /// <param name="id">The StudentID of the student to be updated</param>
         /// <param name="request">The student's new nickname</param>
         /// <returns>The response that indicates if the update was successfull</returns>
-        public EditStudentNicknameResponse EditStudentNickname(int id, EditStudentNicknameRequest request)
+        public EditStudentNicknameResponse EditStudentNickname(EditStudentNicknameRequest request)
         {
             s_logger.Info("Editing student's nickname...");
 
@@ -155,7 +155,7 @@ namespace Helpdesk.Services
                     return response;
                 }
 
-                bool result = _studentDataLayer.EditStudentNickname(id, request);
+                bool result = _studentDataLayer.EditStudentNickname(request);
 
                 if (result == false)
                     throw new NotFoundException("Unable to find student!");

@@ -280,10 +280,11 @@ namespace Helpdesk.Services.Test
             UpdateUserRequest updateUserRequest = new UpdateUserRequest()
             {
                 Username = AlphaNumericStringGenerator.GetString(10),
-                Password = AlphaNumericStringGenerator.GetString(10)
+                Password = AlphaNumericStringGenerator.GetString(10),
+                UserID = addUserResponse.UserId
             };
 
-            UpdateUserResponse updateUserResponse = usersFacade.UpdateUser(addUserResponse.UserId, updateUserRequest);
+            UpdateUserResponse updateUserResponse = usersFacade.UpdateUser(updateUserRequest);
 
             Assert.AreEqual(HttpStatusCode.OK, updateUserResponse.Status);
             Assert.IsTrue(updateUserResponse.Result);
@@ -310,10 +311,11 @@ namespace Helpdesk.Services.Test
             UpdateUserRequest updateUserRequest = new UpdateUserRequest()
             {
                 Username = AlphaNumericStringGenerator.GetString(9),
-                Password = AlphaNumericStringGenerator.GetString(9)
+                Password = AlphaNumericStringGenerator.GetString(9),
+                UserID = -1
             };
 
-            UpdateUserResponse updateUserResponse = usersFacade.UpdateUser(-1, updateUserRequest);
+            UpdateUserResponse updateUserResponse = usersFacade.UpdateUser(updateUserRequest);
 
             Assert.AreEqual(HttpStatusCode.NotFound, updateUserResponse.Status);
         }
@@ -329,10 +331,11 @@ namespace Helpdesk.Services.Test
             UpdateUserRequest updateUserRequest = new UpdateUserRequest()
             {
                 Username = AlphaNumericStringGenerator.GetString(21),
-                Password = AlphaNumericStringGenerator.GetString(9)
+                Password = AlphaNumericStringGenerator.GetString(9),
+                UserID = 8
             };
 
-            UpdateUserResponse updateUserResponse = usersFacade.UpdateUser(8, updateUserRequest);
+            UpdateUserResponse updateUserResponse = usersFacade.UpdateUser(updateUserRequest);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, updateUserResponse.Status);
         }
@@ -349,9 +352,10 @@ namespace Helpdesk.Services.Test
             {
                 Username = AlphaNumericStringGenerator.GetString(10),
                 Password = AlphaNumericStringGenerator.GetString(5),
+                UserID = 8
             };
 
-            UpdateUserResponse updateUserResponse = usersFacade.UpdateUser(8, updateUserRequest);
+            UpdateUserResponse updateUserResponse = usersFacade.UpdateUser(updateUserRequest);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, updateUserResponse.Status);
         }
@@ -387,10 +391,11 @@ namespace Helpdesk.Services.Test
             UpdateUserRequest updateUserRequest = new UpdateUserRequest()
             {
                 Username = addUserResponse.Username,
-                Password = AlphaNumericStringGenerator.GetString(10)
+                Password = AlphaNumericStringGenerator.GetString(10),
+                UserID = addUserResponse2.UserId
             };
 
-            UpdateUserResponse updateUserResponse = usersFacade.UpdateUser(addUserResponse2.UserId, updateUserRequest);
+            UpdateUserResponse updateUserResponse = usersFacade.UpdateUser(updateUserRequest);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, updateUserResponse.Status);
         }
@@ -417,10 +422,11 @@ namespace Helpdesk.Services.Test
 
             UpdateUserRequest updateUserRequest = new UpdateUserRequest()
             {
-                Password = AlphaNumericStringGenerator.GetString(10)
+                Password = AlphaNumericStringGenerator.GetString(10),
+                UserID = addUserResponse.UserId
             };
 
-            UpdateUserResponse updateUserResponse = usersFacade.UpdateUser(addUserResponse.UserId, updateUserRequest);
+            UpdateUserResponse updateUserResponse = usersFacade.UpdateUser(updateUserRequest);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, updateUserResponse.Status);
         }

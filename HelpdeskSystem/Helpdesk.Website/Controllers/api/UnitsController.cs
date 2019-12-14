@@ -27,7 +27,7 @@ namespace Helpdesk.Website.Controllers.api
         /// <returns>Response which indicates success or failure</returns>
         [HttpPost]
         [Route("{id}")]
-        public IActionResult AddOrUpdateUnit([FromRoute] int id, [FromBody] AddUpdateUnitRequest request)
+        public IActionResult AddOrUpdateUnit([FromBody] AddUpdateUnitRequest request)
         {
             if (request == null)
                 return BadRequest();
@@ -38,7 +38,7 @@ namespace Helpdesk.Website.Controllers.api
             try
             {
                 var facade = new UnitsFacade(new UnitsDataLayer());
-                var response = facade.AddOrUpdateUnit(id, request);
+                var response = facade.AddOrUpdateUnit(request);
 
                 switch (response.Status)
                 {

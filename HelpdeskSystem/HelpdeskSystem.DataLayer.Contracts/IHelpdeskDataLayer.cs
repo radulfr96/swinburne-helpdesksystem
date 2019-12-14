@@ -61,7 +61,7 @@ namespace Helpdesk.DataLayer.Contracts
         /// <param name="id">The id of the helpdesk to be updated</param>
         /// <param name="request">The information to update the helpdesk</param>
         /// <returns>Result the indicates whether or not the update was successful</returns>
-        bool UpdateHelpdesk(int id, UpdateHelpdeskRequest request);
+        bool UpdateHelpdesk(UpdateHelpdeskRequest request);
 
         /// <summary>
         /// Used to force-checkout users and remove queue items.
@@ -98,7 +98,7 @@ namespace Helpdesk.DataLayer.Contracts
         /// <param name="id">The SpanId of the timespan to be updated</param>
         /// <param name="request">The request that contains the timespan's new information</param>
         /// <returns>A bool indicating whether the operation was a success</returns>
-        bool UpdateTimeSpan(int id, UpdateTimeSpanRequest request);
+        bool UpdateTimeSpan(UpdateTimeSpanRequest request);
 
         /// <summary>
         /// Used to delete a specific timespan from the database

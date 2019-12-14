@@ -673,11 +673,12 @@ namespace Helpdesk.Services.Test
             var queueUpdateRequest = new UpdateQueueItemRequest
             {
                 TopicID = topicResponse.Topics[0].TopicId,
-                Description = "UpdateQueueItem Test"
+                Description = "UpdateQueueItem Test",
+                QueueItemID = queueData.Response.ItemId
             };
 
             // Update the queue item
-            UpdateQueueItemResponse updateQueueResponse = testEntityFactory.QueueFacade.UpdateQueueItem(queueData.Response.ItemId, queueUpdateRequest);
+            UpdateQueueItemResponse updateQueueResponse = testEntityFactory.QueueFacade.UpdateQueueItem(queueUpdateRequest);
 
             // Check that queue item was updated successfully.
             Assert.AreEqual(HttpStatusCode.OK, updateQueueResponse.Status);
@@ -686,11 +687,12 @@ namespace Helpdesk.Services.Test
             queueUpdateRequest = new UpdateQueueItemRequest
             {
                 TopicID = topicResponse.Topics[1].TopicId,
-                Description = "UpdateQueueItem Test 2"
+                Description = "UpdateQueueItem Test 2",
+                QueueItemID = queueData.Response.ItemId
             };
 
             // Update the queue item again
-            updateQueueResponse = testEntityFactory.QueueFacade.UpdateQueueItem(queueData.Response.ItemId, queueUpdateRequest);
+            updateQueueResponse = testEntityFactory.QueueFacade.UpdateQueueItem(queueUpdateRequest);
 
             // Check that queue item was updated successfully.
             Assert.AreEqual(HttpStatusCode.OK, updateQueueResponse.Status);
@@ -705,10 +707,11 @@ namespace Helpdesk.Services.Test
             // Invalid topic id shouldn't matter, as QueueID will be assessed first in the data layer.
             var request = new UpdateQueueItemRequest
             {
-                TopicID = -1
+                TopicID = -1,
+                QueueItemID = -1
             };
             var queueFacade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
-            var response = queueFacade.UpdateQueueItem(-1, request);
+            var response = queueFacade.UpdateQueueItem(request);
 
             // Check that a request containing both TimeHelped and TimeRemoved is rejected.
             Assert.AreEqual(HttpStatusCode.NotFound, response.Status);
@@ -756,11 +759,12 @@ namespace Helpdesk.Services.Test
             var queueUpdateRequest = new UpdateQueueItemRequest
             {
                 TopicID = -1,
-                Description = "UpdateQueueItemTopicDoesNotExist"
+                Description = "UpdateQueueItemTopicDoesNotExist",
+                QueueItemID = queueData.Response.ItemId
             };
 
             // Update the queue item
-            UpdateQueueItemResponse updateQueueResponse = testEntityFactory.QueueFacade.UpdateQueueItem(queueData.Response.ItemId, queueUpdateRequest);
+            UpdateQueueItemResponse updateQueueResponse = testEntityFactory.QueueFacade.UpdateQueueItem(queueUpdateRequest);
 
             // Check that queue item update failed due to non-existent TopicID.
             Assert.AreEqual(HttpStatusCode.NotFound, updateQueueResponse.Status);
@@ -807,11 +811,12 @@ namespace Helpdesk.Services.Test
             var queueUpdateRequest = new UpdateQueueItemStatusRequest
             {
                 TimeHelped = DateTime.Now,
-                TimeRemoved = null
+                TimeRemoved = null,
+                QueueID = queueData.Response.ItemId
             };
 
             // Update queue item TimeHelped.
-            var queueUpdateResponse = testEntityFactory.QueueFacade.UpdateQueueItemStatus(queueData.Response.ItemId, queueUpdateRequest);
+            var queueUpdateResponse = testEntityFactory.QueueFacade.UpdateQueueItemStatus(queueUpdateRequest);
 
             // Check that queue item was updated successfully.
             Assert.AreEqual(HttpStatusCode.OK, queueUpdateResponse.Status);
@@ -822,11 +827,12 @@ namespace Helpdesk.Services.Test
             queueUpdateRequest = new UpdateQueueItemStatusRequest
             {
                 TimeHelped = null,
-                TimeRemoved = timeRemoved
+                TimeRemoved = timeRemoved,
+                QueueID = queueData.Response.ItemId
             };
 
             // Update queue item TimeRemoved.
-            queueUpdateResponse = testEntityFactory.QueueFacade.UpdateQueueItemStatus(queueData.Response.ItemId, queueUpdateRequest);
+            queueUpdateResponse = testEntityFactory.QueueFacade.UpdateQueueItemStatus(queueUpdateRequest);
 
             // Check that queue item was updated successfully.
             Assert.AreEqual(HttpStatusCode.OK, queueUpdateResponse.Status);
@@ -843,10 +849,11 @@ namespace Helpdesk.Services.Test
             var request = new UpdateQueueItemStatusRequest
             {
                 TimeHelped = timeHelped,
-                TimeRemoved = null
+                TimeRemoved = null,
+                QueueID = -1
             };
             var queueFacade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
-            var response = queueFacade.UpdateQueueItemStatus(-1, request);
+            var response = queueFacade.UpdateQueueItemStatus(request);
 
             // Check that a request containing both TimeHelped and TimeRemoved is rejected.
             Assert.AreEqual(HttpStatusCode.NotFound, response.Status);
@@ -862,10 +869,11 @@ namespace Helpdesk.Services.Test
             var request = new UpdateQueueItemStatusRequest
             {
                 TimeHelped = null,
-                TimeRemoved = null
+                TimeRemoved = null,
+                QueueID = -1
             };
             var queueFacade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
-            var response = queueFacade.UpdateQueueItemStatus(-1, request);
+            var response = queueFacade.UpdateQueueItemStatus(request);
 
             // Check that a request containing both TimeHelped and TimeRemoved is rejected.
             Assert.AreEqual(HttpStatusCode.BadRequest, response.Status);
@@ -882,10 +890,11 @@ namespace Helpdesk.Services.Test
             DateTime timeRemoved = timeHelped.AddMinutes(1);
             var request = new UpdateQueueItemStatusRequest{
                 TimeHelped = timeHelped,
-                TimeRemoved = timeRemoved
+                TimeRemoved = timeRemoved,
+                QueueID = -1
             };
             var queueFacade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
-            var response = queueFacade.UpdateQueueItemStatus(-1, request);
+            var response = queueFacade.UpdateQueueItemStatus(request);
 
             // Check that a request containing both TimeHelped and TimeRemoved is rejected.
             Assert.AreEqual(HttpStatusCode.BadRequest, response.Status);
@@ -933,11 +942,12 @@ namespace Helpdesk.Services.Test
             var queueUpdateRequest = new UpdateQueueItemStatusRequest
             {
                 TimeHelped = DateTime.Now,
-                TimeRemoved = null
+                TimeRemoved = null,
+                QueueID = queueData.Response.ItemId
             };
 
             // Update queue item TimeHelped.
-            var queueUpdateResponse = testEntityFactory.QueueFacade.UpdateQueueItemStatus(queueData.Response.ItemId, queueUpdateRequest);
+            var queueUpdateResponse = testEntityFactory.QueueFacade.UpdateQueueItemStatus(queueUpdateRequest);
 
             // Check that queue item was updated successfully.
             Assert.AreEqual(HttpStatusCode.OK, queueData.Response.Status);
@@ -949,11 +959,12 @@ namespace Helpdesk.Services.Test
             queueUpdateRequest = new UpdateQueueItemStatusRequest
             {
                 TimeHelped = null,
-                TimeRemoved = timeRemoved
+                TimeRemoved = timeRemoved,
+                QueueID = queueData.Response.ItemId
             };
 
             // Update queue item TimeRemoved.
-            queueUpdateResponse = testEntityFactory.QueueFacade.UpdateQueueItemStatus(queueData.Response.ItemId, queueUpdateRequest);
+            queueUpdateResponse = testEntityFactory.QueueFacade.UpdateQueueItemStatus(queueUpdateRequest);
 
             // Check that queue item was updated successfully.
             Assert.AreEqual(HttpStatusCode.BadRequest, queueUpdateResponse.Status);

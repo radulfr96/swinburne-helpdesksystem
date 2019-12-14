@@ -57,14 +57,14 @@ namespace Helpdesk.DataLayer
             return id.Value;
         }
 
-        public bool UpdateQueueItemStatus(int id, UpdateQueueItemStatusRequest request)
+        public bool UpdateQueueItemStatus(UpdateQueueItemStatusRequest request)
         {
             using (helpdesksystemContext context = new helpdesksystemContext())
             {
-                Queueitem item = context.Queueitem.FirstOrDefault(p => p.ItemId == id);
+                Queueitem item = context.Queueitem.FirstOrDefault(p => p.ItemId == request.QueueID);
 
                 if (item == null)
-                    throw new NotFoundException($"Unable to find queue item with id [{id}]");
+                    throw new NotFoundException($"Unable to find queue item with id [{request.QueueID}]");
 
                 if (request.TimeHelped != null && request.TimeRemoved == null && item.TimeHelped == null)
                 {
@@ -93,14 +93,14 @@ namespace Helpdesk.DataLayer
             }
         }
 
-        public bool UpdateQueueItem(int id, UpdateQueueItemRequest request)
+        public bool UpdateQueueItem(UpdateQueueItemRequest request)
         {
             using (helpdesksystemContext context = new helpdesksystemContext())
             {
-                Queueitem item = context.Queueitem.FirstOrDefault(p => p.ItemId == id);
+                Queueitem item = context.Queueitem.FirstOrDefault(p => p.ItemId == request.QueueItemID);
 
                 if (item == null)
-                    throw new NotFoundException($"Unable to find queue item with id [{id}]");
+                    throw new NotFoundException($"Unable to find queue item with id [{request.QueueItemID}]");
 
                 Topic topic = context.Topic.FirstOrDefault(t => t.TopicId == request.TopicID);
 

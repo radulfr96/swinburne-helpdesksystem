@@ -24,7 +24,7 @@ namespace Helpdesk.DataLayer.Contracts
         /// </summary>
         /// <param name="id">CheckInID of the check in item to be checked out</param>
         /// <returns>A boolean indicating success or failure</returns>
-        bool CheckOut(CheckOutRequest request, int id);
+        bool CheckOut(CheckOutRequest request);
 
         /// <summary>
         /// Used to retreive the check ins by the helpdesk id

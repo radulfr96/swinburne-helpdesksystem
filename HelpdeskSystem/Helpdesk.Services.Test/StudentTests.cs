@@ -121,10 +121,11 @@ namespace Helpdesk.Services.Test
 
             EditStudentNicknameRequest editStudentNicknameRequest = new EditStudentNicknameRequest()
             {
-                Nickname = AlphaNumericStringGenerator.GetString(10)
+                Nickname = AlphaNumericStringGenerator.GetString(10),
+                StudentID = response.StudentID
             };
 
-            EditStudentNicknameResponse editStudentNicknameResponse = studentFacade.EditStudentNickname(response.StudentID, editStudentNicknameRequest);
+            EditStudentNicknameResponse editStudentNicknameResponse = studentFacade.EditStudentNickname(editStudentNicknameRequest);
 
             Assert.AreEqual(HttpStatusCode.OK, editStudentNicknameResponse.Status);
             Assert.IsTrue(editStudentNicknameResponse.Result);
@@ -148,9 +149,10 @@ namespace Helpdesk.Services.Test
             EditStudentNicknameRequest editStudentNicknameRequest = new EditStudentNicknameRequest()
             {
                 Nickname = AlphaNumericStringGenerator.GetString(10),
+                StudentID = -1
             };
 
-            EditStudentNicknameResponse editStudentNicknameResponse = studentFacade.EditStudentNickname(-1, editStudentNicknameRequest);
+            EditStudentNicknameResponse editStudentNicknameResponse = studentFacade.EditStudentNickname(editStudentNicknameRequest);
 
             Assert.AreEqual(HttpStatusCode.NotFound, editStudentNicknameResponse.Status);
         }
@@ -174,10 +176,11 @@ namespace Helpdesk.Services.Test
 
             EditStudentNicknameRequest editStudentNicknameRequest = new EditStudentNicknameRequest()
             {
-                Nickname = ""
+                Nickname = "",
+                StudentID = response.StudentID
             };
 
-            EditStudentNicknameResponse editStudentNicknameResponse = studentFacade.EditStudentNickname(response.StudentID, editStudentNicknameRequest);
+            EditStudentNicknameResponse editStudentNicknameResponse = studentFacade.EditStudentNickname(editStudentNicknameRequest);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, editStudentNicknameResponse.Status);
         }
@@ -201,10 +204,11 @@ namespace Helpdesk.Services.Test
 
             EditStudentNicknameRequest editStudentNicknameRequest = new EditStudentNicknameRequest()
             {
-                Nickname = request.Nickname
+                Nickname = request.Nickname,
+                StudentID = response.StudentID
             };
 
-            EditStudentNicknameResponse editStudentNicknameResponse = studentFacade.EditStudentNickname(response.StudentID, editStudentNicknameRequest);
+            EditStudentNicknameResponse editStudentNicknameResponse = studentFacade.EditStudentNickname(editStudentNicknameRequest);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, editStudentNicknameResponse.Status);
         }

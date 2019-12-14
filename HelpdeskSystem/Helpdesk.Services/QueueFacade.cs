@@ -92,7 +92,7 @@ namespace Helpdesk.Services
         /// <param name="id">ID of the queue item to be updated</param>
         /// <param name="request">Request that contains the new queue item information</param>
         /// <returns>Response which indicates success or failure</returns>
-        public UpdateQueueItemResponse UpdateQueueItem(int id, UpdateQueueItemRequest request)
+        public UpdateQueueItemResponse UpdateQueueItem(UpdateQueueItemRequest request)
         {
             UpdateQueueItemResponse response = new UpdateQueueItemResponse();
 
@@ -103,7 +103,7 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                response.Result = _queueDataLayer.UpdateQueueItem(id, request);
+                response.Result = _queueDataLayer.UpdateQueueItem(request);
                 response.Status = HttpStatusCode.OK;
             }
             catch (NotFoundException ex)
@@ -127,7 +127,7 @@ namespace Helpdesk.Services
         /// <param name="id">ID of the specific queue item to be updated</param>
         /// <param name="request">Request which contains the new queue item status</param>
         /// <returns>Response which indicates success or failure</returns>
-        public UpdateQueueItemStatusResponse UpdateQueueItemStatus(int id, UpdateQueueItemStatusRequest request)
+        public UpdateQueueItemStatusResponse UpdateQueueItemStatus(UpdateQueueItemStatusRequest request)
         {
             UpdateQueueItemStatusResponse response = new UpdateQueueItemStatusResponse();
 
@@ -140,7 +140,7 @@ namespace Helpdesk.Services
                     return response;
                 }
 
-                bool result = _queueDataLayer.UpdateQueueItemStatus(id, request);
+                bool result = _queueDataLayer.UpdateQueueItemStatus(request);
 
                 if (result)
                 {

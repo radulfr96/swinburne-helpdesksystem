@@ -106,26 +106,27 @@ namespace Helpdesk.Services
         /// </summary>
         /// <param name="id">Specified CheckInID</param>
         /// <returns>A response indicating success or failure</returns>
-        public CheckOutResponse CheckOut(CheckOutRequest request, int id)
+        public CheckOutResponse CheckOut(CheckOutRequest request)
         {
             CheckOutResponse response = new CheckOutResponse();
 
             try
             {
-                bool result = _checkInDataLayer.CheckOut(request, id);
+                bool result = _checkInDataLayer.CheckOut(request);
 
                 if (result == false)
                     throw new NotFoundException("Unable to find check in item!");
 
-                var queueItems = _queueDataLayer.GetQueueItemsByCheckIn(id);
+                var queueItems = _queueDataLayer.GetQueueItemsByCheckIn(request.CheckInID);
                 UpdateQueueItemStatusRequest removeRequest = new UpdateQueueItemStatusRequest()
                 {
-                    TimeRemoved = DateTime.Now
+                    TimeRemoved = DateTime.Now,
                 };
 
                 foreach (var item in queueItems)
                 {
-                    _queueDataLayer.UpdateQueueItemStatus(item.ItemId, removeRequest);
+                    removeRequest.QueueID = item.ItemId;
+                    _queueDataLayer.UpdateQueueItemStatus(removeRequest);
                 }
 
                 response.Result = result;

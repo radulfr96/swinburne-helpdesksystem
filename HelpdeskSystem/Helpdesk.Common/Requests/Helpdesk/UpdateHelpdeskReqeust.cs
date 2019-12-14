@@ -10,6 +10,8 @@ namespace Helpdesk.Common.Requests.Helpdesk
     /// </summary>
     public class UpdateHelpdeskRequest : BaseRequest
     {
+        public int HelpdeskID { get; set; }
+
         [Required (AllowEmptyStrings = false, ErrorMessage = "You must enter in a helpdesk name.")]
         public string Name { get; set; }
 

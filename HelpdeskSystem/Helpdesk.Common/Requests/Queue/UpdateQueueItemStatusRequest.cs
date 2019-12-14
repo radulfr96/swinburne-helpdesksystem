@@ -12,6 +12,8 @@ namespace Helpdesk.Common.Requests.Queue
         public DateTime? TimeHelped { get; set; }
         public DateTime? TimeRemoved { get; set; }
 
+        public int QueueID { get; set; }
+
         public override IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var results = new List<ValidationResult>();

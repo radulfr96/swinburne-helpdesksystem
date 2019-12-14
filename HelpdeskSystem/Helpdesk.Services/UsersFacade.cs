@@ -164,7 +164,7 @@ namespace Helpdesk.Services
         /// <param name="id">The UserId of the user to be updated</param>
         /// <param name="request">The user's new information</param>
         /// <returns>The response that indicates if the update was successfull</returns>
-        public UpdateUserResponse UpdateUser(int id, UpdateUserRequest request)
+        public UpdateUserResponse UpdateUser(UpdateUserRequest request)
         {
             s_logger.Info("Updating user...");
 
@@ -179,12 +179,12 @@ namespace Helpdesk.Services
 
                 request.Password = HashText(request.Password);
 
-                if (_usersDataLayer.GetUserByUsername(request.Username)!=null && _usersDataLayer.GetUserByUsername(request.Username).UserId != id)
+                if (_usersDataLayer.GetUserByUsername(request.Username)!=null && _usersDataLayer.GetUserByUsername(request.Username).UserId != request.UserID)
                 {
                     throw new Exception("Unable to update user! User with username " + request.Username + "already exists!");
                 }
 
-                bool result = _usersDataLayer.UpdateUser(id, request);
+                bool result = _usersDataLayer.UpdateUser(request);
 
                 if (result == false)
                     throw new NotFoundException("Unable to find user!");

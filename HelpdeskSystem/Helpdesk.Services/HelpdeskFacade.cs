@@ -180,7 +180,7 @@ namespace Helpdesk.Services
         /// <param name="id">The id of the helpdesk to be updated</param>
         /// <param name="request">This is the request with the info to update the helpdesk</param>
         /// <returns>Returns a response which indicate the result</returns>
-        public UpdateHelpdeskResponse UpdateHelpdesk(int id, UpdateHelpdeskRequest request)
+        public UpdateHelpdeskResponse UpdateHelpdesk(UpdateHelpdeskRequest request)
         {
             var response = new UpdateHelpdeskResponse();
 
@@ -191,7 +191,7 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                bool result = _helpdeskDataLayer.UpdateHelpdesk(id, request);
+                bool result = _helpdeskDataLayer.UpdateHelpdesk(request);
 
                 if (result)
                     response.Status = HttpStatusCode.OK;
@@ -328,7 +328,7 @@ namespace Helpdesk.Services
         /// <param name="id">The SpanId of the timespan to be updated</param>
         /// <param name="request">The timespan's new information</param>
         /// <returns>The response that indicates if the operation was a success</returns>
-        public UpdateTimeSpanResponse UpdateTimeSpan(int id, UpdateTimeSpanRequest request)
+        public UpdateTimeSpanResponse UpdateTimeSpan(UpdateTimeSpanRequest request)
         {
             s_logger.Info("Updating timespan...");
 
@@ -343,7 +343,7 @@ namespace Helpdesk.Services
 
                 //will implement unique check when get timespan by name method is implemented
 
-                bool result = _helpdeskDataLayer.UpdateTimeSpan(id, request);
+                bool result = _helpdeskDataLayer.UpdateTimeSpan(request);
 
                 if (result == false)
                     throw new NotFoundException("Unable to find timespan!");

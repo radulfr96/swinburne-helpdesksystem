@@ -44,7 +44,7 @@ namespace Helpdesk.DataLayer.Contracts
         /// <param name="id">The UserId of the user to be updated</param>
         /// <param name="request">The request that contains the user's new information</param>
         /// <returns>A boolean that indicates whether the operation was a success</returns>
-        bool UpdateUser(int id, UpdateUserRequest request);
+        bool UpdateUser(UpdateUserRequest request);
 
         /// <summary>
         /// Used to delete the specified user from the database

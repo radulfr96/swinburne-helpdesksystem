@@ -112,11 +112,11 @@ namespace Helpdesk.DataLayer
             return users;
         }
 
-        public bool UpdateUser(int id, UpdateUserRequest request)
+        public bool UpdateUser(UpdateUserRequest request)
         {
             using (helpdesksystemContext context = new helpdesksystemContext())
             {
-                User user = context.User.FirstOrDefault(u => u.UserId == id);
+                User user = context.User.FirstOrDefault(u => u.UserId == request.UserID);
 
                 if (user == null)
                    return false;

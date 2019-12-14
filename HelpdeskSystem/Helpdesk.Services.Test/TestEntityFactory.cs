@@ -198,7 +198,8 @@ namespace Helpdesk.Services.Test
             if (topics != null) request.Topics = topics;
 
             var facade = new UnitsFacade(new UnitsDataLayer());
-            var response = facade.AddOrUpdateUnit(unitID, request);
+            request.UnitID = unitID;
+            var response = facade.AddOrUpdateUnit(request);
 
             TestDataUnit data = new TestDataUnit(request, response);
             return data;

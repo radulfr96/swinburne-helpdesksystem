@@ -97,8 +97,8 @@ namespace Helpdesk.Website.Controllers.api
         /// <param name="request">Request that contains the new nickname</param>
         /// <returns>A response which indicates success or failure</returns>
         [HttpPatch]
-        [Route("nickname/{id}")]
-        public IActionResult EditStudentNickname([FromRoute] int id, [FromBody] EditStudentNicknameRequest request)
+        [Route("nickname")]
+        public IActionResult EditStudentNickname([FromBody] EditStudentNicknameRequest request)
         {
             if (!IsAuthorized())
                 return Unauthorized();
@@ -106,7 +106,7 @@ namespace Helpdesk.Website.Controllers.api
             try
             {
                 var facade = new StudentFacade(new StudentDatalayer());
-                var response = facade.EditStudentNickname(id, request);
+                var response = facade.EditStudentNickname(request);
 
                 switch (response.Status)
                 {

@@ -41,11 +41,11 @@ namespace Helpdesk.DataLayer
         /// </summary>
         /// <param name="id">CheckInID of the check in item to be checked out</param>
         /// <returns>A boolean indicating success or failure</returns>
-        public bool CheckOut(CheckOutRequest request, int id)
+        public bool CheckOut(CheckOutRequest request)
         {
             using (helpdesksystemContext context = new helpdesksystemContext())
             {
-                Checkinhistory checkOut = context.Checkinhistory.FirstOrDefault(co => co.CheckInId == id);
+                Checkinhistory checkOut = context.Checkinhistory.FirstOrDefault(co => co.CheckInId == request.CheckInID);
 
                 if (checkOut == null)
                     return false;

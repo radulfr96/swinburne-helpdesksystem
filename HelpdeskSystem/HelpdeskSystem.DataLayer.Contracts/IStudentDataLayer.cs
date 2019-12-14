@@ -58,6 +58,6 @@ namespace Helpdesk.DataLayer.Contracts
         /// <param name="id">The StudentID of the student to be updated</param>
         /// <param name="request">The request that contains the student's new nickname</param>
         /// <returns>A boolean that indicates whether the operation was a success</returns>
-        bool EditStudentNickname(int id, EditStudentNicknameRequest request);
+        bool EditStudentNickname(EditStudentNicknameRequest request);
     }
 }

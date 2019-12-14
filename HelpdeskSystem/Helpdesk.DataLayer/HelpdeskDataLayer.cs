@@ -198,16 +198,16 @@ namespace Helpdesk.DataLayer
             return helpdeskDTOs;
         }
 
-        public bool UpdateHelpdesk(int id, UpdateHelpdeskRequest request)
+        public bool UpdateHelpdesk(UpdateHelpdeskRequest request)
         {
             bool result = false;
 
             using (helpdesksystemContext context = new helpdesksystemContext())
             {
-                Helpdesksettings helpdesk = context.Helpdesksettings.FirstOrDefault(p => p.HelpdeskId == id);
+                Helpdesksettings helpdesk = context.Helpdesksettings.FirstOrDefault(p => p.HelpdeskId == request.HelpdeskID);
 
                 if (helpdesk == null)
-                    throw new NotFoundException($"Helpdesk with id [{id}] not found.");
+                    throw new NotFoundException($"Helpdesk with id [{request.HelpdeskID}] not found.");
 
                 helpdesk.Name = request.Name;
                 helpdesk.HasCheckIn = request.HasCheckIn;
@@ -331,12 +331,12 @@ namespace Helpdesk.DataLayer
             return timespanDTOs;
         }
 
-        public bool UpdateTimeSpan(int id, UpdateTimeSpanRequest request)
+        public bool UpdateTimeSpan(UpdateTimeSpanRequest request)
         {
 
             using (helpdesksystemContext context = new helpdesksystemContext())
             {
-                Timespans timespan = context.Timespans.FirstOrDefault(t => t.SpanId == id);
+                Timespans timespan = context.Timespans.FirstOrDefault(t => t.SpanId == request.TimeSpanID);
 
                 if (timespan == null)
                     return false;
@@ -346,7 +346,7 @@ namespace Helpdesk.DataLayer
 
                 // Update if no timespan exists matching the requesting name.
                 // Update anyway if the names match but the the existing timespan is the timespan we want to update.
-                if (existingTimespan == null || existingTimespan.SpanId == id)
+                if (existingTimespan == null || existingTimespan.SpanId == request.TimeSpanID)
                 {
                     timespan.Name = request.Name;
                     timespan.StartDate = request.StartDate;

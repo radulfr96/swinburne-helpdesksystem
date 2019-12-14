@@ -202,8 +202,8 @@ namespace Helpdesk.Website.Controllers.api
         /// <param name="request">The request with the helpdesk information</param>
         /// <returns>A reponse to indictae whether or not it was a success</returns>
         [HttpPatch]
-        [Route("{id}")]
-        public IActionResult AddHelpdesk([FromRoute] int id, [FromBody] UpdateHelpdeskRequest request)
+        [Route("")]
+        public IActionResult UpdateHelpdesk([FromBody] UpdateHelpdeskRequest request)
         {
             if (!IsAuthorized())
                 return Unauthorized();
@@ -221,7 +221,7 @@ namespace Helpdesk.Website.Controllers.api
                 , new StudentDatalayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
-                var response = facade.UpdateHelpdesk(id, request);
+                var response = facade.UpdateHelpdesk(request);
 
                 switch (response.Status)
                 {
@@ -381,8 +381,8 @@ namespace Helpdesk.Website.Controllers.api
         /// <param name="request">Request containing the new timespan information</param>
         /// <returns>Response which indicates success or failure</returns>
         [HttpPatch]
-        [Route("timespan/{id}")]
-        public IActionResult UpdateTimeSpan([FromRoute] int id, [FromBody] UpdateTimeSpanRequest request)
+        [Route("timespan")]
+        public IActionResult UpdateTimeSpan([FromBody] UpdateTimeSpanRequest request)
         {
             if (!IsAuthorized())
                 return Unauthorized();
@@ -397,7 +397,7 @@ namespace Helpdesk.Website.Controllers.api
                 , new StudentDatalayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
-                var response = facade.UpdateTimeSpan(id, request);
+                var response = facade.UpdateTimeSpan(request);
 
                 switch (response.Status)
                 {

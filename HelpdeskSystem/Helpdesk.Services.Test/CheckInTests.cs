@@ -327,10 +327,11 @@ namespace Helpdesk.Services.Test
 
             CheckOutRequest coRequest = new CheckOutRequest()
             {
-                ForcedCheckout = false
+                ForcedCheckout = false,
+                CheckInID = response.CheckInID
             };
 
-            CheckOutResponse coResponse = facade.CheckOut(coRequest, response.CheckInID);
+            CheckOutResponse coResponse = facade.CheckOut(coRequest);
 
             Assert.AreEqual(HttpStatusCode.OK, coResponse.Status);
             Assert.IsTrue(coResponse.Result);
@@ -417,10 +418,11 @@ namespace Helpdesk.Services.Test
 
             CheckOutRequest coRequest = new CheckOutRequest()
             {
-                ForcedCheckout = false
+                ForcedCheckout = false,
+                CheckInID = response.CheckInID
             };
 
-            CheckOutResponse coResponse = facade.CheckOut(coRequest, response.CheckInID);
+            CheckOutResponse coResponse = facade.CheckOut(coRequest);
 
             Assert.AreEqual(HttpStatusCode.OK, coResponse.Status);
             Assert.IsTrue(coResponse.Result);
@@ -483,10 +485,11 @@ namespace Helpdesk.Services.Test
 
             CheckOutRequest coRequest = new CheckOutRequest()
             {
-                ForcedCheckout = true
+                ForcedCheckout = true,
+                CheckInID = response.CheckInID
             };
 
-            CheckOutResponse coResponse = facade.CheckOut(coRequest, response.CheckInID);
+            CheckOutResponse coResponse = facade.CheckOut(coRequest);
 
             Assert.AreEqual(HttpStatusCode.OK, coResponse.Status);
             Assert.IsTrue(coResponse.Result);
@@ -516,10 +519,11 @@ namespace Helpdesk.Services.Test
 
             CheckOutRequest request = new CheckOutRequest()
             {
-                ForcedCheckout = false
+                ForcedCheckout = false,
+                CheckInID = -1
             };
 
-            CheckOutResponse coResponse = facade.CheckOut(request, -1);
+            CheckOutResponse coResponse = facade.CheckOut(request);
 
             Assert.AreEqual(HttpStatusCode.NotFound, coResponse.Status);
         }

@@ -211,10 +211,11 @@ namespace Helpdesk.Services.Test
             {
                 HasCheckIn = true,
                 HasQueue = true,
-                Name = AlphaNumericStringGenerator.GetString(10)
+                Name = AlphaNumericStringGenerator.GetString(10),
+                HelpdeskID = response.HelpdeskID
             };
 
-            var updateResponse = facade.UpdateHelpdesk(response.HelpdeskID, updateRequest);
+            var updateResponse = facade.UpdateHelpdesk(updateRequest);
 
             Assert.AreEqual(HttpStatusCode.OK, response.Status);
 
@@ -247,10 +248,11 @@ namespace Helpdesk.Services.Test
             {
                 HasCheckIn = true,
                 HasQueue = true,
-                Name = AlphaNumericStringGenerator.GetString(10)
+                Name = AlphaNumericStringGenerator.GetString(10),
+                HelpdeskID = -1
             };
 
-            var updateResponse = facade.UpdateHelpdesk(-1, updateRequest);
+            var updateResponse = facade.UpdateHelpdesk(updateRequest);
 
             Assert.AreEqual(HttpStatusCode.NotFound, updateResponse.Status);
         }
@@ -316,9 +318,10 @@ namespace Helpdesk.Services.Test
             // Manuall checkout checkinDataB and check that it succeeded.
             CheckOutRequest checkoutRequestB = new CheckOutRequest
             {
-                ForcedCheckout = false
+                ForcedCheckout = false,
+                CheckInID = checkinDataB.Response.CheckInID
             };
-            var checkoutBResponse = testEntityFactory.CheckInFacade.CheckOut(checkoutRequestB, checkinDataB.Response.CheckInID);
+            var checkoutBResponse = testEntityFactory.CheckInFacade.CheckOut(checkoutRequestB);
             Assert.AreEqual(HttpStatusCode.OK, checkoutBResponse.Status);
             Assert.IsTrue(checkoutBResponse.Result == true);
 
@@ -505,9 +508,10 @@ namespace Helpdesk.Services.Test
                 Name = AlphaNumericStringGenerator.GetString(10),
                 StartDate = new DateTime(2019, 01, 01),
                 EndDate = new DateTime(2019, 06, 01),
+                TimeSpanID = timespanData.Response.SpanId
             };
 
-            UpdateTimeSpanResponse updateTimespanResponse = testEntityFactory.HelpdeskFacade.UpdateTimeSpan(timespanData.Response.SpanId, updateTimespanRequest);
+            UpdateTimeSpanResponse updateTimespanResponse = testEntityFactory.HelpdeskFacade.UpdateTimeSpan(updateTimespanRequest);
 
             Assert.AreEqual(HttpStatusCode.OK, updateTimespanResponse.Status);
             Assert.IsTrue(updateTimespanResponse.Result);
@@ -557,9 +561,10 @@ namespace Helpdesk.Services.Test
                 Name = timespanDataA.Request.Name,
                 StartDate = new DateTime(2019, 01, 01),
                 EndDate = new DateTime(2019, 06, 01),
+                TimeSpanID = timespanDataB.Response.SpanId
             };
 
-            var updateTimespanResponse = testEntityFactory.HelpdeskFacade.UpdateTimeSpan(timespanDataB.Response.SpanId, updateTimespanRequest);
+            var updateTimespanResponse = testEntityFactory.HelpdeskFacade.UpdateTimeSpan(updateTimespanRequest);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, updateTimespanResponse.Status);
             Assert.IsFalse(updateTimespanResponse.Result);
@@ -584,10 +589,11 @@ namespace Helpdesk.Services.Test
             {
                 Name = AlphaNumericStringGenerator.GetString(10),
                 StartDate = new DateTime(2019, 08, 01),
-                EndDate = new DateTime(2019, 11, 01)
+                EndDate = new DateTime(2019, 11, 01),
+                TimeSpanID = -1
             };
 
-            UpdateTimeSpanResponse updateTimespanResponse = helpdeskFacade.UpdateTimeSpan(-1, updateTimespanRequest);
+            UpdateTimeSpanResponse updateTimespanResponse = helpdeskFacade.UpdateTimeSpan(updateTimespanRequest);
 
             Assert.AreEqual(HttpStatusCode.NotFound, updateTimespanResponse.Status);
         }
@@ -620,8 +626,9 @@ namespace Helpdesk.Services.Test
             Assert.AreEqual(HttpStatusCode.OK, addTimeSpanResponse.Status);
 
             UpdateTimeSpanRequest updateTimespanRequest = new UpdateTimeSpanRequest();
+            updateTimespanRequest.TimeSpanID = addTimeSpanResponse.SpanId;
 
-            UpdateTimeSpanResponse updateTimespanResponse = helpdeskFacade.UpdateTimeSpan(addTimeSpanResponse.SpanId, updateTimespanRequest);
+            UpdateTimeSpanResponse updateTimespanResponse = helpdeskFacade.UpdateTimeSpan(updateTimespanRequest);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, updateTimespanResponse.Status);
         }
@@ -657,9 +664,10 @@ namespace Helpdesk.Services.Test
             {
                 StartDate = new DateTime(2019, 01, 01),
                 EndDate = new DateTime(2019, 06, 01),
+                TimeSpanID = addTimeSpanResponse.SpanId
             };
 
-            UpdateTimeSpanResponse updateTimespanResponse = helpdeskFacade.UpdateTimeSpan(addTimeSpanResponse.SpanId, updateTimespanRequest);
+            UpdateTimeSpanResponse updateTimespanResponse = helpdeskFacade.UpdateTimeSpan(updateTimespanRequest);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, updateTimespanResponse.Status);
         }

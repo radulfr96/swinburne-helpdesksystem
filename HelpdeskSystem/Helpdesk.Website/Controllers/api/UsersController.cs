@@ -142,8 +142,8 @@ namespace Helpdesk.Website.Controllers.api
         /// <param name="request">Request that contains the new user information</param>
         /// <returns>A response which indicates success or failure</returns>
         [HttpPatch]
-        [Route("{id}")]
-        public IActionResult UpdateUser([FromRoute] int id, [FromBody] UpdateUserRequest request)
+        [Route("")]
+        public IActionResult UpdateUser([FromBody] UpdateUserRequest request)
         {
             if (!IsAuthorized())
                 return Unauthorized();
@@ -151,7 +151,7 @@ namespace Helpdesk.Website.Controllers.api
             try
             {
                 var facade = new UsersFacade(new UsersDataLayer());
-                var response = facade.UpdateUser(id, request);
+                var response = facade.UpdateUser(request);
 
                 switch (response.Status)
                 {

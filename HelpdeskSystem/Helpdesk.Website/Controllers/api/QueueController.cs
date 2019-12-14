@@ -94,14 +94,14 @@ namespace Helpdesk.Website.Controllers.api
 		/// <param name="id"></param>
 		/// <param name="request"></param>
 		/// <returns></returns>
-		[HttpPost]
-		[Route("{id}")]
-		public IActionResult UpdateUpdateQueueItem([FromRoute] int id, [FromBody] UpdateQueueItemRequest request)
+		[HttpPatch]
+		[Route("")]
+		public IActionResult UpdateQueueItem([FromBody] UpdateQueueItemRequest request)
 		{
 			try
 			{
 				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
-				var response = facade.UpdateQueueItem(id, request);
+				var response = facade.UpdateQueueItem(request);
 
 				switch (response.Status)
 				{
@@ -128,14 +128,14 @@ namespace Helpdesk.Website.Controllers.api
 		/// </summary>
 		/// <param name="request"></param>
 		/// <returns></returns>
-		[HttpPost]
-		[Route("{id}/UpdateQueueItemStatus")]
-		public IActionResult UpdateUpdateQueueItemStatus([FromRoute] int id, [FromBody] UpdateQueueItemStatusRequest request)
+		[HttpPatch]
+		[Route("UpdateQueueItemStatus")]
+		public IActionResult UpdateUpdateQueueItemStatus([FromBody] UpdateQueueItemStatusRequest request)
 		{
 			try
 			{
 				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
-				var response = facade.UpdateQueueItemStatus(id, request);
+				var response = facade.UpdateQueueItemStatus(request);
 
 				switch (response.Status)
 				{

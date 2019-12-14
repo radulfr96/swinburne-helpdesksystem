@@ -24,7 +24,7 @@ namespace Helpdesk.DataLayer.Contracts
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        bool UpdateQueueItemStatus(int id, UpdateQueueItemStatusRequest request);
+        bool UpdateQueueItemStatus(UpdateQueueItemStatusRequest request);
 
         /// <summary>
         /// Edits the queue details in the database.
@@ -32,7 +32,7 @@ namespace Helpdesk.DataLayer.Contracts
         /// <param name="id"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        bool UpdateQueueItem(int id, UpdateQueueItemRequest request);
+        bool UpdateQueueItem(UpdateQueueItemRequest request);
 
         /// <summary>
         /// This method retreives all queue items in a specific helpdesk from the database
