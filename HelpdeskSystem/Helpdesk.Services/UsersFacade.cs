@@ -15,6 +15,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Helpdesk.Common.Extensions;
+using Helpdesk.DataLayer.Contracts;
 
 namespace Helpdesk.Services
 {
@@ -27,9 +28,12 @@ namespace Helpdesk.Services
 
         private readonly AppSettings _appSettings;
 
-        public UsersFacade()
+        public IUsersDataLayer UsersDataLayer;
+
+        public UsersFacade(IUsersDataLayer usersDataLayer)
         {
             _appSettings = new AppSettings();
+            UsersDataLayer = usersDataLayer;
         }
 
         /// <summary>
@@ -45,9 +49,7 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new UsersDataLayer();
-
-                List<UserDTO> users = dataLayer.GetUsers();
+                List<UserDTO> users = UsersDataLayer.GetUsers();
 
                 response.Users = users;
                 response.Status = HttpStatusCode.OK;
@@ -81,9 +83,7 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new UsersDataLayer();
-
-                UserDTO user = dataLayer.GetUser(id);
+                UserDTO user = UsersDataLayer.GetUser(id);
 
                 if (user == null)
                     throw new NotFoundException("Unable to find user!");
@@ -131,16 +131,14 @@ namespace Helpdesk.Services
 
                 request.Password = HashText(request.Password);
 
-                var dataLayer = new UsersDataLayer();
-
-                if (dataLayer.GetUserByUsername(request.Username) != null)
+                if (UsersDataLayer.GetUserByUsername(request.Username) != null)
                 {
                     response.Status = HttpStatusCode.Forbidden;
                     response.StatusMessages.Add(new StatusMessage(HttpStatusCode.Forbidden, "Username already exists"));
                     return response;
                 }
 
-                int? result = dataLayer.AddUser(request);
+                int? result = UsersDataLayer.AddUser(request);
 
                 if (result == null)
                 {
@@ -181,14 +179,12 @@ namespace Helpdesk.Services
 
                 request.Password = HashText(request.Password);
 
-                var dataLayer = new UsersDataLayer();
-
-                if (dataLayer.GetUserByUsername(request.Username)!=null && dataLayer.GetUserByUsername(request.Username).UserId != id)
+                if (UsersDataLayer.GetUserByUsername(request.Username)!=null && UsersDataLayer.GetUserByUsername(request.Username).UserId != id)
                 {
                     throw new Exception("Unable to update user! User with username " + request.Username + "already exists!");
                 }
 
-                bool result = dataLayer.UpdateUser(id, request);
+                bool result = UsersDataLayer.UpdateUser(id, request);
 
                 if (result == false)
                     throw new NotFoundException("Unable to find user!");
@@ -223,9 +219,8 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new UsersDataLayer();
 
-                UserDTO user = dataLayer.GetUser(id);
+                UserDTO user = UsersDataLayer.GetUser(id);
 
                 if (user.Username == currentUser)
                 {
@@ -233,7 +228,7 @@ namespace Helpdesk.Services
                     return response;
                 }
 
-                bool result = dataLayer.DeleteUser(id);
+                bool result = UsersDataLayer.DeleteUser(id);
 
                 if (result)
                     response.Status = HttpStatusCode.OK;
@@ -272,10 +267,8 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                var dataLayer = new UsersDataLayer();
-
                 //Verify user exists
-                UserDTO user = dataLayer.GetUserByUsername(request.Username);
+                UserDTO user = UsersDataLayer.GetUserByUsername(request.Username);
                 if (user == null)
                 {
                     response.Token = string.Empty;
@@ -349,15 +342,14 @@ namespace Helpdesk.Services
 
             try
             {
-                var dataLayer = new UsersDataLayer();
                 int userID = -1;
 
                 if (!int.TryParse(userId, out userID))
                     throw new Exception("Invalid user id received.");
 
-                UserDTO userFromID = dataLayer.GetUser(userID);
+                UserDTO userFromID = UsersDataLayer.GetUser(userID);
 
-                UserDTO userFromUsername = dataLayer.GetUserByUsername(username);
+                UserDTO userFromUsername = UsersDataLayer.GetUserByUsername(username);
 
                 if (!(userFromID.UserId == userFromUsername.UserId && userFromID.Username == userFromUsername.Username && (!userFromID.FirstTime)))
                 {

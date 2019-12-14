@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Helpdesk.Common.Extensions;
 using Helpdesk.Common.Responses;
+using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -62,7 +63,7 @@ namespace Helpdesk.Website.Controllers.api
                     return false;
                 }
 
-                var facade = new UsersFacade();
+                var facade = new UsersFacade(new UsersDataLayer());
                 result = facade.VerifyUser(UserName, id);
             }
             catch (NotFoundException ex)

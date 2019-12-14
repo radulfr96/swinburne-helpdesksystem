@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Helpdesk.Common.Requests.Users;
+using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -34,7 +35,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UsersFacade();
+                var facade = new UsersFacade(new UsersDataLayer());
                 var response = facade.GetUser(id);
 
                 switch (response.Status)
@@ -72,7 +73,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UsersFacade();
+                var facade = new UsersFacade(new UsersDataLayer());
                 var response = facade.GetUsers();
 
                 switch (response.Status)
@@ -109,7 +110,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UsersFacade();
+                var facade = new UsersFacade(new UsersDataLayer());
                 var response = facade.AddUser(request);
 
                 switch (response.Status)
@@ -149,7 +150,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UsersFacade();
+                var facade = new UsersFacade(new UsersDataLayer());
                 var response = facade.UpdateUser(id, request);
 
                 switch (response.Status)
@@ -188,7 +189,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UsersFacade();
+                var facade = new UsersFacade(new UsersDataLayer());
                 var response = facade.DeleteUser(id, GetUsername());
 
                 switch (response.Status)
@@ -229,7 +230,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UsersFacade();
+                var facade = new UsersFacade(new UsersDataLayer());
                 var response = facade.LoginUser(request);
 
                 switch (response.Status)

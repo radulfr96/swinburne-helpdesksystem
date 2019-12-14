@@ -23,7 +23,7 @@ namespace Helpdesk.Services
     {
         private static Logger s_logger = LogManager.GetCurrentClassLogger();
 
-        public IStudentDataLayer StudentDataLayer { get; set; }
+        public IStudentDataLayer StudentDataLayer;
 
         public StudentFacade(IStudentDataLayer studentDataLayer)
         {

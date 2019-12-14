@@ -10,21 +10,14 @@ using Helpdesk.Common.Extensions;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
+using Helpdesk.DataLayer.Contracts;
 
 namespace Helpdesk.DataLayer
 {
-    /// <summary>
-    /// Used to handle any databases interactions for users including CRUD, login and logout
-    /// </summary>
-    public class UsersDataLayer
+    public class UsersDataLayer : IUsersDataLayer
     {
         private static Logger s_Logger = LogManager.GetCurrentClassLogger();
 
-        /// <summary>
-        /// Used to add a user to the database.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
         public int? AddUser(AddUserRequest request)
         {
             int? userId = null;
@@ -42,11 +35,6 @@ namespace Helpdesk.DataLayer
             return userId;
         }
 
-        /// <summary>
-        /// Used to retreve a user by their id
-        /// </summary>
-        /// <param name="id">The id of the user</param>
-        /// <returns>The user DTO</returns>
         public UserDTO GetUser(int id)
         {
             UserDTO userDTO = null;
@@ -63,10 +51,6 @@ namespace Helpdesk.DataLayer
             return userDTO;
         }
 
-        /// <summary>
-        /// This method retrieves a list of all the users in the database
-        /// </summary>
-        /// <returns>A list of users retrieved from the database</returns>
         public List<UserDTO> GetUsers()
         {
             List<UserDTO> userDTOs = new List<UserDTO>();
@@ -90,10 +74,6 @@ namespace Helpdesk.DataLayer
             return userDTOs;
         }
 
-        /// <summary>
-        /// Used to get a datatable with all of the helpdesk records
-        /// </summary>
-        /// <returns>Datatable with the helpdesk records</returns>
         public DataTable GetUsersAsDataTable()
         {
             DataTable users = new DataTable();
@@ -132,12 +112,6 @@ namespace Helpdesk.DataLayer
             return users;
         }
 
-        /// <summary>
-        /// Used to update the specified user in the databse with the request's information
-        /// </summary>
-        /// <param name="id">The UserId of the user to be updated</param>
-        /// <param name="request">The request that contains the user's new information</param>
-        /// <returns>A boolean that indicates whether the operation was a success</returns>
         public bool UpdateUser(int id, UpdateUserRequest request)
         {
             using (helpdesksystemContext context = new helpdesksystemContext())
@@ -159,11 +133,6 @@ namespace Helpdesk.DataLayer
             return true;
         }
 
-        /// <summary>
-        /// Used to delete the specified user from the database
-        /// </summary>
-        /// <param name="id">The id of the user to be deleted</param>
-        /// <returns>An indication of whether or not the deletion was successful</returns>
         public bool DeleteUser(int id)
         {
             using (helpdesksystemContext context = new helpdesksystemContext())
@@ -179,11 +148,6 @@ namespace Helpdesk.DataLayer
             return true;
         }
 
-        /// <summary>
-        /// Used to get a user by their username initially made for the login function
-        /// </summary>
-        /// <param name="username">The username of the user</param>
-        /// <returns>The object that represents the user</returns>
         public UserDTO GetUserByUsername(string username)
         {
             UserDTO dto = null;
