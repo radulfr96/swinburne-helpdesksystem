@@ -1,4 +1,5 @@
 export class UpdateQueueItemStatusRequest {
-    public TimeHelped?: Date;
-    public TimeRemoved?: Date;
+    public itemID: number
+    public timeHelped?: Date;
+    public timeRemoved?: Date;
 }

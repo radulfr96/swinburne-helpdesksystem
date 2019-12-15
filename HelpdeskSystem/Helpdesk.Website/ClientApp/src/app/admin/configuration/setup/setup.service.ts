@@ -28,8 +28,8 @@ export class SetUpService {
      * @param id The id of the helpdesk
      * @param request the settings to be saved
      */
-    updateHelpdesk(id: number, request: UpdateHelpdeskRequest) {
-      return this.http.patch<UpdateHelpdeskResponse>('/api/helpdesk/' + id, request);
+    updateHelpdesk(request: UpdateHelpdeskRequest) {
+      return this.http.patch<UpdateHelpdeskResponse>('/api/helpdesk/', request);
     }
 
 

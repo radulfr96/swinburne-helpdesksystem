@@ -96,7 +96,7 @@ export class LoginComponent implements OnInit {
   }
 
   setPassword(data) {
-    var isValid: boolean = true;
+    let isValid = true;
 
     if (!data.modalPassword) {
       this.notifier.notify('warning', 'You must enter your password');
@@ -113,14 +113,16 @@ export class LoginComponent implements OnInit {
       isValid = false;
     }
 
-    if (!isValid)
+    if (!isValid) {
       return;
+    }
 
     const updateUserRequest = new UpdateUserRequest;
     updateUserRequest.Username = data.modalUsername;
     updateUserRequest.Password = data.modalPassword;
+    updateUserRequest.UserID = data.modalUserId;
 
-    this.userService.updateUser(updateUserRequest, data.modalUserId).subscribe(result => {
+    this.userService.updateUser(updateUserRequest).subscribe(result => {
       if (result.status == 200) {
         $('#modal-set-password').modal('hide');
         this.loginForm.patchValue({username: data.modalUsername, password: ''})

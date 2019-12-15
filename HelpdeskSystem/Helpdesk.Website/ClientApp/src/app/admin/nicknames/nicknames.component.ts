@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NicknameService } from './nickname.service';
 import { ActivatedRoute } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
+import { Subject } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Nickname } from 'src/app/data/DTOs/nickname.dto';
 import { EditStudentNicknameRequest } from 'src/app/data/requests/student/edit-student-nickname-request';
@@ -13,9 +14,10 @@ import { EditStudentNicknameRequest } from 'src/app/data/requests/student/edit-s
 /**
  * Used to handle Get & Edit funtionality of the nickname administration
  */
-export class NicknamesComponent implements OnInit {
-
-  public nicknames: Nickname[] = [];
+export class NicknamesComponent implements OnDestroy, OnInit {
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<Nickname> = new Subject();
+  public nicknames: Nickname[];
   public editForm: FormGroup = this.builder.group({
     modalEditId: new FormControl(''),
     modalEditNickname: new FormControl('', [Validators.required, Validators.max(20)])
@@ -28,6 +30,8 @@ export class NicknamesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.nicknames = [];
+    // this.dtTrigger.next();
     this.getNicknames();
   }
 
@@ -38,6 +42,7 @@ export class NicknamesComponent implements OnInit {
     this.service.getNickames().subscribe(
       result => {
         this.nicknames = result.nicknames;
+        this.dtTrigger.next();
       },
       error => {
         if (error.status !== 404) {
@@ -86,8 +91,9 @@ export class NicknamesComponent implements OnInit {
 
     const request = new EditStudentNicknameRequest();
     request.nickname = this.editForm.controls.modalEditNickname.value;
+    request.studentID = this.editForm.controls.modalEditId.value;
 
-    this.service.editNickname(this.editForm.controls.modalEditId.value, request).subscribe(
+    this.service.editNickname(request).subscribe(
       result => {
         this.getNicknames();
         this.editForm.reset();
@@ -111,4 +117,10 @@ export class NicknamesComponent implements OnInit {
   closeEdit() {
     this.editForm.reset();
   }
+
+  ngOnDestroy(): void {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
+  }
+
 }

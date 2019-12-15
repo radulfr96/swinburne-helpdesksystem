@@ -162,11 +162,12 @@ export class UnitsComponent {
     request.Name = this.addForm.controls.unitName.value;
     request.Code = this.addForm.controls.unitCode.value;
     request.HelpdeskID = helpdeskId;
+    request.UnitID = id;
     this.newTopics.forEach(t => {
       request.Topics.push(t.name);
     });
 
-    this.unitsService.addUpdateUnit(id, request).subscribe(result => {
+    this.unitsService.addUpdateUnit(request).subscribe(result => {
       this.notifier.notify('success', 'Unit added successfully');
       $('#modal-unit-add').modal('hide');
       this.addForm.reset();
@@ -261,11 +262,12 @@ export class UnitsComponent {
     request.Name = this.editForm.controls.editUnitName.value;
     request.Code = this.editForm.controls.editUnitCode.value;
     request.HelpdeskID = helpdeskId;
+    request.UnitID = this.editForm.controls.editUnitId.value
     this.editTopics.forEach(t => {
       request.Topics.push(t.name);
     });
 
-    this.unitsService.addUpdateUnit(this.editForm.controls.editUnitId.value, request).subscribe(result => {
+    this.unitsService.addUpdateUnit(request).subscribe(result => {
       this.notifier.notify('success', 'Unit saved successfully');
       $('#modal-unit-edit').modal('hide');
       this.editForm.reset();

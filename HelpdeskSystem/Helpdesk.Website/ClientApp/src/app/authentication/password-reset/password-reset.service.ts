@@ -61,10 +61,9 @@ export class PasswordResetService {
 
     // validation passed, set up request object
     this.resetRequest.Password = this.passwordNew;
+    this.resetRequest.UserID = this.userId;
 
-    console.log('send request', this.userId, this.resetRequest);
-
-    this.userService.updateUser(this.resetRequest, this.userId).subscribe(
+    this.userService.updateUser(this.resetRequest).subscribe(
       result => {
         if (result.status === 200) {
           this.notifier.notify('success', 'Password reset successfully!');

@@ -46,9 +46,12 @@ export class SetUpComponent implements OnInit {
   updateHelpdesk(form) {
     let allowSubmit = true;
     // Assign form data to request object
-    const updateRequest: UpdateHelpdeskRequest = this.helpdesk;
-
-    console.log(updateRequest);
+    let updateRequest: UpdateHelpdeskRequest;
+    updateRequest.hasCheckIn = this.helpdesk.hasCheckIn;
+    updateRequest.hasQueue = this.helpdesk.hasQueue;
+    updateRequest.helpdeskID = this.id;
+    updateRequest.isDisabled = this.helpdesk.isDisabled;
+    updateRequest.name = this.helpdesk.name;
 
     // Check if name has been touched - do not allow submit - required to show invalid msg on submit
     if (!updateRequest.hasOwnProperty('name')) {
@@ -65,11 +68,10 @@ export class SetUpComponent implements OnInit {
     if (!allowSubmit) { return; }
 
     // Allowed to submit - send request
-    this.configService.updateHelpdesk(this.id, updateRequest).subscribe(
+    this.configService.updateHelpdesk(updateRequest).subscribe(
       result => {
         this.notifier.notify('success', 'Helpdesk edited successfully!');
       }, error => {
-        console.log(error);
         this.notifier.notify('error', 'Could not edit helpdesk, please contact helpdesk admin.');
       }
     );

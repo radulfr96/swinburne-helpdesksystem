@@ -42,7 +42,7 @@ export class NicknameService {
      * @param id the system id of the student
      * @param request the students information
      */
-    editNickname(id: number, request: EditStudentNicknameRequest) {
-        return this.client.patch<EditStudentNicknameResponse>('/api/student/nickname/' + id, request);
+    editNickname(request: EditStudentNicknameRequest) {
+        return this.client.patch<EditStudentNicknameResponse>('/api/student/nickname/', request);
     }
 }

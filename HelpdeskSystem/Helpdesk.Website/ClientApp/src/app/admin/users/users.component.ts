@@ -20,7 +20,6 @@ export class UsersComponent {
   deleteForm;
   public readonly userToAdd: AddUserRequest;
   public userToEdit: UpdateUserRequest;
-  public userToEditId: number;
 
   constructor(private usersService: UsersService
     , private notifierService: NotifierService
@@ -78,7 +77,7 @@ export class UsersComponent {
   setupEdit(user: User) {
     // let editingUser = this.getUserById(id);
     this.userToEdit.Username = user.username;
-    this.userToEditId = user.id;
+    this.userToEdit.UserID = user.id;
   }
 
   /**
@@ -141,7 +140,7 @@ export class UsersComponent {
    * @param form User edit form
    */
   updateUser(form) {
-    this.usersService.updateUser(this.userToEdit, this.userToEditId).subscribe(
+    this.usersService.updateUser(this.userToEdit).subscribe(
       result => {
         this.notifierService.notify('success', 'User edited successfully!');
         this.updateUserList();

@@ -25,7 +25,7 @@ export class UnitsService {
     return this.http.delete<DeleteUnitResponse>('/api/units/' + id);
   }
 
-  addUpdateUnit(id: number, request: AddUpdateUnitRequest) {
-    return this.http.post<AddUpdateUnitResponse>('/api/units/' + id, request);
+  addUpdateUnit(request: AddUpdateUnitRequest) {
+    return this.http.post<AddUpdateUnitResponse>('/api/units/', request);
   }
 }

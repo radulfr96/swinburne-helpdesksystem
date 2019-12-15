@@ -43,7 +43,7 @@ export class UsersService {
    * @param request Data to update
    * @param id Id of user to update
    */
-  updateUser(request: UpdateUserRequest, id: number) {
-    return this.http.patch<UpdateUserResponse>('/api/users/' + id, request);
+  updateUser(request: UpdateUserRequest) {
+    return this.http.patch<UpdateUserResponse>('/api/users/', request);
   }
 }

@@ -334,7 +334,7 @@ export class HelpdeskComponent implements OnInit {
     if (value !== null) {
       if (this.helpdesk.hasCheckIn) {
         const checkIn = this.checkIns.find(c => c.checkInId == value);
-        this.topics = this.units.find(u => u.unitId === checkIn.unitId).topics;
+        this.topics = this.units.find(u => u.unitId == checkIn.unitId).topics;
         this.showTopic = true;
       } else {
         this.showTopic = true;
@@ -480,8 +480,9 @@ export class HelpdeskComponent implements OnInit {
 
     const request = new UpdateQueueItemRequest();
     request.topicId = this.editQueueForm.controls.modalEditTopicId.value;
+    request.itemID = this.editQueueForm.controls.modalEditItemId.value;
 
-    this.service.updateQueueItem(this.editQueueForm.controls.modalEditItemId.value, request).subscribe(
+    this.service.updateQueueItem(request).subscribe(
       result => {
         this.notifier.notify('success', 'Item change saved');
         this.getQueueItems();
@@ -509,9 +510,10 @@ export class HelpdeskComponent implements OnInit {
    */
   remove(id: number) {
     const request = new UpdateQueueItemStatusRequest();
-    request.TimeRemoved = new Date();
+    request.timeRemoved = new Date();
+    request.itemID = id;
 
-    this.service.updateQueueItemStatus(id, request).pipe(delay(200)).subscribe(
+    this.service.updateQueueItemStatus(request).pipe(delay(200)).subscribe(
       result => {
         this.notifier.notify('success', 'Item removed from queue');
         this.getQueueItems();
@@ -528,9 +530,10 @@ export class HelpdeskComponent implements OnInit {
    */
   collect(id: number) {
     const request = new UpdateQueueItemStatusRequest();
-    request.TimeHelped = new Date();
+    request.timeHelped = new Date();
+    request.itemID = id;
 
-    this.service.updateQueueItemStatus(id, request).subscribe(
+    this.service.updateQueueItemStatus(request).subscribe(
       result => {
         this.notifier.notify('success', 'Item collected');
         this.getQueueItems();

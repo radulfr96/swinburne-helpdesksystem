@@ -106,8 +106,8 @@ export class HelpdeskService {
  * @param id the id of the queue item
  * @param request the information for the status update
  */
-  updateQueueItemStatus(id: number, request: UpdateQueueItemStatusRequest) {
-    return this.client.post<UpdateQueueItemStatusRequest>('/api/queue/' + id + '/UpdateQueueItemStatus', request);
+  updateQueueItemStatus(request: UpdateQueueItemStatusRequest) {
+    return this.client.post<UpdateQueueItemStatusRequest>('/api/queue/UpdateQueueItemStatus', request);
   }
 
   /**
@@ -115,7 +115,7 @@ export class HelpdeskService {
    * @param id the id of the item to be updated
    * @param request the updated information for the queue item
    */
-  updateQueueItem(id: number, request: UpdateQueueItemRequest) {
-    return this.client.post<UpdateQueueItemResponse>('/api/queue/' + id, request);
+  updateQueueItem(request: UpdateQueueItemRequest) {
+    return this.client.patch<UpdateQueueItemResponse>('/api/queue/', request);
   }
 }
