@@ -10,7 +10,7 @@ namespace Helpdesk.DataLayer.Contracts
     /// <summary>
     /// Used to handle CRUD for student records in the database
     /// </summary>
-    public interface IStudentDataLayer
+    public interface IStudentDataLayer : IDisposable
     {
         /// <summary>
         /// used to retreive all nicknames in the database

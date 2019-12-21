@@ -14,188 +14,84 @@ using Helpdesk.DataLayer.Contracts;
 
 namespace Helpdesk.DataLayer
 {
-    public class UsersDataLayer : IUsersDataLayer
+    public class UsersDataLayer : IUsersDataLayer, IDisposable
     {
         private static Logger s_Logger = LogManager.GetCurrentClassLogger();
+        private helpdesksystemContext context;
 
-        public int? AddUser(AddUserRequest request)
+        public UsersDataLayer()
         {
-            int? userId = null;
-
-            User user = new User();
-            user.Username = request.Username;
-            user.Password = request.Password;
-            user.FirstTime = true;
-            using (var context = new helpdesksystemContext())
-            {
-                context.User.Add(user);
-                context.SaveChanges();
-                userId = user.UserId;
-            }
-            return userId;
+            context = new helpdesksystemContext();
         }
 
-        public UserDTO GetUser(int id)
+        public void AddUser(User user)
         {
-            UserDTO userDTO = null;
-
-            using (helpdesksystemContext context = new helpdesksystemContext())
-            {
-                var user = context.User.FirstOrDefault(u => u.UserId == id);
-
-                if (user != null)
-                    userDTO = DAO2DTO(user);
-                else
-                    throw new NotFoundException("Unable to find user.");
-            }
-            return userDTO;
+            context.User.Add(user);
         }
 
-        public List<UserDTO> GetUsers()
+        public User GetUser(int id)
         {
-            List<UserDTO> userDTOs = new List<UserDTO>();
+            return context.User.FirstOrDefault(u => u.UserId == id);
+        }
 
-            using (helpdesksystemContext context = new helpdesksystemContext())
-            {
-                var users = context.User.ToList();
-
-                if (users.Count == 0)
-                    throw new NotFoundException("Unable to find users!");
-
-                foreach (User user in users)
-                {
-                    if (user != null)
-                    {
-                        UserDTO userDTO = DAO2DTO(user);
-                        userDTOs.Add(userDTO);
-                    }
-                }
-            }
-            return userDTOs;
+        public List<User> GetUsers()
+        {
+            return context.User.ToList();
         }
 
         public DataTable GetUsersAsDataTable()
         {
             DataTable users = new DataTable();
+            DbConnection conn = context.Database.GetDbConnection();
+            ConnectionState state = conn.State;
 
-            using (helpdesksystemContext context = new helpdesksystemContext())
+            try
             {
-                DbConnection conn = context.Database.GetDbConnection();
-                ConnectionState state = conn.State;
+                if (state != ConnectionState.Open)
+                    conn.Open();
 
-                try
+                using (var cmd = conn.CreateCommand())
                 {
-                    if (state != ConnectionState.Open)
-                        conn.Open();
-
-                    using (var cmd = conn.CreateCommand())
+                    cmd.CommandText = "GetAllUsers";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        cmd.CommandText = "GetAllUsers";
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            users.Load(reader);
-                        }
+                        users.Load(reader);
                     }
                 }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                finally
-                {
-                    if (state != ConnectionState.Closed)
-                        conn.Close();
-                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (state != ConnectionState.Closed)
+                    conn.Close();
             }
 
             return users;
         }
 
-        public bool UpdateUser(UpdateUserRequest request)
+        public bool DeleteUser(User user)
         {
-            using (helpdesksystemContext context = new helpdesksystemContext())
-            {
-                User user = context.User.FirstOrDefault(u => u.UserId == request.UserID);
-
-                if (user == null)
-                   return false;
-
-                user.Username = request.Username;
-
-                if (!string.IsNullOrEmpty(request.Password))
-                    user.Password = request.Password;
-
-                user.FirstTime = false;
-
-                context.SaveChanges();
-            }
+            context.User.Remove(user);
             return true;
         }
 
-        public bool DeleteUser(int id)
+        public User GetUserByUsername(string username)
         {
-            using (helpdesksystemContext context = new helpdesksystemContext())
-            {
-                var user = context.User.FirstOrDefault(u => u.UserId == id);
-
-                if (user == null)
-                    throw new NotFoundException("User does not exist in the database");
-
-                context.User.Remove(user);
-                context.SaveChanges();
-            }
-            return true;
+            return context.User.FirstOrDefault(u => u.Username == username);
         }
 
-        public UserDTO GetUserByUsername(string username)
+        public void Dispose()
         {
-            UserDTO dto = null;
-            using (helpdesksystemContext context = new helpdesksystemContext())
-            {
-                var user = context.User.FirstOrDefault(u => u.Username == username);
-                if (user != null)
-                {
-                    dto = DAO2DTO(user);
-                }
-            }
-
-            return dto;
+            context.Dispose();
         }
 
-        /// <summary>
-        /// Converts the user DAO to a DTO to send to the front end
-        /// </summary>
-        /// <param name="user">The DAO for the user</param>
-        /// <returns>The DTO for the user</returns>
-        private UserDTO DAO2DTO(User user)
+        public void Save()
         {
-            UserDTO userDTO = null;
-
-            userDTO = new UserDTO();
-            userDTO.UserId = user.UserId;
-            userDTO.Username = user.Username;
-            userDTO.Password = user.Password;
-            userDTO.FirstTime = user.FirstTime;
-
-            return userDTO;
-        }
-
-        /// <summary>
-        /// Converts the user DTO to a DAO to interact with the database
-        /// </summary>
-        /// <param name="user">The DTO for the user</param>
-        /// <returns>The DAO for the user</returns>
-        private User DTO2DAO(UserDTO userDTO)
-        {
-            User user = null;
-            user = new User();
-            user.UserId = userDTO.UserId;
-            user.Username = userDTO.Username;
-            user.Password = userDTO.Password;
-            user.FirstTime = userDTO.FirstTime;
-
-            return user;
+            context.SaveChanges();
         }
     }
 }

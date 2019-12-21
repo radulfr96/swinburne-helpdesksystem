@@ -16,6 +16,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Helpdesk.Common.Extensions;
 using Helpdesk.DataLayer.Contracts;
+using Helpdesk.Data.Models;
 
 namespace Helpdesk.Services
 {
@@ -49,16 +50,21 @@ namespace Helpdesk.Services
 
             try
             {
-                List<UserDTO> users = _usersDataLayer.GetUsers();
+                var users = _usersDataLayer.GetUsers();
 
-                response.Users = users;
-                response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Error(ex, "No users found!");
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "No users found!"));
+                if (users.Count > 0)
+                {
+                    response.Status = HttpStatusCode.OK;
+                    foreach (User user in users)
+                    {
+                        response.Users.Add(DAO2DTO(user));
+                    }
+                }
+                else
+                {
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "No users found."));
+                }
             }
             catch (Exception ex)
             {
@@ -83,20 +89,18 @@ namespace Helpdesk.Services
 
             try
             {
-                UserDTO user = _usersDataLayer.GetUser(id);
+                var user = _usersDataLayer.GetUser(id);
 
                 if (user == null)
-                    throw new NotFoundException("Unable to find user!");
-              
-                response.User = user;
-                response.Status = HttpStatusCode.OK;
-
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Error(ex, "Unable to find user!");
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find user!"));
+                {
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find user."));
+                }
+                else
+                {
+                    response.Status = HttpStatusCode.OK;
+                    response.User = DAO2DTO(user);
+                }
             }
             catch (Exception ex)
             {
@@ -138,14 +142,17 @@ namespace Helpdesk.Services
                     return response;
                 }
 
-                int? result = _usersDataLayer.AddUser(request);
-
-                if (result == null)
+                User user = new User()
                 {
-                    throw new Exception("Unable to add user!");
-                }
+                    FirstTime = true,
+                    Password = request.Password,
+                    Username = request.Username
+                };
 
-                response.UserId = (int)result;
+                _usersDataLayer.AddUser(user);
+                _usersDataLayer.Save();
+
+                response.UserId = user.UserId;
                 response.Status = HttpStatusCode.OK;
             }
             catch (Exception ex)
@@ -179,25 +186,22 @@ namespace Helpdesk.Services
 
                 request.Password = HashText(request.Password);
 
-                if (_usersDataLayer.GetUserByUsername(request.Username)!=null && _usersDataLayer.GetUserByUsername(request.Username).UserId != request.UserID)
+                if (_usersDataLayer.GetUserByUsername(request.Username) != null && _usersDataLayer.GetUserByUsername(request.Username).UserId != request.UserID)
                 {
-                    throw new Exception("Unable to update user! User with username " + request.Username + "already exists!");
+                    response.Status = HttpStatusCode.Forbidden;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Unable to update user! User with username " + request.Username + "already exists!"));
+                    return response;
                 }
 
-                bool result = _usersDataLayer.UpdateUser(request);
+                var user = _usersDataLayer.GetUser(request.UserID);
 
-                if (result == false)
-                    throw new NotFoundException("Unable to find user!");
+                user.FirstTime = false;
+                user.Password = request.Password;
+                user.Username = request.Username;
 
-                response.Result = result;
+                _usersDataLayer.Save();
+
                 response.Status = HttpStatusCode.OK;
-
-            }
-            catch(NotFoundException ex)
-            {
-                s_logger.Error(ex, "Unable to find user!");
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find user!"));
             }
             catch (Exception ex)
             {
@@ -219,8 +223,13 @@ namespace Helpdesk.Services
 
             try
             {
+                User user = _usersDataLayer.GetUser(id);
 
-                UserDTO user = _usersDataLayer.GetUser(id);
+                if (user == null)
+                {
+                    response.Status = HttpStatusCode.NotFound;
+                    return response;
+                }
 
                 if (user.Username == currentUser)
                 {
@@ -228,15 +237,16 @@ namespace Helpdesk.Services
                     return response;
                 }
 
-                bool result = _usersDataLayer.DeleteUser(id);
+                bool result = _usersDataLayer.DeleteUser(user);
+                _usersDataLayer.Save();
 
                 if (result)
                     response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Warn($"Unable to find the user with id [{id}]");
-                response.Status = HttpStatusCode.NotFound;
+                else
+                {
+                    response.Status = HttpStatusCode.BadRequest;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Unable to delete user."));
+                }
             }
             catch (Exception ex)
             {
@@ -268,7 +278,7 @@ namespace Helpdesk.Services
                     return response;
 
                 //Verify user exists
-                UserDTO user = _usersDataLayer.GetUserByUsername(request.Username);
+                User user = _usersDataLayer.GetUserByUsername(request.Username);
                 if (user == null)
                 {
                     response.Token = string.Empty;
@@ -347,9 +357,9 @@ namespace Helpdesk.Services
                 if (!int.TryParse(userId, out userID))
                     throw new Exception("Invalid user id received.");
 
-                UserDTO userFromID = _usersDataLayer.GetUser(userID);
+                User userFromID = _usersDataLayer.GetUser(userID);
 
-                UserDTO userFromUsername = _usersDataLayer.GetUserByUsername(username);
+                User userFromUsername = _usersDataLayer.GetUserByUsername(username);
 
                 if (!(userFromID.UserId == userFromUsername.UserId && userFromID.Username == userFromUsername.Username && (!userFromID.FirstTime)))
                 {
@@ -360,10 +370,6 @@ namespace Helpdesk.Services
                 {
                     result = true;
                 }
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Warn(ex, "Unable to find user in system.");
             }
             catch (Exception ex)
             {
@@ -393,6 +399,41 @@ namespace Helpdesk.Services
                 s_logger.Error(ex, "Unable to hash text");
             }
             return result;
+        }
+
+        /// <summary>
+        /// Converts the user DAO to a DTO to send to the front end
+        /// </summary>
+        /// <param name="user">The DAO for the user</param>
+        /// <returns>The DTO for the user</returns>
+        private UserDTO DAO2DTO(User user)
+        {
+            UserDTO userDTO = null;
+
+            userDTO = new UserDTO();
+            userDTO.UserId = user.UserId;
+            userDTO.Username = user.Username;
+            userDTO.Password = user.Password;
+            userDTO.FirstTime = user.FirstTime;
+
+            return userDTO;
+        }
+
+        /// <summary>
+        /// Converts the user DTO to a DAO to interact with the database
+        /// </summary>
+        /// <param name="user">The DTO for the user</param>
+        /// <returns>The DAO for the user</returns>
+        private User DTO2DAO(UserDTO userDTO)
+        {
+            User user = null;
+            user = new User();
+            user.UserId = userDTO.UserId;
+            user.Username = userDTO.Username;
+            user.Password = userDTO.Password;
+            user.FirstTime = userDTO.FirstTime;
+
+            return user;
         }
     }
 }

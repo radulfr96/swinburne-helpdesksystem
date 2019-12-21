@@ -9,7 +9,7 @@ namespace Helpdesk.DataLayer.Contracts
     /// <summary>
     /// Used to handle CRUD for topic records in the database
     /// </summary>
-    public interface ITopicsDataLayer
+    public interface ITopicsDataLayer : IDisposable
     {
         /// <summary>
         /// This method retrieves all topics of a specific unit from the database

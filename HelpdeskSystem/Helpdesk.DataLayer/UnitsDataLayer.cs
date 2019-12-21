@@ -13,9 +13,15 @@ using Helpdesk.DataLayer.Contracts;
 
 namespace Helpdesk.DataLayer
 {
-    public class UnitsDataLayer : IUnitsDataLayer
+    public class UnitsDataLayer : IUnitsDataLayer, IDisposable
     {
         private static Logger s_Logger = LogManager.GetCurrentClassLogger();
+        private helpdesksystemContext context;
+
+        public UnitsDataLayer()
+        {
+            context = new helpdesksystemContext();
+        }
 
         public int? AddUnit(AddUpdateUnitRequest request)
         {
@@ -314,6 +320,11 @@ namespace Helpdesk.DataLayer
             unit.IsDeleted = unitDTO.IsDeleted;
 
             return unit;
+        }
+
+        public void Dispose()
+        {
+            context.Dispose();
         }
     }
 }

@@ -14,8 +14,10 @@ using Helpdesk.DataLayer.Contracts;
 
 namespace Helpdesk.DataLayer
 {
-    public class QueueDataLayer : IQueueDataLayer
+    public class QueueDataLayer : IQueueDataLayer, IDisposable
     {
+        private helpdesksystemContext context = new helpdesksystemContext();
+
         public int AddToQueue(AddToQueueRequest request)
         {
             int? id = null;
@@ -247,6 +249,11 @@ namespace Helpdesk.DataLayer
             };
 
             return queueItem;
+        }
+
+        public void Dispose()
+        {
+            context.Dispose();
         }
     }
 }

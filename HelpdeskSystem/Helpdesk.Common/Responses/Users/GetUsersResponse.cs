@@ -11,5 +11,10 @@ namespace Helpdesk.Common.Responses.Users
     public class GetUsersResponse : BaseResponse
     {
         public List<UserDTO> Users { get; set; }
+
+        public GetUsersResponse()
+        {
+            Users = new List<UserDTO>();
+        }
     }
 }

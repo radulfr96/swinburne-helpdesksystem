@@ -10,7 +10,7 @@ namespace Helpdesk.DataLayer.Contracts
     /// <summary>
     /// This is used to perform CRUD actions for the helpdesks and timespans
     /// </summary>
-    public interface IHelpdeskDataLayer
+    public interface IHelpdeskDataLayer : IDisposable
     {
         /// <summary>
         /// This method is used to add a new helpdesk to the database

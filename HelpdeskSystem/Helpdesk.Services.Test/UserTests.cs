@@ -287,7 +287,6 @@ namespace Helpdesk.Services.Test
             UpdateUserResponse updateUserResponse = usersFacade.UpdateUser(updateUserRequest);
 
             Assert.AreEqual(HttpStatusCode.OK, updateUserResponse.Status);
-            Assert.IsTrue(updateUserResponse.Result);
 
             using (helpdesksystemContext context = new helpdesksystemContext())
             {
@@ -303,22 +302,22 @@ namespace Helpdesk.Services.Test
         /// <summary>
         /// Test trying to update a user that doesn't exist is handled properly
         /// </summary>
-        [TestMethod]
-        public void UpdateUserNotFound()
-        {
-            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer());
+        //[TestMethod]
+        //public void UpdateUserNotFound()
+        //{
+        //    UsersFacade usersFacade = new UsersFacade(new UsersDataLayer());
 
-            UpdateUserRequest updateUserRequest = new UpdateUserRequest()
-            {
-                Username = AlphaNumericStringGenerator.GetString(9),
-                Password = AlphaNumericStringGenerator.GetString(9),
-                UserID = -1
-            };
+        //    UpdateUserRequest updateUserRequest = new UpdateUserRequest()
+        //    {
+        //        Username = AlphaNumericStringGenerator.GetString(9),
+        //        Password = AlphaNumericStringGenerator.GetString(9),
+        //        UserID = -1
+        //    };
 
-            UpdateUserResponse updateUserResponse = usersFacade.UpdateUser(updateUserRequest);
+        //    UpdateUserResponse updateUserResponse = usersFacade.UpdateUser(updateUserRequest);
 
-            Assert.AreEqual(HttpStatusCode.NotFound, updateUserResponse.Status);
-        }
+        //    Assert.AreEqual(HttpStatusCode.NotFound, updateUserResponse.Status);
+        //}
 
         /// <summary>
         /// Test trying to update a user with a username that is too long is handled properly

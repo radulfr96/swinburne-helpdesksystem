@@ -12,8 +12,15 @@ using Helpdesk.DataLayer.Contracts;
 
 namespace Helpdesk.DataLayer
 {
-    public class StudentDatalayer : IStudentDataLayer
+    public class StudentDatalayer : IStudentDataLayer, IDisposable
     {
+        private helpdesksystemContext context;
+
+        public StudentDatalayer()
+        {
+            context = new helpdesksystemContext();
+        }
+
         public List<NicknameDTO> GetAllNicknames()
         {
             List<NicknameDTO> nicknameDTOs = new List<NicknameDTO>();
@@ -188,6 +195,11 @@ namespace Helpdesk.DataLayer
             };
 
             return nickname;
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }

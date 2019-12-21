@@ -12,9 +12,15 @@ using NLog;
 
 namespace Helpdesk.DataLayer
 {
-    public class TopicsDataLayer : ITopicsDataLayer
+    public class TopicsDataLayer : ITopicsDataLayer, IDisposable
     {
         private static Logger s_Logger = LogManager.GetCurrentClassLogger();
+        private helpdesksystemContext context;
+
+        public TopicsDataLayer()
+        {
+            context = new helpdesksystemContext();
+        }
 
         public List<TopicDTO> GetTopicsByUnitID(int id)
         {
@@ -102,6 +108,11 @@ namespace Helpdesk.DataLayer
                 IsDeleted = topicDTO.IsDeleted
             };
             return topic;
+        }
+
+        public void Dispose()
+        {
+            context.Dispose();
         }
     }
 }

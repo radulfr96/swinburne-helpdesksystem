@@ -10,7 +10,7 @@ namespace Helpdesk.DataLayer.Contracts
     /// <summary>
     /// Used to handle CRUD for unit records in the database
     /// </summary>
-    public interface IUnitsDataLayer
+    public interface IUnitsDataLayer : IDisposable
     {
         /// <summary>
         /// Adds a unit to the database using provided unit request.

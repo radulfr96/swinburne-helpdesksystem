@@ -14,8 +14,10 @@ using Helpdesk.DataLayer.Contracts;
 namespace Helpdesk.DataLayer
 {
 
-    public class HelpdeskDataLayer : IHelpdeskDataLayer
+    public class HelpdeskDataLayer : IHelpdeskDataLayer, IDisposable
     {
+        private helpdesksystemContext context;
+
         public int? AddHelpdesk(AddHelpdeskRequest request)
         {
             int? helpdeskId = null;
@@ -450,6 +452,11 @@ namespace Helpdesk.DataLayer
             };
 
             return timespan;
+        }
+
+        public void Dispose()
+        {
+            context.Dispose();
         }
     }
 }

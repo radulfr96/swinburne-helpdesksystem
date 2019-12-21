@@ -10,7 +10,7 @@ namespace Helpdesk.DataLayer.Contracts
     /// <summary>
     /// Used to handle any databases interactions for queues including CRUD, login and logout
     /// </summary>
-    public interface IQueueDataLayer
+    public interface IQueueDataLayer : IDisposable
     {
         /// <summary>
         /// Used to add a queue item to the database

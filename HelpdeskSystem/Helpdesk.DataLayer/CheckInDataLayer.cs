@@ -36,11 +36,6 @@ namespace Helpdesk.DataLayer
             return id;
         }
 
-        /// <summary>
-        /// Checks a check in item out of the database
-        /// </summary>
-        /// <param name="id">CheckInID of the check in item to be checked out</param>
-        /// <returns>A boolean indicating success or failure</returns>
         public bool CheckOut(CheckOutRequest request)
         {
             using (helpdesksystemContext context = new helpdesksystemContext())
@@ -58,11 +53,6 @@ namespace Helpdesk.DataLayer
             return true;
         }
 
-        /// <summary>
-        /// Used to retreive the check ins by the helpdesk id
-        /// </summary>
-        /// <param name="helpdeskId">The id of the helpdesk</param>
-        /// <returns>The list of checkins</returns>
         public List<CheckInDTO> GetCheckinsByHelpdeskId(int helpdeskId)
         {
             List<CheckInDTO> checkInDTOs = new List<CheckInDTO>();
@@ -91,11 +81,6 @@ namespace Helpdesk.DataLayer
             return checkInDTOs;
         }
 
-        /// <summary>
-        /// Used to convert database checkin object to a DTO
-        /// </summary>
-        /// <param name="checkIn">The check in to be converted</param>
-        /// <returns>The dto version of the check in</returns>
         public CheckInDTO DAO2DTO(Checkinhistory checkIn)
         {
             CheckInDTO dto = new CheckInDTO()
@@ -109,9 +94,6 @@ namespace Helpdesk.DataLayer
             return dto;
         }
 
-        /// Used to get a datatable with all of the checkin records
-        /// </summary>
-        /// <returns>Datatable with the checkin records</returns>
         public DataTable GetCheckInsAsDataTable()
         {
             DataTable checkIns = new DataTable();
@@ -150,9 +132,6 @@ namespace Helpdesk.DataLayer
             return checkIns;
         }
 
-        /// Used to get a datatable with all of the checkinqueueitem records
-        /// </summary>
-        /// <returns>Datatable with the checkinqueueitem records</returns>
         public DataTable GetCheckInQueueItemsAsDataTable()
         {
             DataTable checkInQueueItems = new DataTable();
