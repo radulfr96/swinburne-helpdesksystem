@@ -1,5 +1,6 @@
 ﻿using Helpdesk.Common.DTOs;
 using Helpdesk.Common.Requests.Helpdesk;
+using Helpdesk.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,20 +18,20 @@ namespace Helpdesk.DataLayer.Contracts
         /// </summary>
         /// <param name="request">The information of the helpdesk</param>
         /// <returns>The id of the helpdesk that was added</returns>
-        int? AddHelpdesk(AddHelpdeskRequest request);
+        void AddHelpdesk(Helpdesksettings helpdesk);
 
         /// <summary>
         /// Used to get a helpdesk from the database
         /// </summary>
         /// <param name="id">The id of the helpdesk requested</param>
         /// <returns>The resulting DTO of the helpdesk</returns>
-        HelpdeskDTO GetHelpdesk(int id);
+        Helpdesksettings GetHelpdesk(int id);
 
         /// <summary>
         /// Used to retreive all the helpdesks
         /// </summary>
         /// <returns>The list of all the helpdesks as DTOs</returns>
-        List<HelpdeskDTO> GetHelpdesks();
+        List<Helpdesksettings> GetHelpdesks();
 
         /// <summary>
         /// Used to get a datatable with all of the helpdesk records
@@ -53,58 +54,35 @@ namespace Helpdesk.DataLayer.Contracts
         /// Used to retreive all the active helpdesks
         /// </summary>
         /// <returns>The list of all the active helpdesks as DTOs</returns>
-        List<HelpdeskDTO> GetActiveHelpdesks();
-
-        /// <summary>
-        /// This method is used to update the relevent helpdesk
-        /// </summary>
-        /// <param name="id">The id of the helpdesk to be updated</param>
-        /// <param name="request">The information to update the helpdesk</param>
-        /// <returns>Result the indicates whether or not the update was successful</returns>
-        bool UpdateHelpdesk(UpdateHelpdeskRequest request);
-
-        /// <summary>
-        /// Used to force-checkout users and remove queue items.
-        /// Takes optional DateTime parameter. Will use DateTime.Now if not provided.
-        /// Used by DailyCleanupJob.
-        /// </summary>
-        /// <param name="dateTime"></param>
-        /// <returns>Indicates whether ot not the checkout was successful</returns>
-        bool ForceCheckoutQueueRemove(int id);
+        List<Helpdesksettings> GetActiveHelpdesks();
 
         /// <summary>
         /// This method adds a timespan to the database.
         /// </summary>
         /// <param name="request"></param>
         /// <returns>The id of the timespan added</returns>
-        int AddTimeSpan(AddTimeSpanRequest request);
+        void AddTimeSpan(Timespans timespan);
 
         /// <summary>
         /// Used to retreve a timespan by its id
         /// </summary>
         /// <param name="id">The id of the timespan</param>
         /// <returns>The timespan DTO</returns>
-        TimeSpanDTO GetTimeSpan(int id);
+        Timespans GetTimeSpan(int id);
 
         /// <summary>
         /// This method retrieves a list of all the timespans in the database
         /// </summary>
         /// <returns>A list of timespans retrieved from the database</returns>
-        List<TimeSpanDTO> GetTimeSpans();
-
-        /// <summary>
-        /// This method updates a specified timespan's information in the database
-        /// </summary>
-        /// <param name="id">The SpanId of the timespan to be updated</param>
-        /// <param name="request">The request that contains the timespan's new information</param>
-        /// <returns>A bool indicating whether the operation was a success</returns>
-        bool UpdateTimeSpan(UpdateTimeSpanRequest request);
+        List<Timespans> GetTimeSpans();
 
         /// <summary>
         /// Used to delete a specific timespan from the database
         /// </summary>
         /// <param name="id">The SpanID of the timespan to be deleted</param>
         /// <returns>Boolean indicating success or failure</returns>
-        bool DeleteTimeSpan(int id);
+        bool DeleteTimeSpan(Timespans timespan);
+
+        void Save();
     }
 }

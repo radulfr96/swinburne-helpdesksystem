@@ -5,6 +5,7 @@ using Helpdesk.Common.Requests.Helpdesk;
 using Helpdesk.Common.Responses;
 using Helpdesk.Common.Responses.Helpdesk;
 using Helpdesk.Common.Utilities;
+using Helpdesk.Data.Models;
 using Helpdesk.DataLayer;
 using Helpdesk.DataLayer.Contracts;
 using NLog;
@@ -68,14 +69,23 @@ namespace Helpdesk.Services
             try
             {
                 response = (AddHelpdeskResponse)request.CheckValidation(response);
-
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                int? helpdeskId = _helpdeskDataLayer.AddHelpdesk(request);
-                if (helpdeskId.HasValue)
+                Helpdesksettings helpdesk = new Helpdesksettings()
                 {
-                    response.HelpdeskID = helpdeskId.Value;
+                    HasCheckIn = request.HasCheckIn,
+                    HasQueue = request.HasQueue,
+                    IsDeleted = false,
+                    Name = request.Name
+                };
+
+                _helpdeskDataLayer.AddHelpdesk(helpdesk);
+                _helpdeskDataLayer.Save();
+
+                if (helpdesk.HelpdeskId > 0)
+                {
+                    response.HelpdeskID = helpdesk.HelpdeskId;
                     response.Status = HttpStatusCode.OK;
                 }
             }
@@ -85,7 +95,6 @@ namespace Helpdesk.Services
                 response.StatusMessages.Add(new StatusMessage(HttpStatusCode.InternalServerError, "Unable to add helpdesk"));
                 s_logger.Error(ex, "Unable to add helpdesk.");
             }
-
             return response;
         }
 
@@ -99,14 +108,14 @@ namespace Helpdesk.Services
 
             try
             {
-                response.Helpdesks = _helpdeskDataLayer.GetActiveHelpdesks();
+                var helpdesks = _helpdeskDataLayer.GetActiveHelpdesks();
+
+                foreach (Helpdesksettings helpdesk in helpdesks)
+                {
+                    response.Helpdesks.Add(DAO2DTO(helpdesk));
+                }
+
                 response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to get helpdesk"));
-                s_logger.Warn(ex, "Unable to find helpdesks.");
             }
             catch (Exception ex)
             {
@@ -127,14 +136,14 @@ namespace Helpdesk.Services
 
             try
             {
-                response.Helpdesks = _helpdeskDataLayer.GetHelpdesks();
+                var helpdesks = _helpdeskDataLayer.GetHelpdesks();
+
+                foreach (Helpdesksettings helpdesk in helpdesks)
+                {
+                    response.Helpdesks.Add(DAO2DTO(helpdesk));
+                }
+
                 response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to get helpdesk"));
-                s_logger.Warn(ex, "Unable to find helpdesks.");
             }
             catch (Exception ex)
             {
@@ -156,14 +165,17 @@ namespace Helpdesk.Services
 
             try
             {
-                response.Helpdesk = _helpdeskDataLayer.GetHelpdesk(id);
-                response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to get helpdesk"));
-                s_logger.Error(ex, $"Unable to find helpdesk with id [{id}].");
+                var helpdesk = _helpdeskDataLayer.GetHelpdesk(id);
+                if (helpdesk == null)
+                {
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find helpdesk"));
+                }
+                else
+                {
+                    response.Helpdesk = DAO2DTO(helpdesk);
+                    response.Status = HttpStatusCode.OK;
+                }
             }
             catch (Exception ex)
             {
@@ -191,21 +203,12 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                bool result = _helpdeskDataLayer.UpdateHelpdesk(request);
+                var helpdesk = _helpdeskDataLayer.GetHelpdesk(request.HelpdeskID);
+                helpdesk.HasCheckIn = request.HasCheckIn;
+                helpdesk.HasQueue = request.HasQueue;
+                helpdesk.Name = request.Name;
 
-                if (result)
-                    response.Status = HttpStatusCode.OK;
-                else
-                {
-                    response.Status = HttpStatusCode.BadRequest;
-                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Unable to update helpdesk."));
-                }
-            }
-            catch (NotFoundException ex)
-            {
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to update to find helpdesk"));
-                s_logger.Error(ex, "Unable to find helpdesk.");
+                _helpdeskDataLayer.Save();
             }
             catch (Exception ex)
             {
@@ -230,16 +233,21 @@ namespace Helpdesk.Services
 
             try
             {
-                List<TimeSpanDTO> timespans = _helpdeskDataLayer.GetTimeSpans();
+                var timespans = _helpdeskDataLayer.GetTimeSpans();
 
-                response.Timespans = timespans;
-                response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Error(ex, "No timespans found!");
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "No timespans found!"));
+                if (timespans.Count > 0)
+                {
+                    foreach (Timespans timespan in timespans)
+                    {
+                        response.Timespans.Add(timespanDAO2DTO(timespan));
+                    }
+                    response.Status = HttpStatusCode.OK;
+                }
+                else
+                {
+                    response.Status = HttpStatusCode.BadRequest;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Unable to find timespans"));
+                }
             }
             catch (Exception ex)
             {
@@ -264,15 +272,18 @@ namespace Helpdesk.Services
 
             try
             {
-                TimeSpanDTO timespan = _helpdeskDataLayer.GetTimeSpan(id);
-                response.Timespan = timespan ?? throw new NotFoundException("Unable to find timespan!");
-                response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Error(ex, "Unable to find timespan!");
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find timespan!"));
+                Timespans timespan = _helpdeskDataLayer.GetTimeSpan(id);
+
+                if (timespan == null)
+                {
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find timespan."));
+                }
+                else
+                {
+                    response.Timespan = timespanDAO2DTO(timespan);
+                    response.Status = HttpStatusCode.OK;
+                }
             }
             catch (Exception ex)
             {
@@ -302,16 +313,19 @@ namespace Helpdesk.Services
                     return response;
                 }
 
-                int result = _helpdeskDataLayer.AddTimeSpan(request);
+                Timespans timespan = new Timespans()
+                {
+                    EndDate = request.EndDate,
+                    Name = request.Name,
+                    StartDate = request.StartDate,
+                    HelpdeskId = request.HelpdeskId
+                };
 
-                response.SpanId = result;
+                _helpdeskDataLayer.AddTimeSpan(timespan);
+                _helpdeskDataLayer.Save();
+
+                response.SpanId = timespan.SpanId;
                 response.Status = HttpStatusCode.OK;
-            }
-            catch (DuplicateNameException ex)
-            {
-                s_logger.Error(ex, "Timespan name already exists!");
-                response.Status = HttpStatusCode.BadRequest;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Timespan name already exists!"));
             }
             catch (Exception ex)
             {
@@ -341,27 +355,14 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                //will implement unique check when get timespan by name method is implemented
+                var timespan = _helpdeskDataLayer.GetTimeSpan(request.TimeSpanID);
 
-                bool result = _helpdeskDataLayer.UpdateTimeSpan(request);
+                timespan.EndDate = request.EndDate;
+                timespan.Name = request.Name;
+                timespan.StartDate = request.StartDate;
 
-                if (result == false)
-                    throw new NotFoundException("Unable to find timespan!");
-
-                response.Result = result;
+                _helpdeskDataLayer.Save();
                 response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Error(ex, "Unable to find timespan!");
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find timespan!"));
-            }
-            catch (DuplicateNameException ex)
-            {
-                s_logger.Error(ex, "Timespan name already exists!");
-                response.Status = HttpStatusCode.BadRequest;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Timespan name already exists!"));
             }
             catch (Exception ex)
             {
@@ -471,7 +472,7 @@ namespace Helpdesk.Services
         /// </summary>
         /// <param name="path">The full location of the file</param>
         /// <returns>The file as a stream</returns>
-        public byte[] FileToBytes(string path)
+        private byte[] FileToBytes(string path)
         {
             byte[] file = null;
 
@@ -501,10 +502,22 @@ namespace Helpdesk.Services
 
             try
             {
-                response.Result = _helpdeskDataLayer.ForceCheckoutQueueRemove(id);
+                var queueItems = _queueDataLayer.GetQueueItemsByHelpdeskID(id);
+                var checkIns = _checkInDataLayer.GetCheckinsByHelpdeskId(id);
 
-                if (response.Result == true)
-                    response.Status = HttpStatusCode.OK;
+                foreach(Queueitem queueitem in queueItems)
+                {
+                    queueitem.TimeRemoved = DateTime.Now;
+                }
+
+                foreach (Checkinhistory item in checkIns)
+                {
+                    item.ForcedCheckout = true;
+                    item.CheckoutTime = DateTime.Now;
+                }
+
+                _helpdeskDataLayer.Save();
+                response.Status = HttpStatusCode.OK;
             }
             catch (Exception ex)
             {
@@ -527,25 +540,101 @@ namespace Helpdesk.Services
 
             try
             {
-                bool result = _helpdeskDataLayer.DeleteTimeSpan(id);
-
-                if (result == false)
-                    throw new NotFoundException("Unable to find timespan with id " + id);
-
-                response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Warn($"Unable to find the timespan with id [{id}]");
-                response.Status = HttpStatusCode.NotFound;
+                var timespan = _helpdeskDataLayer.GetTimeSpan(id);
+                if (timespan == null)
+                {
+                    response.Status = HttpStatusCode.BadRequest;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Unable to find timespan"));
+                }
+                else
+                {
+                    _helpdeskDataLayer.DeleteTimeSpan(timespan);
+                    _helpdeskDataLayer.Save();
+                    response.Status = HttpStatusCode.OK;
+                }
             }
             catch (Exception ex)
             {
                 s_logger.Error(ex, "Unable to delete the timespan.");
                 response.Status = HttpStatusCode.InternalServerError;
             }
-
             return response;
+        }
+
+        /// <summary>
+        /// Used to convert a helpdesk DAO to DTO
+        /// </summary>
+        /// <param name="helpdesk">The DAO to be converted</param>
+        /// <returns>The resulting DTO</returns>
+        public HelpdeskDTO DAO2DTO(Helpdesksettings helpdesk)
+        {
+            HelpdeskDTO helpdeskDTO = new HelpdeskDTO()
+            {
+                HelpdeskID = helpdesk.HelpdeskId,
+                Name = helpdesk.Name,
+                HasCheckIn = helpdesk.HasCheckIn,
+                HasQueue = helpdesk.HasQueue,
+                IsDisabled = helpdesk.IsDeleted
+            };
+
+            return helpdeskDTO;
+        }
+
+        /// <summary>
+        /// Used to convert a helpdesk DTO to DAO
+        /// </summary>
+        /// <param name="helpdeskDTO">The DTO to be converted</param>
+        /// <returns>The resulting DAO</returns>
+        public Helpdesksettings DTO2DAO(HelpdeskDTO helpdeskDTO)
+        {
+            Helpdesksettings helpdesk = new Helpdesksettings()
+            {
+                HelpdeskId = helpdeskDTO.HelpdeskID,
+                Name = helpdeskDTO.Name,
+                HasCheckIn = helpdeskDTO.HasCheckIn,
+                HasQueue = helpdeskDTO.HasQueue,
+                IsDeleted = helpdeskDTO.IsDisabled
+            };
+
+            return helpdesk;
+        }
+
+        /// <summary>
+        /// Converts the timespan DAO to a DTO to send to the front end
+        /// </summary>
+        /// <param name="timespan">The DAO for the timespan</param>
+        /// <returns>The DTO for the timespan</returns>
+        private TimeSpanDTO timespanDAO2DTO(Timespans timespan)
+        {
+            TimeSpanDTO timespanDTO = new TimeSpanDTO
+            {
+                SpanId = timespan.SpanId,
+                HelpdeskId = timespan.HelpdeskId,
+                Name = timespan.Name,
+                StartDate = timespan.StartDate,
+                EndDate = timespan.EndDate
+            };
+
+            return timespanDTO;
+        }
+
+        /// <summary>
+        /// Converts the timespan DTO to a DAO to interact with the database
+        /// </summary>
+        /// <param name="timespanDTO">The DTO for the timespan</param>
+        /// <returns>The DAO for the timespan</returns>
+        private Timespans timespanDTO2DAO(TimeSpanDTO timespanDTO)
+        {
+            Timespans timespan = new Timespans
+            {
+                SpanId = timespanDTO.SpanId,
+                HelpdeskId = timespanDTO.HelpdeskId,
+                Name = timespanDTO.Name,
+                StartDate = timespanDTO.StartDate,
+                EndDate = timespanDTO.EndDate
+            };
+
+            return timespan;
         }
     }
 }

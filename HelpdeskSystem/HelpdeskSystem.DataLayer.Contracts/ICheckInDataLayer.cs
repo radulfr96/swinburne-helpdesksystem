@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using Helpdesk.Data.Models;
 
 namespace Helpdesk.DataLayer.Contracts
 {
@@ -31,7 +32,7 @@ namespace Helpdesk.DataLayer.Contracts
         /// </summary>
         /// <param name="helpdeskId">The id of the helpdesk</param>
         /// <returns>The list of checkins</returns>
-        List<CheckInDTO> GetCheckinsByHelpdeskId(int helpdeskId);
+        List<Checkinhistory> GetCheckinsByHelpdeskId(int helpdeskId);
 
         /// Used to get a datatable with all of the checkin records
         /// </summary>

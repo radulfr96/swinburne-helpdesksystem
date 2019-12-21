@@ -1,5 +1,6 @@
 ﻿using Helpdesk.Common.DTOs;
 using Helpdesk.Common.Requests.Queue;
+using Helpdesk.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -39,7 +40,7 @@ namespace Helpdesk.DataLayer.Contracts
         /// </summary>
         /// <param name="id">ID of the helpdesk to retrieve queue items from</param>
         /// <returns>A list of the queue items</returns>
-        List<QueueItemDTO> GetQueueItemsByHelpdeskID(int id);
+        List<Queueitem> GetQueueItemsByHelpdeskID(int id);
 
         /// <summary>
         /// Used to retreive all of the queue items for a check in

@@ -11,5 +11,10 @@ namespace Helpdesk.Common.Responses.Helpdesk
     public class GetTimeSpansResponse : BaseResponse
     {
         public List<TimeSpanDTO> Timespans { get; set; }
+
+        public GetTimeSpansResponse()
+        {
+            Timespans = new List<TimeSpanDTO>();
+        }
     }
 }
