@@ -5,8 +5,10 @@ using Helpdesk.Common.Requests.Queue;
 using Helpdesk.Common.Requests.Students;
 using Helpdesk.Common.Responses;
 using Helpdesk.Common.Responses.Queue;
+using Helpdesk.Data.Models;
 using Helpdesk.DataLayer;
 using Helpdesk.DataLayer.Contracts;
+using Microsoft.EntityFrameworkCore.Storage;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -23,11 +25,13 @@ namespace Helpdesk.Services
         private static Logger s_logger = LogManager.GetCurrentClassLogger();
         private IStudentDataLayer _studentDataLayer;
         private IQueueDataLayer _queueDataLayer;
+        private ICheckInDataLayer _checkInDataLayer;
 
-        public QueueFacade(IQueueDataLayer queueDataLayer, IStudentDataLayer studentDataLayer)
+        public QueueFacade(IQueueDataLayer queueDataLayer, IStudentDataLayer studentDataLayer, ICheckInDataLayer checkInDataLayer)
         {
             _studentDataLayer = studentDataLayer;
             _queueDataLayer = queueDataLayer;
+            _checkInDataLayer = checkInDataLayer;
         }
 
         /// <summary>
@@ -39,49 +43,65 @@ namespace Helpdesk.Services
         {
             AddToQueueResponse response = new AddToQueueResponse();
 
-            try
+            using (IDbContextTransaction trans = _queueDataLayer.GetTransaction())
             {
-                response = (AddToQueueResponse)request.CheckValidation(response);
-
-                if (response.Status == HttpStatusCode.BadRequest)
-                    return response;
-
-                StudentFacade studentFacade = new StudentFacade(_studentDataLayer);
-
-                if (!request.StudentID.HasValue)
+                try
                 {
-                    var addResponse = studentFacade.AddStudentNickname(new AddStudentRequest()
-                    {
-                        Nickname = request.Nickname,
-                        SID = request.SID
-                    });
+                    response = (AddToQueueResponse)request.CheckValidation(response);
 
-                    if (addResponse.Status != HttpStatusCode.OK)
-                    {
-                        response.Status = addResponse.Status;
-                        response.StatusMessages = addResponse.StatusMessages;
+                    if (response.Status == HttpStatusCode.BadRequest)
                         return response;
+
+                    StudentFacade studentFacade = new StudentFacade(_studentDataLayer);
+
+                    if (!request.StudentID.HasValue)
+                    {
+                        var addResponse = studentFacade.AddStudentNickname(new AddStudentRequest()
+                        {
+                            Nickname = request.Nickname,
+                            SID = request.SID
+                        });
+
+                        if (addResponse.Status != HttpStatusCode.OK)
+                        {
+                            throw new Exception("Unable to add student nickname");
+                        }
+                        request.StudentID = addResponse.StudentID;
                     }
 
-                    request.StudentID = addResponse.StudentID;
+                    var item = new Queueitem()
+                    {
+                        Description = request.Description,
+                        StudentId = request.StudentID.Value,
+                        TimeAdded = DateTime.Now,
+                        TopicId = request.TopicID
+                    };
+
+                    _queueDataLayer.AddToQueue(item);
+                    _queueDataLayer.Save();
+
+                    if (request.CheckInID.HasValue)
+                    {
+                        _checkInDataLayer.AddCheckinQueueItem(new Checkinqueueitem()
+                        {
+                            CheckInId = request.CheckInID.Value,
+                            QueueItemId = item.ItemId
+                        });
+                        _checkInDataLayer.Save();
+                    }
+
+                    response.ItemId = item.ItemId;
+                    response.Status = HttpStatusCode.OK;
+
+                    trans.Commit();
                 }
-
-                int itemId = _queueDataLayer.AddToQueue(request);
-
-                response.ItemId = itemId;
-                response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Warn(ex, "Unable to add queue item");
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to add queue item"));
-            }
-            catch (Exception ex)
-            {
-                s_logger.Error(ex, "Unable to add queue item");
-                response.Status = HttpStatusCode.InternalServerError;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.InternalServerError, "Unable to add queue item"));
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+                    s_logger.Error(ex, "Unable to add queue item");
+                    response.Status = HttpStatusCode.InternalServerError;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.InternalServerError, "Unable to add queue item"));
+                }
             }
             return response;
         }
@@ -103,14 +123,21 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                response.Result = _queueDataLayer.UpdateQueueItem(request);
-                response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Warn(ex, "Unable to update queue item");
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to update queue item"));
+                var item = _queueDataLayer.GetQueueitem(request.QueueItemID);
+
+                if (item == null)
+                {
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find queue item"));
+                }
+                else
+                {
+                    item.Description = request.Description;
+                    item.TopicId = request.TopicID;
+                    _queueDataLayer.Save();
+                    response.Status = HttpStatusCode.OK;
+                }
+
             }
             catch (Exception ex)
             {
@@ -140,24 +167,23 @@ namespace Helpdesk.Services
                     return response;
                 }
 
-                bool result = _queueDataLayer.UpdateQueueItemStatus(request);
+                var item = _queueDataLayer.GetQueueitem(request.QueueID);
 
-                if (result)
+                if (item == null)
                 {
-                    response.Status = HttpStatusCode.OK;
-                    response.Result = true;
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find queue item."));
                 }
                 else
                 {
-                    response.Status = HttpStatusCode.BadRequest;
-                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Unable to update queue item status."));
+                    if (item.TimeHelped == null && request.TimeHelped != null)
+                        item.TimeHelped = request.TimeHelped;
+
+                    if (item.TimeRemoved == null && request.TimeRemoved != null)
+                        item.TimeRemoved = request.TimeRemoved;
+
+                    _queueDataLayer.Save();
                 }
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Warn(ex, "Unable to update queue item status");
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to update queue item status"));
             }
             catch (Exception ex)
             {
@@ -181,19 +207,21 @@ namespace Helpdesk.Services
 
             try
             {
-                List<QueueItemDTO> queueItems = _queueDataLayer.GetQueueItemsByHelpdeskID(id);
+                List<Queueitem> queueItems = _queueDataLayer.GetQueueItemsByHelpdeskID(id);
 
                 if (queueItems.Count == 0)
-                    throw new NotFoundException("No queue items found under helpdesk "+id);
-
-                response.QueueItems = queueItems;
-                response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Error(ex, "No queue items found!");
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "No queue items found!"));
+                {
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "No queue items found."));
+                }
+                else
+                {
+                    foreach (Queueitem item in queueItems)
+                    {
+                        response.QueueItems.Add(DAO2DTO(item));
+                    }
+                    response.Status = HttpStatusCode.OK;
+                }
             }
             catch (Exception ex)
             {
@@ -202,6 +230,51 @@ namespace Helpdesk.Services
                 response.StatusMessages.Add(new StatusMessage(HttpStatusCode.InternalServerError, "Unable to get queue items!"));
             }
             return response;
+        }
+
+        /// <summary>
+        /// Converts the queue item DAO to a DTO to send to the front end
+        /// </summary>
+        /// <param name="queueItem">The DAO for the queue item</param>
+        /// <returns>The DTO for the queue item</returns>
+        private QueueItemDTO DAO2DTO(Queueitem queueItem)
+        {
+            QueueItemDTO queueItemDTO = null;
+
+            queueItemDTO = new QueueItemDTO();
+            queueItemDTO.ItemId = queueItem.ItemId;
+            queueItemDTO.StudentId = queueItem.StudentId;
+            queueItemDTO.Nickname = queueItem.Student.NickName;
+            queueItemDTO.TopicId = queueItem.TopicId;
+            queueItemDTO.Topic = queueItem.Topic.Name;
+            queueItemDTO.Unit = queueItem.Topic.Unit.Name;
+            queueItemDTO.TimeAdded = queueItem.TimeAdded;
+            queueItemDTO.TimeHelped = queueItem.TimeHelped;
+            queueItemDTO.TimeRemoved = queueItem.TimeRemoved;
+            queueItemDTO.Description = queueItem.Description;
+
+            return queueItemDTO;
+        }
+
+        /// <summary>
+        /// Converts the queue item DTO to a DAO to interact with the database
+        /// </summary>
+        /// <param name="queueItemDTO">The DTO for the queue item</param>
+        /// <returns>The DAO for the queue item</returns>
+        private Queueitem DTO2DAO(QueueItemDTO queueItemDTO)
+        {
+            Queueitem queueItem = new Queueitem
+            {
+                ItemId = queueItemDTO.ItemId,
+                StudentId = queueItemDTO.StudentId,
+                TopicId = queueItemDTO.TopicId,
+                Description = queueItemDTO.Description,
+                TimeAdded = queueItemDTO.TimeAdded,
+                TimeHelped = queueItemDTO.TimeHelped,
+                TimeRemoved = queueItemDTO.TimeRemoved
+            };
+
+            return queueItem;
         }
     }
 }

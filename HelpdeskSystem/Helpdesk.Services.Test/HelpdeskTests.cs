@@ -323,7 +323,6 @@ namespace Helpdesk.Services.Test
             };
             var checkoutBResponse = testEntityFactory.CheckInFacade.CheckOut(checkoutRequestB);
             Assert.AreEqual(HttpStatusCode.OK, checkoutBResponse.Status);
-            Assert.IsTrue(checkoutBResponse.Result == true);
 
             // Do the force checkout and queue remove.
             var forceCheckoutQueueRemoveResponse = testEntityFactory.HelpdeskFacade.ForceCheckoutQueueRemove(helpdeskData.Response.HelpdeskID);

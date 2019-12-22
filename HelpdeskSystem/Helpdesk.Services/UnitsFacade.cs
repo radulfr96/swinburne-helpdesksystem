@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using Helpdesk.Common;
 using Helpdesk.Common.DTOs;
@@ -8,8 +9,10 @@ using Helpdesk.Common.Requests.Helpdesk;
 using Helpdesk.Common.Requests.Units;
 using Helpdesk.Common.Responses;
 using Helpdesk.Common.Responses.Units;
+using Helpdesk.Data.Models;
 using Helpdesk.DataLayer;
 using Helpdesk.DataLayer.Contracts;
+using Microsoft.EntityFrameworkCore.Storage;
 using NLog;
 
 namespace Helpdesk.Services
@@ -22,10 +25,12 @@ namespace Helpdesk.Services
         private static Logger s_logger = LogManager.GetCurrentClassLogger();
 
         private IUnitsDataLayer _unitsDataLayer;
+        private ITopicsDataLayer _topicsDataLayer;
 
-        public UnitsFacade(IUnitsDataLayer unitsDataLayer)
+        public UnitsFacade(IUnitsDataLayer unitsDataLayer, ITopicsDataLayer topicsDataLayer)
         {
             _unitsDataLayer = unitsDataLayer;
+            _topicsDataLayer = topicsDataLayer;
         }
 
         /// <summary>
@@ -45,37 +50,64 @@ namespace Helpdesk.Services
                 response = (AddUpdateUnitResponse)request.CheckValidation(response);
 
                 if (response.Status == HttpStatusCode.BadRequest)
-                    return response;                
+                    return response;
 
                 if (request.UnitID == 0)
                 {
-                    UnitDTO unit = _unitsDataLayer.GetUnitByNameAndHelpdeskId(request.Name, request.HelpdeskID);
 
-                    if (unit != null)
+                    Unit existingUnit = _unitsDataLayer.GetUnitByNameAndHelpdeskId(request.Name, request.HelpdeskID);
+
+                    if (existingUnit != null)
                     {
                         response.Status = HttpStatusCode.BadRequest;
                         response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Subject with that name already exists."));
                         return response;
                     }
 
-                    unit = _unitsDataLayer.GetUnitByCodeAndHelpdeskId(request.Code, request.HelpdeskID);
+                    existingUnit = _unitsDataLayer.GetUnitByCodeAndHelpdeskId(request.Code, request.HelpdeskID);
 
-                    if (unit != null)
+                    if (existingUnit != null)
                     {
                         response.Status = HttpStatusCode.BadRequest;
                         response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Subject with that code already exists."));
                         return response;
                     }
 
-                    int? result = _unitsDataLayer.AddUnit(request);
-
-                    if (!result.HasValue || result.Value == 0)
+                    using (IDbContextTransaction trans = _unitsDataLayer.GetTransaction())
                     {
-                        response.Status = HttpStatusCode.InternalServerError;
-                        response.StatusMessages.Add(new StatusMessage(HttpStatusCode.InternalServerError, "Unable to add unit, unknown error has occured."));
-                    }
+                        try
+                        {
 
-                    response.UnitID = result.Value;
+                            Unit unit = new Unit()
+                            {
+                                Code = request.Code,
+                                Name = request.Name,
+                                IsDeleted = false,
+                            };
+
+                            _unitsDataLayer.AddUnit(unit);
+                            _unitsDataLayer.Save();
+
+                            if (unit.UnitId == 0)
+                            {
+                                response.Status = HttpStatusCode.InternalServerError;
+                                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.InternalServerError, "Unable to add unit, unknown error has occured."));
+                            }
+
+                            _unitsDataLayer.AddHelpdeskUnit(new Helpdeskunit()
+                            {
+                                HelpdeskId = request.HelpdeskID,
+                                UnitId = unit.UnitId
+                            });
+
+                            trans.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            trans.Rollback();
+                            throw ex;
+                        }
+                    }
                 }
                 else
                 {
@@ -84,25 +116,76 @@ namespace Helpdesk.Services
                     if (existingUnit == null)
                     {
                         response.Status = HttpStatusCode.NotFound;
+                        response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find unit"));
                         return response;
                     }
 
-                    if (!existingUnit.IsDeleted)
+                    Unit existingUnitWithName = _unitsDataLayer.GetUnitByNameAndHelpdeskId(request.Name, request.HelpdeskID);
+
+                    if (existingUnitWithName != null)
                     {
-                        bool updateResult = _unitsDataLayer.UpdateUnit(existingUnit.UnitId, request);
-                        response.UnitID = existingUnit.UnitId;
+                        response.Status = HttpStatusCode.BadRequest;
+                        response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Unit with that name already exists"));
+                        return response;
                     }
-                    else
+
+                    Unit existingUnitCode = _unitsDataLayer.GetUnitByCodeAndHelpdeskId(request.Code, request.HelpdeskID);
+
+                    if (existingUnitCode != null)
                     {
-                        request.IsDeleted = false;
-                        bool updateResult = _unitsDataLayer.UpdateUnit(existingUnit.UnitId, request);
-                        response.UnitID = existingUnit.UnitId;
+                        response.Status = HttpStatusCode.BadRequest;
+                        response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Unit with that code already exists"));
+                        return response;
+                    }
+
+                    using (IDbContextTransaction trans = _unitsDataLayer.GetTransaction())
+                    {
+                        try
+                        {
+                            existingUnit.IsDeleted = request.IsDeleted;
+                            existingUnit.Name = request.Name;
+                            existingUnit.Code = request.Code;
+
+                            _unitsDataLayer.Save();
+
+                            foreach (Topic topic in existingUnit.Topic)
+                            {
+                                if (request.Topics.Contains(topic.Name))
+                                {
+                                    topic.IsDeleted = false;
+                                }
+                                else
+                                {
+                                    topic.IsDeleted = true;
+                                }
+                            }
+
+                            foreach (string topic in request.Topics)
+                            {
+                                if (!existingUnit.Topic.Select(t => t.Name).Contains(topic))
+                                {
+                                    _topicsDataLayer.AddTopic(new Topic()
+                                    {
+                                        UnitId = request.UnitID,
+                                        IsDeleted = false,
+                                        Name = topic,
+                                    });
+                                }
+                            }
+
+                            _topicsDataLayer.Save();
+                            trans.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            trans.Rollback();
+                            throw ex;
+                        }
                     }
                 }
-
                 response.Status = HttpStatusCode.OK;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 s_logger.Error(ex, "Unable to add unit to system");
                 response.Status = HttpStatusCode.InternalServerError;
@@ -125,16 +208,18 @@ namespace Helpdesk.Services
 
             try
             {
-                var result = _unitsDataLayer.GetUnit(id);
+                Unit unit = _unitsDataLayer.GetUnit(id);
 
-                if (result != null)
-                    response.Unit = result;
+                if (unit == null)
+                {
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unit not found"));
+                }
+                else
+                {
+                    response.Unit = DAO2DTO(unit);
                     response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Warn(ex, $"Unable to find the unit with id [{id}]");
-                response.Status = HttpStatusCode.NotFound;
+                }
             }
             catch (Exception ex)
             {
@@ -142,7 +227,6 @@ namespace Helpdesk.Services
                 response.Status = HttpStatusCode.InternalServerError;
                 response.StatusMessages.Add(new StatusMessage(HttpStatusCode.InternalServerError, "Unable to get unit!"));
             }
-
             return response;
         }
 
@@ -159,21 +243,23 @@ namespace Helpdesk.Services
 
             try
             {
-                List<UnitDTO> units = _unitsDataLayer.GetUnitsByHelpdeskID(id, getActive);
+                List<Unit> units = _unitsDataLayer.GetUnitsByHelpdeskID(id, getActive);
 
-                if(units.Count==0)
-                    throw new NotFoundException("No units found under helpdesk "+id);
-
-                response.Units = units;
-                response.Status = HttpStatusCode.OK;
+                if (units.Count == 0)
+                {
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "No units found"));
+                }
+                else
+                {
+                    foreach (Unit unit in units)
+                    {
+                        response.Units.Add(DAO2DTO(unit));
+                    }
+                    response.Status = HttpStatusCode.OK;
+                }
             }
-            catch(NotFoundException ex)
-            {
-                s_logger.Error(ex, "No units found!");
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "No units found!"));
-            }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 s_logger.Error(ex, "Unable to get units!");
                 response.Status = HttpStatusCode.InternalServerError;
@@ -194,23 +280,56 @@ namespace Helpdesk.Services
 
             try
             {
-                bool result = _unitsDataLayer.DeleteUnit(id);
+                var unit = _unitsDataLayer.GetUnit(id);
 
-                if (result)
-                    response.Status = HttpStatusCode.OK;
-            }
-            catch(NotFoundException ex)
-            {
-                s_logger.Warn($"Unable to find the unit with id [{id}]");
-                response.Status = HttpStatusCode.NotFound;
+                if (unit == null)
+                {
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find user."));
+                }
+
+                _unitsDataLayer.DeleteUnit(unit);
+                _unitsDataLayer.Save();
+
+                response.Status = HttpStatusCode.OK;
             }
             catch (Exception ex)
             {
                 s_logger.Error(ex, "Unable to delete the unit.");
                 response.Status = HttpStatusCode.InternalServerError;
             }
-
             return response;
+        }
+
+        /// <summary>
+        /// Converts the unit DAO to a DTO to send to the front end
+        /// </summary>
+        /// <param name="unit">Unit DAO object to be converted.</param>
+        /// <returns></returns>
+        private UnitDTO DAO2DTO(Unit unit)
+        {
+            UnitDTO unitDTO = new UnitDTO();
+            unitDTO.UnitId = unit.UnitId;
+            unitDTO.Code = unit.Code;
+            unitDTO.Name = unit.Name;
+            unitDTO.IsDeleted = unit.IsDeleted;
+
+            foreach (Topic topic in unit.Topic)
+            {
+                if (!topic.IsDeleted)
+                {
+                    unitDTO.Topics.Add(
+                        new TopicDTO()
+                        {
+                            Name = topic.Name,
+                            IsDeleted = topic.IsDeleted,
+                            TopicId = topic.TopicId,
+                            UnitId = topic.UnitId
+                        });
+                }
+            }
+
+            return unitDTO;
         }
     }
 }

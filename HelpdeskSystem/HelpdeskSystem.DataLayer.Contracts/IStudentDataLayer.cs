@@ -1,5 +1,6 @@
 ﻿using Helpdesk.Common.DTOs;
 using Helpdesk.Common.Requests.Students;
+using Helpdesk.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,28 +17,28 @@ namespace Helpdesk.DataLayer.Contracts
         /// used to retreive all nicknames in the database
         /// </summary>
         /// <returns>The list of nicknames as DTOs</returns>
-        List<NicknameDTO> GetAllNicknames();
+        List<Nicknames> GetAllNicknames();
 
         /// <summary>
         /// Used to get a student nickname by the nickname
         /// </summary>
         /// <param name="nickname">The nickname to look up</param>
         /// <returns>The nickname</returns>
-        NicknameDTO GetStudentNicknameByNickname(string nickname);
+        Nicknames GetStudentNicknameByNickname(string nickname);
 
         /// <summary>
         /// Used to get a student nickname by their studentId
         /// </summary>
         /// <param name="studentId">The studentId to look up</param>
         /// <returns>The nickname</returns>
-        NicknameDTO GetStudentNicknameByStudentID(int studentId);
+        Nicknames GetStudentNicknameByStudentID(int studentId);
 
         /// <summary>
         /// Used to get a student nickname by their Swinburne ID
         /// </summary>
         /// <param name="sid">The sid to look up</param>
         /// <returns>The nickname</returns>
-        NicknameDTO GetStudentNicknameBySID(string sid);
+        Nicknames GetStudentNicknameBySID(string sid);
 
         /// <summary>
         /// Used to get a datatable with all of the helpdesk records
@@ -50,14 +51,8 @@ namespace Helpdesk.DataLayer.Contracts
         /// </summary>
         /// <param name="request">The nickname information</param>
         /// <returns>The id of the nickname added</returns>
-        int AddStudentNickname(AddStudentRequest request);
+        void AddStudentNickname(Nicknames Nickname);
 
-        /// <summary>
-        /// Used to edit the specified student's nickname in the databse with the request's information
-        /// </summary>
-        /// <param name="id">The StudentID of the student to be updated</param>
-        /// <param name="request">The request that contains the student's new nickname</param>
-        /// <returns>A boolean that indicates whether the operation was a success</returns>
-        bool EditStudentNickname(EditStudentNicknameRequest request);
+        void Save();
     }
 }

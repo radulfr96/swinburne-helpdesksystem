@@ -11,5 +11,10 @@ namespace Helpdesk.Common.Responses.Queue
     public class GetQueueItemsByHelpdeskIDResponse : BaseResponse
     {
         public List<QueueItemDTO> QueueItems { get; set; }
+
+        public GetQueueItemsByHelpdeskIDResponse()
+        {
+            QueueItems = new List<QueueItemDTO>();
+        }
     }
 }

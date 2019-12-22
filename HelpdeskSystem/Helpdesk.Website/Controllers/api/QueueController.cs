@@ -31,7 +31,7 @@ namespace Helpdesk.Website.Controllers.api
 		{
 			try
 			{
-				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
+				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer(), new CheckInDataLayer());
 				var response = facade.AddToQueue(request);
 
 				switch (response.Status)
@@ -65,7 +65,7 @@ namespace Helpdesk.Website.Controllers.api
 		{
 			try
 			{
-				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
+				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer(), new CheckInDataLayer());
 				var response = facade.GetQueueItemsByHelpdeskID(id);
 
 				switch (response.Status)
@@ -100,7 +100,7 @@ namespace Helpdesk.Website.Controllers.api
 		{
 			try
 			{
-				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
+				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer(), new CheckInDataLayer());
 				var response = facade.UpdateQueueItem(request);
 
 				switch (response.Status)
@@ -134,7 +134,7 @@ namespace Helpdesk.Website.Controllers.api
 		{
 			try
 			{
-				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
+				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer(), new CheckInDataLayer());
 				var response = facade.UpdateQueueItemStatus(request);
 
 				switch (response.Status)

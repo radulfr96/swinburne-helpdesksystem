@@ -334,7 +334,6 @@ namespace Helpdesk.Services.Test
             CheckOutResponse coResponse = facade.CheckOut(coRequest);
 
             Assert.AreEqual(HttpStatusCode.OK, coResponse.Status);
-            Assert.IsTrue(coResponse.Result);
 
             using (helpdesksystemContext context = new helpdesksystemContext())
             {
@@ -425,7 +424,6 @@ namespace Helpdesk.Services.Test
             CheckOutResponse coResponse = facade.CheckOut(coRequest);
 
             Assert.AreEqual(HttpStatusCode.OK, coResponse.Status);
-            Assert.IsTrue(coResponse.Result);
 
             using (helpdesksystemContext context = new helpdesksystemContext())
             {
@@ -492,7 +490,6 @@ namespace Helpdesk.Services.Test
             CheckOutResponse coResponse = facade.CheckOut(coRequest);
 
             Assert.AreEqual(HttpStatusCode.OK, coResponse.Status);
-            Assert.IsTrue(coResponse.Result);
 
             using (helpdesksystemContext context = new helpdesksystemContext())
             {

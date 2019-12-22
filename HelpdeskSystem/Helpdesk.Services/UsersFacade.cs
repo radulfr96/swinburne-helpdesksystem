@@ -408,9 +408,7 @@ namespace Helpdesk.Services
         /// <returns>The DTO for the user</returns>
         private UserDTO DAO2DTO(User user)
         {
-            UserDTO userDTO = null;
-
-            userDTO = new UserDTO();
+            UserDTO userDTO = new UserDTO();
             userDTO.UserId = user.UserId;
             userDTO.Username = user.Username;
             userDTO.Password = user.Password;

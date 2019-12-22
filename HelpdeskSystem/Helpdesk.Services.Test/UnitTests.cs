@@ -360,7 +360,7 @@ namespace Helpdesk.Services.Test
             Assert.IsTrue(unitData.Response.UnitID > 0);
 
             // Get the unit that was just created.
-            UnitsFacade unitsFacade = new UnitsFacade(new UnitsDataLayer());
+            UnitsFacade unitsFacade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
             GetUnitResponse getUnitResponse = unitsFacade.GetUnit(unitData.Response.UnitID);
 
             // Check that unit response is okay and that names match.
@@ -393,7 +393,7 @@ namespace Helpdesk.Services.Test
             Assert.IsTrue(unitData.Response.UnitID > 0);
 
             // Get all units that were just created.
-            UnitsFacade unitsFacade = new UnitsFacade(new UnitsDataLayer());
+            UnitsFacade unitsFacade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
             GetUnitsByHelpdeskIDResponse getUnitsByHelpdeskIDResponse = unitsFacade.GetUnitsByHelpdeskID(helpdeskData.Response.HelpdeskID, false);
 
             Assert.AreEqual(HttpStatusCode.OK, getUnitsByHelpdeskIDResponse.Status);
@@ -443,7 +443,7 @@ namespace Helpdesk.Services.Test
             Assert.IsTrue(unitData.Response.UnitID > 0);
 
             // Get all units that were just created.
-            UnitsFacade unitsFacade = new UnitsFacade(new UnitsDataLayer());
+            UnitsFacade unitsFacade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
             GetUnitsByHelpdeskIDResponse getUnitsByHelpdeskIDResponse = unitsFacade.GetUnitsByHelpdeskID(helpdeskData.Response.HelpdeskID, true);
 
             Assert.AreEqual(HttpStatusCode.OK, getUnitsByHelpdeskIDResponse.Status);
@@ -467,7 +467,7 @@ namespace Helpdesk.Services.Test
             // Fill empty string parameters "" with auto-generated string.
             testEntityFactory.PopulateEmptyStrings = true;
 
-            UnitsFacade unitsFacade = new UnitsFacade(new UnitsDataLayer());
+            UnitsFacade unitsFacade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
             int maxInt = 2147483647;
             GetUnitsByHelpdeskIDResponse getUnitsByHelpdeskIDResponse = unitsFacade.GetUnitsByHelpdeskID(maxInt, false);
 
@@ -499,7 +499,7 @@ namespace Helpdesk.Services.Test
             Assert.IsTrue(unitData.Response.UnitID > 0);
 
             // Test get, delete, get.
-            UnitsFacade unitsFacade = new UnitsFacade(new UnitsDataLayer());
+            UnitsFacade unitsFacade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
 
             // Get the unit that was just created.
             GetUnitResponse getUnitResponse = unitsFacade.GetUnit(unitData.Response.UnitID);
@@ -525,7 +525,7 @@ namespace Helpdesk.Services.Test
             // Fill empty string parameters "" with auto-generated string.
             testEntityFactory.PopulateEmptyStrings = true;
 
-            UnitsFacade unitsFacade = new UnitsFacade(new UnitsDataLayer());
+            UnitsFacade unitsFacade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
             int maxInt = 2147483647;
             DeleteUnitResponse deleteUnitResponse = unitsFacade.DeleteUnit(maxInt);
 

@@ -37,7 +37,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UnitsFacade(new UnitsDataLayer());
+                var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
                 var response = facade.AddOrUpdateUnit(request);
 
                 switch (response.Status)
@@ -74,7 +74,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UnitsFacade(new UnitsDataLayer());
+                var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
                 var response = facade.GetUnit(id);
 
                 switch (response.Status)
@@ -111,7 +111,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UnitsFacade( new UnitsDataLayer());
+                var facade = new UnitsFacade( new UnitsDataLayer(), new TopicsDataLayer());
                 var response = facade.GetUnitsByHelpdeskID(id, false);
 
                 switch (response.Status)
@@ -147,7 +147,7 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new UnitsFacade(new UnitsDataLayer());
+                var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
                 var response = facade.GetUnitsByHelpdeskID(id, true);
 
                 switch (response.Status)
@@ -184,7 +184,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UnitsFacade(new UnitsDataLayer());
+                var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
                 var response = facade.DeleteUnit(id);
 
                 switch (response.Status)

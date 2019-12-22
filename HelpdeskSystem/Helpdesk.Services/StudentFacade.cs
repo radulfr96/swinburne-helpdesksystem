@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using Helpdesk.DataLayer.Contracts;
+using Helpdesk.Data.Models;
 
 namespace Helpdesk.Services
 {
@@ -39,12 +40,21 @@ namespace Helpdesk.Services
 
             try
             {
-                response.Nicknames = _studentDataLayer.GetAllNicknames();
+                var nicknames = _studentDataLayer.GetAllNicknames();
 
-                if (response.Nicknames.Count > 0)
-                    response.Status = HttpStatusCode.OK;
-                else
+                if (nicknames.Count == 0)
+                {
                     response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "No nicknames found"));
+                }
+                else
+                {
+                    response.Status = HttpStatusCode.OK;
+                    foreach (Nicknames nickname in nicknames)
+                    {
+                        response.Nicknames.Add(DAO2DTO(nickname));
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -66,15 +76,16 @@ namespace Helpdesk.Services
 
             try
             {
-                var nicknameDTO = _studentDataLayer.GetStudentNicknameByNickname(nickname);
+                var nicknameEnt = _studentDataLayer.GetStudentNicknameByNickname(nickname);
 
-                if (nicknameDTO == null)
+                if (nicknameEnt == null)
                 {
                     response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find student nickname."));
                 }
                 else
                 {
-                    response.Nickname = nicknameDTO;
+                    response.Nickname = DAO2DTO(nicknameEnt);
                     response.Status = HttpStatusCode.OK;
                 }
             }
@@ -112,9 +123,15 @@ namespace Helpdesk.Services
                     return response;
                 }
 
-                int id = _studentDataLayer.AddStudentNickname(request);
+                nickname = new Nicknames()
+                {
+                    NickName = request.Nickname,
+                    Sid = request.SID
+                };
 
-                response.StudentID = id;
+                _studentDataLayer.AddStudentNickname(nickname);
+
+                response.StudentID = nickname.StudentId;
                 response.Status = HttpStatusCode.OK;
             }
             catch (Exception ex)
@@ -155,20 +172,11 @@ namespace Helpdesk.Services
                     return response;
                 }
 
-                bool result = _studentDataLayer.EditStudentNickname(request);
+                nickname = _studentDataLayer.GetStudentNicknameByStudentID(request.StudentID);
 
-                if (result == false)
-                    throw new NotFoundException("Unable to find student!");
-
-                response.Result = result;
+                nickname.NickName = request.Nickname;
                 response.Status = HttpStatusCode.OK;
 
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Error(ex, "Unable to find student!");
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find student!"));
             }
             catch (Exception ex)
             {
@@ -204,9 +212,9 @@ namespace Helpdesk.Services
                         }
                         else
                         {
-                            response.SID = existingNickname.ID;
-                            response.StudentId = existingNickname.StudentID;
-                            response.Nickname = existingNickname.Nickname;
+                            response.SID = existingNickname.StudentId;
+                            response.StudentId = existingNickname.Sid;
+                            response.Nickname = existingNickname.NickName;
                             response.Status = HttpStatusCode.Accepted;
                         }
                     }
@@ -215,11 +223,11 @@ namespace Helpdesk.Services
                         response.Status = HttpStatusCode.NotFound;
                     }
                 }
-                else if (existingNickname.StudentID == request.SID || string.IsNullOrEmpty(request.SID))
+                else if (existingNickname.Sid == request.SID || string.IsNullOrEmpty(request.SID))
                 {
-                    response.Nickname = existingNickname.Nickname;
-                    response.StudentId = existingNickname.StudentID;
-                    response.SID = existingNickname.ID;
+                    response.Nickname = existingNickname.NickName;
+                    response.StudentId = existingNickname.Sid;
+                    response.SID = existingNickname.StudentId;
                     response.Status = HttpStatusCode.Accepted;
                 }
                 else
@@ -267,5 +275,23 @@ namespace Helpdesk.Services
             }
             return response;
         }
+
+        /// <summary>
+        /// Converts the nickname DAO to a DTO to send to the front end
+        /// </summary>
+        /// <param name="nickname">The DAO for the nickname</param>
+        /// <returns>The DTO for the nickname</returns>
+        private NicknameDTO DAO2DTO(Nicknames nickname)
+        {
+            NicknameDTO nicknameDTO = null;
+
+            nicknameDTO = new NicknameDTO();
+            nicknameDTO.ID = nickname.StudentId;
+            nicknameDTO.Nickname = nickname.NickName;
+            nicknameDTO.StudentID = nickname.Sid;
+
+            return nicknameDTO;
+        }
+
     }
 }

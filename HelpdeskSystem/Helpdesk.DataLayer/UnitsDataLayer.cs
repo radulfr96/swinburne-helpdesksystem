@@ -10,6 +10,7 @@ using Helpdesk.Common.Requests.Units;
 using System.Data;
 using System.Data.Common;
 using Helpdesk.DataLayer.Contracts;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Helpdesk.DataLayer
 {
@@ -23,126 +24,36 @@ namespace Helpdesk.DataLayer
             context = new helpdesksystemContext();
         }
 
-        public int? AddUnit(AddUpdateUnitRequest request)
+        public void AddUnit(Unit newUnit)
         {
-            int? unitId = null;
-            using (helpdesksystemContext context = new helpdesksystemContext())
-            {
-                using (var trans = context.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        Unit newUnit = new Unit()
-                        {
-                            Code = request.Code,
-                            IsDeleted = request.IsDeleted,
-                            Name = request.Name
-                        };
-
-                        context.Add(newUnit);
-
-                        context.SaveChanges();
-
-                        unitId = newUnit.UnitId;
-
-                        if (!unitId.HasValue || unitId.Value == 0)
-                        {
-                            trans.Rollback();
-                            throw new Exception("Unable to add unit");
-                        }
-
-                        Topic otherTopicOption = new Topic()
-                        {
-                            UnitId = newUnit.UnitId,
-                            Name = "Other",
-                            IsDeleted = false
-                        };
-
-                        context.Topic.Add(otherTopicOption);
-
-                        foreach (string topic in request.Topics)
-                        {
-                            context.Topic.Add(new Topic()
-                            {
-                                Name = topic,
-                                UnitId = unitId.Value,
-                                IsDeleted = false,
-                            });
-                        }
-
-                        context.Helpdeskunit.Add(new Helpdeskunit()
-                        {
-                            HelpdeskId = request.HelpdeskID,
-                            UnitId = unitId.Value
-                        });
-
-                        context.SaveChanges();
-
-                        trans.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        trans.Rollback();
-                        throw ex;
-                    }
-                }
-            }
-
-            return unitId;
+            context.Add(newUnit);
         }
 
-        public UnitDTO GetUnit(int id)
+        public void AddHelpdeskUnit(Helpdeskunit helpdeskunit)
         {
-            UnitDTO dto = null;
-            using (helpdesksystemContext context = new helpdesksystemContext())
-            {
-                var unit = context.Unit.Include("Topic").FirstOrDefault(u => u.UnitId == id);
-                if (unit != null)
-                {
-                    dto = DAO2DTO(unit);
-                }
-            }
-
-            return dto;
+            context.Helpdeskunit.Add(helpdeskunit);
         }
 
-        public UnitDTO GetUnitByNameAndHelpdeskId(string name, int helpdeskId)
+        public Unit GetUnit(int id)
         {
-            UnitDTO dto = null;
-            using (helpdesksystemContext context = new helpdesksystemContext())
-            {
-                var unitIds = context.Helpdeskunit.Where(hu => hu.HelpdeskId == helpdeskId).Select(u => u.UnitId).ToList();
-
-                var unit = context.Unit.Include("Topic").Include("Helpdeskunit").FirstOrDefault(u => u.Name.Equals(name) && unitIds.Contains(u.UnitId));
-                if (unit != null)
-                {
-                    dto = DAO2DTO(unit);
-                }
-            }
-
-            return dto;
+            return context.Unit.Include("Topic").FirstOrDefault(u => u.UnitId == id);
         }
 
-        public UnitDTO GetUnitByCodeAndHelpdeskId(string code, int helpdeskId)
+        public Unit GetUnitByNameAndHelpdeskId(string name, int helpdeskId)
         {
-            UnitDTO dto = null;
-            using (helpdesksystemContext context = new helpdesksystemContext())
-            {
-                var unitIds = context.Helpdeskunit.Where(hu => hu.HelpdeskId == helpdeskId).Select(u => u.UnitId).ToList();
-
-                var unit = context.Unit.Include("Helpdeskunit").Include("Topic").FirstOrDefault(u => u.Code.Equals(code) && unitIds.Contains(u.UnitId));
-                if (unit != null)
-                {
-                    dto = DAO2DTO(unit);
-                }
-            }
-
-            return dto;
+            var unitIds = context.Helpdeskunit.Where(hu => hu.HelpdeskId == helpdeskId).Select(u => u.UnitId).ToList();
+            return context.Unit.Include("Topic").Include("Helpdeskunit").FirstOrDefault(u => u.Name.Equals(name) && unitIds.Contains(u.UnitId));
         }
 
-        public List<UnitDTO> GetUnitsByHelpdeskID(int id, bool getActive)
+        public Unit GetUnitByCodeAndHelpdeskId(string code, int helpdeskId)
         {
-            List<UnitDTO> unitDTOs = new List<UnitDTO>();
+            var unitIds = context.Helpdeskunit.Where(hu => hu.HelpdeskId == helpdeskId).Select(u => u.UnitId).ToList();
+            return context.Unit.Include("Helpdeskunit").Include("Topic").FirstOrDefault(u => u.Code.Equals(code) && unitIds.Contains(u.UnitId));
+        }
+
+        public List<Unit> GetUnitsByHelpdeskID(int id, bool getActive)
+        {
+            List<Unit> units = new List<Unit>();
 
             using (helpdesksystemContext context = new helpdesksystemContext())
             {
@@ -150,129 +61,53 @@ namespace Helpdesk.DataLayer
 
                 foreach (Helpdeskunit helpdeskUnit in helpdeskUnits)
                 {
-                    Unit unit = context.Unit.Include("Topic").FirstOrDefault(u => u.UnitId == helpdeskUnit.UnitId);
+                    Unit unit = context.Unit.Include("Topic").Where(u => u.UnitId == helpdeskUnit.UnitId).FirstOrDefault();
 
                     if (getActive && !unit.IsDeleted)
-                        unitDTOs.Add(DAO2DTO(unit));
+                        units.Add(unit);
                     else if (!getActive)
-                        unitDTOs.Add(DAO2DTO(unit));
+                        units.Add(unit);
                 }
             }
-
-            return unitDTOs;
+            return units;
         }
 
         public DataTable GetUnitsAsDataTable()
         {
             DataTable units = new DataTable();
+            DbConnection conn = context.Database.GetDbConnection();
+            ConnectionState state = conn.State;
 
-            using (helpdesksystemContext context = new helpdesksystemContext())
+            try
             {
-                DbConnection conn = context.Database.GetDbConnection();
-                ConnectionState state = conn.State;
+                if (state != ConnectionState.Open)
+                    conn.Open();
 
-                try
+                using (var cmd = conn.CreateCommand())
                 {
-                    if (state != ConnectionState.Open)
-                        conn.Open();
-
-                    using (var cmd = conn.CreateCommand())
+                    cmd.CommandText = "GetAllHelpdesks";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        cmd.CommandText = "GetAllHelpdesks";
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            units.Load(reader);
-                        }
+                        units.Load(reader);
                     }
                 }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                finally
-                {
-                    if (state != ConnectionState.Closed)
-                        conn.Close();
-                }
             }
-
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (state != ConnectionState.Closed)
+                    conn.Close();
+            }
             return units;
         }
 
-        public bool UpdateUnit(int id, AddUpdateUnitRequest request)
+        public void DeleteUnit(Unit unit)
         {
-            using (helpdesksystemContext context = new helpdesksystemContext())
-            {
-                using (var trans = context.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        var unit = context.Unit.Include("Topic").FirstOrDefault(u => u.UnitId == id);
-
-                        if (unit == null)
-                            throw new NotFoundException("Unable to find unit!");
-
-                        unit.Name = request.Name;
-                        unit.IsDeleted = request.IsDeleted;
-                        unit.Code = request.Code;
-
-                        foreach (Topic topic in unit.Topic)
-                        {
-                            if (!request.Topics.Contains(topic.Name))
-                            {
-                                topic.IsDeleted = true;
-                            }
-                        }
-
-                        foreach (string topic in request.Topics)
-                        {
-                            var existingTopic = unit.Topic.FirstOrDefault(t => t.Name == topic);
-
-                            if (existingTopic != null)
-                            {
-                                if (existingTopic.IsDeleted)
-                                {
-                                    existingTopic.IsDeleted = false;
-                                }
-                            }
-                            else
-                            {
-                                unit.Topic.Add(new Topic()
-                                {
-                                    IsDeleted = false,
-                                    Name = topic,
-                                    UnitId = unit.UnitId
-                                });
-                            }
-                        }
-
-                        context.SaveChanges();
-
-                        trans.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        trans.Rollback();
-                        throw ex;
-                    }
-                }
-            }
-            return true;
-        }
-        public bool DeleteUnit(int id)
-        {
-            using (helpdesksystemContext context = new helpdesksystemContext())
-            {
-                var unit = context.Unit.FirstOrDefault(u => u.UnitId == id);
-
-                if (unit == null)
-                    throw new NotFoundException("Unable to find unit!");
-
-                unit.IsDeleted = true;
-                context.SaveChanges();
-            }
-            return true;
+            context.Unit.Remove(unit);
         }
 
         /// <summary>
@@ -320,6 +155,16 @@ namespace Helpdesk.DataLayer
             unit.IsDeleted = unitDTO.IsDeleted;
 
             return unit;
+        }
+
+        public void Save()
+        {
+            context.Dispose();
+        }
+
+        public IDbContextTransaction GetTransaction()
+        {
+            return context.Database.BeginTransaction();
         }
 
         public void Dispose()

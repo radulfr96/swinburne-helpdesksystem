@@ -121,9 +121,9 @@ namespace Helpdesk.Services.Test
                 , new StudentDatalayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
-            UnitsFacade = new UnitsFacade(new UnitsDataLayer());
+            UnitsFacade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
             TopicsFacade = new TopicsFacade(new TopicsDataLayer());
-            QueueFacade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer());
+            QueueFacade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer(), new CheckInDataLayer());
             CheckInFacade = new CheckInFacade(new CheckInDataLayer(), new StudentDatalayer(), new QueueDataLayer());
             StudentFacade = new StudentFacade(new StudentDatalayer());
         }
@@ -197,7 +197,7 @@ namespace Helpdesk.Services.Test
             if (isDeleted != null) request.IsDeleted = (bool)isDeleted;
             if (topics != null) request.Topics = topics;
 
-            var facade = new UnitsFacade(new UnitsDataLayer());
+            var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
             request.UnitID = unitID;
             var response = facade.AddOrUpdateUnit(request);
 

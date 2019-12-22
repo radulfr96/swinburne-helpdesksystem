@@ -6,6 +6,7 @@ using Helpdesk.Common.DTOs;
 using Helpdesk.Common.Extensions;
 using Helpdesk.Common.Responses;
 using Helpdesk.Common.Responses.Topics;
+using Helpdesk.Data.Models;
 using Helpdesk.DataLayer;
 using Helpdesk.DataLayer.Contracts;
 using Microsoft.Extensions.Logging;
@@ -41,21 +42,21 @@ namespace Helpdesk.Services
 
             try
             {
-                List<TopicDTO> topics = _topicsDataLayer.GetTopicsByUnitID(id);
+                List<Topic> topics = _topicsDataLayer.GetTopicsByUnitID(id);
 
                 if (topics.Count == 0)
                 {
-                    throw new NotFoundException("No topics found under unit " + id);
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "No topics found."));
                 }
-
-                response.Topics = topics;
-                response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Error(ex, "No unit found found matching id " + id);
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "No topics found!"));
+                else
+                {
+                    foreach (Topic topic in topics)
+                    {
+                        response.Topics.Add(DAO2DTO(topic));
+                    }
+                    response.Status = HttpStatusCode.OK;
+                }
             }
             catch (Exception ex)
             {
@@ -64,6 +65,40 @@ namespace Helpdesk.Services
                 response.StatusMessages.Add(new StatusMessage(HttpStatusCode.InternalServerError, "Unable to get topics!"));
             }
             return response;
+        }
+
+        /// <summary>
+        /// Converts the topic DAO to a DTO to send to the front end
+        /// </summary>
+        /// <param name="topic">The DAO for the topic</param>
+        /// <returns>The DTO for the topic</returns>
+        private TopicDTO DAO2DTO(Topic topic)
+        {
+            TopicDTO topicDTO = new TopicDTO
+            {
+                TopicId = topic.TopicId,
+                UnitId = topic.UnitId,
+                Name = topic.Name,
+                IsDeleted = topic.IsDeleted
+            };
+            return topicDTO;
+        }
+
+        /// <summary>
+        /// Converts the topic DTO to a DAO to interact with the database
+        /// </summary>
+        /// <param name="topic">The DTO for the topic</param>
+        /// <returns>The DAO for the topic</returns>
+        private Topic DTO2DAO(TopicDTO topicDTO)
+        {
+            Topic topic = new Topic
+            {
+                TopicId = topicDTO.TopicId,
+                UnitId = topicDTO.UnitId,
+                Name = topicDTO.Name,
+                IsDeleted = topicDTO.IsDeleted
+            };
+            return topic;
         }
     }
 }

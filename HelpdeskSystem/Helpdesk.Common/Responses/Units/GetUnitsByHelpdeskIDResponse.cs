@@ -10,5 +10,10 @@ namespace Helpdesk.Common.Responses.Units
     public class GetUnitsByHelpdeskIDResponse : BaseResponse
     {
         public List<UnitDTO> Units { get; set; }
+
+        public GetUnitsByHelpdeskIDResponse()
+        {
+            Units = new List<UnitDTO>();
+        }
     }
 }

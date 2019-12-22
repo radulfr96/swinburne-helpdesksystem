@@ -4,6 +4,7 @@ using Helpdesk.Common.Requests.CheckIn;
 using Helpdesk.Data.Models;
 using Helpdesk.DataLayer.Contracts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,161 +14,124 @@ using System.Text;
 
 namespace Helpdesk.DataLayer
 {
-    public class CheckInDataLayer : ICheckInDataLayer
+    public class CheckInDataLayer : ICheckInDataLayer, IDisposable
     {
-        public int CheckIn(CheckInRequest request)
+        private helpdesksystemContext context;
+
+        public CheckInDataLayer()
         {
-            int id = 0;
-
-            using (helpdesksystemContext context = new helpdesksystemContext())
-            {
-                Checkinhistory checkIn = new Checkinhistory()
-                {
-                    UnitId = request.UnitID,
-                    CheckInTime = DateTime.Now,
-                    StudentId = request.StudentID
-                };
-
-                context.Checkinhistory.Add(checkIn);
-                context.SaveChanges();
-
-                id = checkIn.CheckInId;
-            }
-            return id;
+            context = new helpdesksystemContext();
         }
 
-        public bool CheckOut(CheckOutRequest request)
+        public void CheckIn(Checkinhistory checkIn)
         {
-            using (helpdesksystemContext context = new helpdesksystemContext())
-            {
-                Checkinhistory checkOut = context.Checkinhistory.FirstOrDefault(co => co.CheckInId == request.CheckInID);
-
-                if (checkOut == null)
-                    return false;
-
-                checkOut.CheckoutTime = DateTime.Now;
-                checkOut.ForcedCheckout = request.ForcedCheckout;
-
-                context.SaveChanges();
-            }
-            return true;
+            context.Checkinhistory.Add(checkIn);
         }
 
-        public List<CheckInDTO> GetCheckinsByHelpdeskId(int helpdeskId)
+        public List<Checkinhistory> GetCheckinsByHelpdeskId(int helpdeskId)
         {
             List<CheckInDTO> checkInDTOs = new List<CheckInDTO>();
+            var unitIds = context.Helpdeskunit.Where(u => u.HelpdeskId == helpdeskId).Select(u => u.UnitId).ToList();
 
-            using (helpdesksystemContext context = new helpdesksystemContext())
-            {
-                var unitIds = context.Helpdeskunit.Where(u => u.HelpdeskId == helpdeskId).Select(u => u.UnitId).ToList();
-
-                var checkIns = context
-                                .Checkinhistory
-                                .Include("Student")
-                                .Where(c =>
-                                    unitIds.Contains(c.UnitId)
-                                    && !c.CheckoutTime.HasValue
-                                    && (!c.ForcedCheckout.HasValue || !c.ForcedCheckout.Value)
-                                    ).ToList();
-
-                if (checkIns.Count == 0)
-                    throw new NotFoundException("Helpdesk has no check ins");
-
-                foreach (var checkIn in checkIns)
-                {
-                    checkInDTOs.Add(DAO2DTO(checkIn));
-                }
-            }
-            return checkInDTOs;
+            return context
+                             .Checkinhistory
+                             .Include("Student")
+                             .Where(c =>
+                                 unitIds.Contains(c.UnitId)
+                                 && !c.CheckoutTime.HasValue
+                                 && (!c.ForcedCheckout.HasValue || !c.ForcedCheckout.Value)
+                                 ).ToList();
         }
 
-        public CheckInDTO DAO2DTO(Checkinhistory checkIn)
+        public Checkinhistory GetCheckIn(int id)
         {
-            CheckInDTO dto = new CheckInDTO()
-            {
-                CheckInId = checkIn.CheckInId,
-                Nickname = checkIn.Student.NickName,
-                UnitId = checkIn.UnitId,
-                StudentId = checkIn.StudentId.Value
-            };
-
-            return dto;
+            return context.Checkinhistory.FirstOrDefault(c => c.CheckInId == id);
         }
 
         public DataTable GetCheckInsAsDataTable()
         {
             DataTable checkIns = new DataTable();
+            DbConnection conn = context.Database.GetDbConnection();
+            ConnectionState state = conn.State;
 
-            using (helpdesksystemContext context = new helpdesksystemContext())
+            try
             {
-                DbConnection conn = context.Database.GetDbConnection();
-                ConnectionState state = conn.State;
+                if (state != ConnectionState.Open)
+                    conn.Open();
 
-                try
+                using (var cmd = conn.CreateCommand())
                 {
-                    if (state != ConnectionState.Open)
-                        conn.Open();
-
-                    using (var cmd = conn.CreateCommand())
+                    cmd.CommandText = "GetAllCheckins";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        cmd.CommandText = "GetAllCheckins";
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            checkIns.Load(reader);
-                        }
+                        checkIns.Load(reader);
                     }
                 }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                finally
-                {
-                    if (state != ConnectionState.Closed)
-                        conn.Close();
-                }
             }
-
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (state != ConnectionState.Closed)
+                    conn.Close();
+            }
             return checkIns;
         }
 
         public DataTable GetCheckInQueueItemsAsDataTable()
         {
             DataTable checkInQueueItems = new DataTable();
+            DbConnection conn = context.Database.GetDbConnection();
+            ConnectionState state = conn.State;
 
-            using (helpdesksystemContext context = new helpdesksystemContext())
+            try
             {
-                DbConnection conn = context.Database.GetDbConnection();
-                ConnectionState state = conn.State;
+                if (state != ConnectionState.Open)
+                    conn.Open();
 
-                try
+                using (var cmd = conn.CreateCommand())
                 {
-                    if (state != ConnectionState.Open)
-                        conn.Open();
-
-                    using (var cmd = conn.CreateCommand())
+                    cmd.CommandText = "GetAllCheckInQueueItems";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        cmd.CommandText = "GetAllCheckInQueueItems";
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            checkInQueueItems.Load(reader);
-                        }
+                        checkInQueueItems.Load(reader);
                     }
                 }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                finally
-                {
-                    if (state != ConnectionState.Closed)
-                        conn.Close();
-                }
             }
-
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (state != ConnectionState.Closed)
+                    conn.Close();
+            }
             return checkInQueueItems;
+        }
+
+        public void AddCheckinQueueItem(Checkinqueueitem checkinqueueitem)
+        {
+            context.Checkinqueueitem.Add(checkinqueueitem);
+        }
+
+        public IDbContextTransaction GetTransaction()
+        {
+            return context.Database.BeginTransaction();
+        }
+
+        public void Save()
+        {
+            context.SaveChanges();
+        }
+
+        public void Dispose()
+        {
+            context.Dispose();
         }
     }
 }

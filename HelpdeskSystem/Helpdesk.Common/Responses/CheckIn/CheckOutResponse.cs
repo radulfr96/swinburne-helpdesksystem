@@ -9,6 +9,5 @@ namespace Helpdesk.Common.Responses.CheckIn
     /// </summary>
     public class CheckOutResponse : BaseResponse
     {
-        public bool Result { get; set; }
     }
 }

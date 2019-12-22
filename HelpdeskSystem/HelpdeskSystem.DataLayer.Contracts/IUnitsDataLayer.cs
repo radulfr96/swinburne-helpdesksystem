@@ -1,5 +1,7 @@
 ﻿using Helpdesk.Common.DTOs;
 using Helpdesk.Common.Requests.Units;
+using Helpdesk.Data.Models;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,35 +19,37 @@ namespace Helpdesk.DataLayer.Contracts
         /// </summary>
         /// <param name="request">The request containing the information to add a unit.</param>
         /// <returns>The id of the unit.</returns>
-        int? AddUnit(AddUpdateUnitRequest request);
+        void AddUnit(Unit unit);
+
+        void AddHelpdeskUnit(Helpdeskunit helpdeskunit);
 
         /// <summary>
         /// Retrieves a unit from the database using provided unit id.
         /// </summary>
         /// <param name="id">The id of the unit to retrieve.</param>
         /// <returns></returns>
-        UnitDTO GetUnit(int id);
+        Unit GetUnit(int id);
 
         /// <summary>
         /// Retrieves a unit from the database using provided unit name.
         /// </summary>
         /// <param name="name">The name of the unit to retrieve.</param>
         /// <returns>The unit DTO</returns>
-        UnitDTO GetUnitByNameAndHelpdeskId(string name, int helpdeskId);
+        Unit GetUnitByNameAndHelpdeskId(string name, int helpdeskId);
 
         /// <summary>
         /// Retrieves all units under a specific helpdesk id
         /// </summary>
         /// <param name="id">ID of the helpdesk to retrieve from</param>
         /// <returns>A list of unit DTOs</returns>
-        List<UnitDTO> GetUnitsByHelpdeskID(int id, bool getActive);
+        List<Unit> GetUnitsByHelpdeskID(int id, bool getActive);
 
         /// <summary>
         /// Retrieves a unit from the database using provided unit code.
         /// </summary>
         /// <param name="code">The name of the unit to retrieve.</param>
         /// <returns>The unit DTO</returns>
-        UnitDTO GetUnitByCodeAndHelpdeskId(string code, int helpdeskId);
+        Unit GetUnitByCodeAndHelpdeskId(string code, int helpdeskId);
 
         /// <summary>
         /// Used to get a datatable with all of the unit records
@@ -54,17 +58,14 @@ namespace Helpdesk.DataLayer.Contracts
         DataTable GetUnitsAsDataTable();
 
         /// <summary>
-        /// Updates a specific unit
-        /// </summary>
-        /// <param name="id">ID of the unit to be deleted</param>
-        /// <returns>Indication of the result of the operation</returns>
-        bool UpdateUnit(int id, AddUpdateUnitRequest request);
-
-        /// <summary>
         /// Deletes a specific unit
         /// </summary>
         /// <param name="id">ID of the unit to be deleted</param>
         /// <returns>Indication of the result of the operation</returns>
-        bool DeleteUnit(int id);
+        void DeleteUnit(Unit unit);
+
+        void Save();
+
+        IDbContextTransaction GetTransaction();
     }
 }

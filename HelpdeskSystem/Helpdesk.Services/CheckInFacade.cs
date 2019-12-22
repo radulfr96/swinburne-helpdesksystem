@@ -16,6 +16,8 @@ using System.Linq;
 using System.Text;
 using Helpdesk.Common.Requests.Queue;
 using Helpdesk.DataLayer.Contracts;
+using Helpdesk.Data.Models;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Helpdesk.Services
 {
@@ -54,43 +56,61 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
-                StudentFacade studentFacade = new StudentFacade(_studentDataLayer);
-
-                if (!request.StudentID.HasValue)
+                using (var trans = _checkInDataLayer.GetTransaction())
                 {
-                    if (studentFacade.GetStudentByNickname(request.Nickname).Status != HttpStatusCode.NotFound)
+                    try
                     {
-                        response.Status = HttpStatusCode.BadRequest;
-                        return response;
+                        if (!request.StudentID.HasValue)
+                        {
+                            if (_studentDataLayer.GetStudentNicknameByNickname(request.Nickname) != null)
+                            {
+                                response.Status = HttpStatusCode.BadRequest;
+                                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Nickname already taken."));
+                                return response;
+                            }
+
+                            Nicknames nickname = new Nicknames()
+                            {
+                                NickName = request.Nickname,
+                                Sid = request.SID
+                            };
+
+                            _studentDataLayer.AddStudentNickname(nickname);
+                            _studentDataLayer.Save();
+                            request.StudentID = nickname.StudentId;
+                        }
+                        else
+                        {
+                            var existingNickname = _studentDataLayer.GetStudentNicknameByStudentID(request.StudentID.Value);
+                            if (existingNickname == null)
+                            {
+                                response.Status = HttpStatusCode.NotFound;
+                                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find student"));
+                                return response;
+                            }
+                        }
+
+                        Checkinhistory checkIn = new Checkinhistory()
+                        {
+                            CheckInTime = DateTime.Now,
+                            StudentId = request.StudentID,
+                            UnitId = request.UnitID,
+                        };
+
+                        _checkInDataLayer.CheckIn(checkIn);
+                        _checkInDataLayer.Save();
+
+                        response.StudentID = request.StudentID.Value;
+                        response.CheckInID = checkIn.CheckInId;
+                        response.Status = HttpStatusCode.OK;
+                        trans.Commit();
                     }
-
-                    AddStudentRequest addStudentRequest = new AddStudentRequest()
+                    catch (Exception ex)
                     {
-                        SID = request.SID,
-                        Nickname = request.Nickname
-                    };
-
-                    AddStudentResponse addStudentResponse = studentFacade.AddStudentNickname(addStudentRequest);
-
-                    request.StudentID = addStudentResponse.StudentID;
+                        trans.Rollback();
+                        throw ex;
+                    }
                 }
-
-                var existingByID = _studentDataLayer.GetStudentNicknameByStudentID(request.StudentID.Value);
-
-                if (existingByID == null)
-                    throw new NotFoundException("No student found for id " + request.StudentID);
-
-                int checkInID = _checkInDataLayer.CheckIn(request);
-
-                response.StudentID = request.StudentID.Value;
-                response.CheckInID = checkInID;
-                response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Warn(ex, "No student found for id " + request.SID);
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "No student found for id " + request.SID));
             }
             catch (Exception ex)
             {
@@ -112,31 +132,40 @@ namespace Helpdesk.Services
 
             try
             {
-                bool result = _checkInDataLayer.CheckOut(request);
+                var checkIn = _checkInDataLayer.GetCheckIn(request.CheckInID);
 
-                if (result == false)
-                    throw new NotFoundException("Unable to find check in item!");
-
-                var queueItems = _queueDataLayer.GetQueueItemsByCheckIn(request.CheckInID);
-                UpdateQueueItemStatusRequest removeRequest = new UpdateQueueItemStatusRequest()
+                if (checkIn == null)
                 {
-                    TimeRemoved = DateTime.Now,
-                };
-
-                foreach (var item in queueItems)
-                {
-                    removeRequest.QueueID = item.ItemId;
-                    _queueDataLayer.UpdateQueueItemStatus(removeRequest);
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find check in."));
+                    return response;
                 }
 
-                response.Result = result;
+                using (IDbContextTransaction trans = _checkInDataLayer.GetTransaction())
+                {
+                    try
+                    {
+                        checkIn.CheckoutTime = DateTime.Now;
+                        if (request.ForcedCheckout.HasValue)
+                            checkIn.ForcedCheckout = request.ForcedCheckout;
+
+                        var queueItems = _queueDataLayer.GetQueueItemsByCheckIn(request.CheckInID);
+
+                        foreach (var item in queueItems)
+                        {
+                            item.TimeRemoved = DateTime.Now;
+                        }
+                        _queueDataLayer.Save();
+                        _checkInDataLayer.Save();
+                        trans.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        throw ex;
+                    }
+                }
                 response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Warn(ex, "Unable to find check out item");
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find check out item"));
             }
             catch (Exception ex)
             {
@@ -158,14 +187,22 @@ namespace Helpdesk.Services
 
             try
             {
-                response.CheckIns = _checkInDataLayer.GetCheckinsByHelpdeskId(helpdeskId);
-                response.Status = HttpStatusCode.OK;
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Trace(ex, "No check ins found");
-                response.Status = HttpStatusCode.NotFound;
-                response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "No check ins found"));
+                var checkIns = _checkInDataLayer.GetCheckinsByHelpdeskId(helpdeskId);
+
+                if (checkIns.Count == 0)
+                {
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "No checkins found."));
+                }
+                else
+                {
+                    foreach (Checkinhistory checkin in checkIns)
+                    {
+                        response.CheckIns.Add(DAO2DTO(checkin));
+                    }
+                    response.Status = HttpStatusCode.OK;
+                }
+
             }
             catch (Exception ex)
             {
@@ -175,6 +212,19 @@ namespace Helpdesk.Services
             }
 
             return response;
+        }
+
+        public CheckInDTO DAO2DTO(Checkinhistory checkIn)
+        {
+            CheckInDTO dto = new CheckInDTO()
+            {
+                CheckInId = checkIn.CheckInId,
+                Nickname = checkIn.Student.NickName,
+                UnitId = checkIn.UnitId,
+                StudentId = checkIn.StudentId.Value
+            };
+
+            return dto;
         }
     }
 }
