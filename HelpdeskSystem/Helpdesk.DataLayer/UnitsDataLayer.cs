@@ -159,7 +159,7 @@ namespace Helpdesk.DataLayer
 
         public void Save()
         {
-            context.Dispose();
+            context.SaveChanges();
         }
 
         public IDbContextTransaction GetTransaction()

@@ -159,6 +159,11 @@ namespace Helpdesk.DataLayer
             return context.Timespans.FirstOrDefault(t => t.SpanId == id);
         }
 
+        public Timespans GetTimeSpanByName(string name)
+        {
+            return context.Timespans.FirstOrDefault(t => t.Name == name);
+        }
+
         public List<Timespans> GetTimeSpans()
         {
             return context.Timespans.ToList();
@@ -179,5 +184,6 @@ namespace Helpdesk.DataLayer
         {
             context.SaveChanges();
         }
+
     }
 }

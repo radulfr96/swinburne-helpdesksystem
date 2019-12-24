@@ -313,6 +313,15 @@ namespace Helpdesk.Services
                     return response;
                 }
 
+                var existingTimeSpan = _helpdeskDataLayer.GetTimeSpanByName(request.Name);
+
+                if (existingTimeSpan != null)
+                {
+                    response.Status = HttpStatusCode.BadRequest;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Timespan with this name already exists."));
+                    return response;
+                }
+
                 Timespans timespan = new Timespans()
                 {
                     EndDate = request.EndDate,
@@ -543,8 +552,8 @@ namespace Helpdesk.Services
                 var timespan = _helpdeskDataLayer.GetTimeSpan(id);
                 if (timespan == null)
                 {
-                    response.Status = HttpStatusCode.BadRequest;
-                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Unable to find timespan"));
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find timespan"));
                 }
                 else
                 {

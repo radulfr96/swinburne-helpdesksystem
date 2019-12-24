@@ -27,6 +27,11 @@ namespace Helpdesk.DataLayer
             context.Topic.Add(topic);
         }
 
+        public Topic GetTopic(int id)
+        {
+            return context.Topic.FirstOrDefault(t => t.TopicId == id);
+        }
+
         public List<Topic> GetTopicsByUnitID(int id)
         {
             List<Topic> topics = new List<Topic>();
@@ -71,6 +76,11 @@ namespace Helpdesk.DataLayer
                     conn.Close();
             }
             return topics;
+        }
+
+        public void DeleteTopic(Topic topic)
+        {
+            context.Topic.Remove(topic);
         }
 
         public void Dispose()

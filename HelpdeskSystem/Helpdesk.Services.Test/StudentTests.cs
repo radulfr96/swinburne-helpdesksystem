@@ -128,7 +128,6 @@ namespace Helpdesk.Services.Test
             EditStudentNicknameResponse editStudentNicknameResponse = studentFacade.EditStudentNickname(editStudentNicknameRequest);
 
             Assert.AreEqual(HttpStatusCode.OK, editStudentNicknameResponse.Status);
-            Assert.IsTrue(editStudentNicknameResponse.Result);
 
             using (helpdesksystemContext context = new helpdesksystemContext())
             {

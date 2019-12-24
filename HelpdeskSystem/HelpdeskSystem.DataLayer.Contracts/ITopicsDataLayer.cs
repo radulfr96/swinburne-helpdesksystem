@@ -12,6 +12,8 @@ namespace Helpdesk.DataLayer.Contracts
     /// </summary>
     public interface ITopicsDataLayer : IDisposable
     {
+        Topic GetTopic(int id);
+
         /// <summary>
         /// This method retrieves all topics of a specific unit from the database
         /// </summary>
@@ -26,6 +28,8 @@ namespace Helpdesk.DataLayer.Contracts
         DataTable GetTopicsAsDataTable();
 
         void AddTopic(Topic topic);
+
+        void DeleteTopic(Topic topic);
 
         void Save();
     }

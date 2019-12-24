@@ -100,6 +100,21 @@ namespace Helpdesk.Services
                                 UnitId = unit.UnitId
                             });
 
+
+                            foreach (string topic in request.Topics)
+                            {
+                                unit.Topic.Add(new Topic()
+                                {
+                                    IsDeleted = false,
+                                    Name = topic,
+                                    UnitId = unit.UnitId
+                                });
+                            }
+
+                            _unitsDataLayer.Save();
+
+                            response.UnitID = unit.UnitId;
+
                             trans.Commit();
                         }
                         catch (Exception ex)
@@ -174,6 +189,7 @@ namespace Helpdesk.Services
                             }
 
                             _topicsDataLayer.Save();
+                            response.UnitID = request.UnitID;
                             trans.Commit();
                         }
                         catch (Exception ex)
@@ -286,6 +302,16 @@ namespace Helpdesk.Services
                 {
                     response.Status = HttpStatusCode.NotFound;
                     response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find user."));
+                    return response;
+                }
+
+                var topicIds = unit.Topic.Select(t => t.TopicId).ToList();
+
+                foreach (int topicId in topicIds)
+                {
+                    var topic = _topicsDataLayer.GetTopic(topicId);
+                    _topicsDataLayer.DeleteTopic(topic);
+                    _topicsDataLayer.Save();
                 }
 
                 _unitsDataLayer.DeleteUnit(unit);

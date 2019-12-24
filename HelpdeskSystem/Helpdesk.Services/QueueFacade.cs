@@ -82,11 +82,23 @@ namespace Helpdesk.Services
 
                     if (request.CheckInID.HasValue)
                     {
-                        _checkInDataLayer.AddCheckinQueueItem(new Checkinqueueitem()
+                        var checkIn = _checkInDataLayer.GetCheckIn(request.CheckInID.Value);
+
+                        if (checkIn == null)
+                        {
+                            trans.Rollback();
+                            response.Status = HttpStatusCode.NotFound;
+                            response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Check in not in database."));
+                            return response;
+                        }
+
+                        Checkinqueueitem checkinqueueitem = new Checkinqueueitem()
                         {
                             CheckInId = request.CheckInID.Value,
                             QueueItemId = item.ItemId
-                        });
+                        };
+
+                        _checkInDataLayer.AddCheckinQueueItem(checkinqueueitem);
                         _checkInDataLayer.Save();
                     }
 

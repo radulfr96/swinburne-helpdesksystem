@@ -130,6 +130,7 @@ namespace Helpdesk.Services
                 };
 
                 _studentDataLayer.AddStudentNickname(nickname);
+                _studentDataLayer.Save();
 
                 response.StudentID = nickname.StudentId;
                 response.Status = HttpStatusCode.OK;
@@ -174,7 +175,16 @@ namespace Helpdesk.Services
 
                 nickname = _studentDataLayer.GetStudentNicknameByStudentID(request.StudentID);
 
+                if (nickname == null)
+                {
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find nickname."));
+                    return response;
+                }
+
                 nickname.NickName = request.Nickname;
+                _studentDataLayer.Save();
+
                 response.Status = HttpStatusCode.OK;
 
             }

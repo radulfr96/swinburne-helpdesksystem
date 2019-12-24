@@ -70,6 +70,8 @@ namespace Helpdesk.DataLayer.Contracts
         /// <returns>The timespan DTO</returns>
         Timespans GetTimeSpan(int id);
 
+        Timespans GetTimeSpanByName(string name);
+
         /// <summary>
         /// This method retrieves a list of all the timespans in the database
         /// </summary>
