@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Helpdesk.Common.Requests.Queue;
+using Helpdesk.Common.Responses.Queue;
 using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -31,8 +32,20 @@ namespace Helpdesk.Website.Controllers.api
 		{
 			try
 			{
-				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer(), new CheckInDataLayer(), new TopicsDataLayer());
-				var response = facade.AddToQueue(request);
+				var response = new AddToQueueResponse();
+
+				using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+				using (StudentDataLayer studentDataLayer = new StudentDataLayer())
+				using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+				using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+				{
+					var facade = new QueueFacade(
+						queueDataLayer
+						, studentDataLayer
+						, checkInDataLayer
+						, topicsDataLayer);
+					response = facade.AddToQueue(request);
+				}
 
 				switch (response.Status)
 				{
@@ -65,8 +78,20 @@ namespace Helpdesk.Website.Controllers.api
 		{
 			try
 			{
-				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer(), new CheckInDataLayer(), new TopicsDataLayer());
-				var response = facade.GetQueueItemsByHelpdeskID(id);
+				var response = new GetQueueItemsByHelpdeskIDResponse();
+
+				using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+				using (StudentDataLayer studentDataLayer = new StudentDataLayer())
+				using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+				using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+				{
+					var facade = new QueueFacade(
+						queueDataLayer
+						, studentDataLayer
+						, checkInDataLayer
+						, topicsDataLayer);
+					response = facade.GetQueueItemsByHelpdeskID(id);
+				}
 
 				switch (response.Status)
 				{
@@ -100,8 +125,20 @@ namespace Helpdesk.Website.Controllers.api
 		{
 			try
 			{
-				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer(), new CheckInDataLayer(), new TopicsDataLayer());
-				var response = facade.UpdateQueueItem(request);
+				var response = new UpdateQueueItemResponse();
+				using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+				using (StudentDataLayer studentDataLayer = new StudentDataLayer())
+				using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+				using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+				{
+					var facade = new QueueFacade (
+						queueDataLayer
+						, studentDataLayer
+						, checkInDataLayer
+						, topicsDataLayer
+					);
+					response = facade.UpdateQueueItem(request);
+				}
 
 				switch (response.Status)
 				{
@@ -134,8 +171,21 @@ namespace Helpdesk.Website.Controllers.api
 		{
 			try
 			{
-				var facade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer(), new CheckInDataLayer(),  new TopicsDataLayer());
-				var response = facade.UpdateQueueItemStatus(request);
+				var response = new UpdateQueueItemStatusResponse();
+
+				using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+				using (StudentDataLayer studentDataLayer = new StudentDataLayer())
+				using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+				using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+				{
+					var facade = new QueueFacade(
+						queueDataLayer
+						, studentDataLayer
+						, checkInDataLayer
+						, topicsDataLayer
+					);
+					response = facade.UpdateQueueItemStatus(request);
+				}
 
 				switch (response.Status)
 				{

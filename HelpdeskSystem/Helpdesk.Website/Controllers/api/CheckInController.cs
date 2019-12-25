@@ -35,7 +35,7 @@ namespace Helpdesk.Website.Controllers.api
                 CheckInResponse response = new CheckInResponse();
 
                 using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
-                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
                 using (QueueDataLayer queueDataLayer = new QueueDataLayer())
                 {
                     var facade = new CheckInFacade(checkInDataLayer, studentDataLayer, queueDataLayer);
@@ -77,10 +77,10 @@ namespace Helpdesk.Website.Controllers.api
                 CheckOutResponse response = new CheckOutResponse();
 
                 using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
-                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
                 using (QueueDataLayer queueDataLayer = new QueueDataLayer())
                 {
-                    var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDatalayer(), new QueueDataLayer());
+                    var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
                     response = facade.CheckOut(request);
                 }
 
@@ -118,10 +118,10 @@ namespace Helpdesk.Website.Controllers.api
                 GetCheckInsResponse response = new GetCheckInsResponse();
 
                 using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
-                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
                 using (QueueDataLayer queueDataLayer = new QueueDataLayer())
                 {
-                    var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDatalayer(), new QueueDataLayer());
+                    var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
                     response = facade.GetCheckInsByHelpdeskId(id);
                 }
 

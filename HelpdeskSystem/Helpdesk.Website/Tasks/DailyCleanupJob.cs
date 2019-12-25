@@ -28,7 +28,7 @@ namespace Helpdesk.Website
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
                 var helpdeskIds = facade.GetHelpdesks().Helpdesks.Select(h => h.HelpdeskID).ToList();

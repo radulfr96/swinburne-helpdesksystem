@@ -13,11 +13,11 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Helpdesk.DataLayer
 {
-    public class StudentDatalayer : IStudentDataLayer, IDisposable
+    public class StudentDataLayer : IStudentDataLayer, IDisposable
     {
         private helpdesksystemContext context;
 
-        public StudentDatalayer()
+        public StudentDataLayer()
         {
             context = new helpdesksystemContext();
         }

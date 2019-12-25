@@ -42,7 +42,7 @@ namespace Helpdesk.Website.Controllers.api
                 using (UsersDataLayer usersDataLayer = new UsersDataLayer())
                 using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
                 using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
                 using (QueueDataLayer queueDataLayer = new QueueDataLayer())
                 using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
                 {
@@ -96,7 +96,7 @@ namespace Helpdesk.Website.Controllers.api
                 using (UsersDataLayer usersDataLayer = new UsersDataLayer())
                 using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
                 using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
                 using (QueueDataLayer queueDataLayer = new QueueDataLayer())
                 using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
                 {
@@ -150,7 +150,7 @@ namespace Helpdesk.Website.Controllers.api
                 using (UsersDataLayer usersDataLayer = new UsersDataLayer())
                 using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
                 using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
                 using (QueueDataLayer queueDataLayer = new QueueDataLayer())
                 using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
                 {
@@ -210,7 +210,7 @@ namespace Helpdesk.Website.Controllers.api
                 using (UsersDataLayer usersDataLayer = new UsersDataLayer())
                 using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
                 using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
                 using (QueueDataLayer queueDataLayer = new QueueDataLayer())
                 using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
                 {
@@ -271,7 +271,7 @@ namespace Helpdesk.Website.Controllers.api
                 using (UsersDataLayer usersDataLayer = new UsersDataLayer())
                 using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
                 using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
                 using (QueueDataLayer queueDataLayer = new QueueDataLayer())
                 using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
                 {
@@ -327,7 +327,7 @@ namespace Helpdesk.Website.Controllers.api
                 using (UsersDataLayer usersDataLayer = new UsersDataLayer())
                 using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
                 using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
                 using (QueueDataLayer queueDataLayer = new QueueDataLayer())
                 using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
                 {
@@ -384,7 +384,7 @@ namespace Helpdesk.Website.Controllers.api
                 using (UsersDataLayer usersDataLayer = new UsersDataLayer())
                 using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
                 using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
                 using (QueueDataLayer queueDataLayer = new QueueDataLayer())
                 using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
                 {
@@ -441,7 +441,7 @@ namespace Helpdesk.Website.Controllers.api
                 using (UsersDataLayer usersDataLayer = new UsersDataLayer())
                 using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
                 using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
                 using (QueueDataLayer queueDataLayer = new QueueDataLayer())
                 using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
                 {
@@ -499,7 +499,7 @@ namespace Helpdesk.Website.Controllers.api
                 using (UsersDataLayer usersDataLayer = new UsersDataLayer())
                 using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
                 using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
                 using (QueueDataLayer queueDataLayer = new QueueDataLayer())
                 using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
                 {
@@ -556,7 +556,7 @@ namespace Helpdesk.Website.Controllers.api
                 using (UsersDataLayer usersDataLayer = new UsersDataLayer())
                 using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
                 using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
                 using (QueueDataLayer queueDataLayer = new QueueDataLayer())
                 using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
                 {
@@ -612,7 +612,7 @@ namespace Helpdesk.Website.Controllers.api
                 using (UsersDataLayer usersDataLayer = new UsersDataLayer())
                 using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
                 using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
                 using (QueueDataLayer queueDataLayer = new QueueDataLayer())
                 using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
                 {
@@ -670,7 +670,7 @@ namespace Helpdesk.Website.Controllers.api
                 using (UsersDataLayer usersDataLayer = new UsersDataLayer())
                 using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
                 using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
                 using (QueueDataLayer queueDataLayer = new QueueDataLayer())
                 using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
                 {

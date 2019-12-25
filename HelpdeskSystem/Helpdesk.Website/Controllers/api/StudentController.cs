@@ -34,7 +34,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new StudentFacade(new StudentDatalayer());
+                var facade = new StudentFacade(new StudentDataLayer());
                 var response = facade.GetAllNicknames();
 
                 switch (response.Status)
@@ -69,7 +69,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new StudentFacade(new StudentDatalayer());
+                var facade = new StudentFacade(new StudentDataLayer());
                 var response = facade.GetStudentByNickname(nickname);
 
                 switch (response.Status)
@@ -105,7 +105,7 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new StudentFacade(new StudentDatalayer());
+                var facade = new StudentFacade(new StudentDataLayer());
                 var response = facade.EditStudentNickname(request);
 
                 switch (response.Status)
@@ -140,7 +140,7 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new StudentFacade(new StudentDatalayer());
+                var facade = new StudentFacade(new StudentDataLayer());
                 var response = facade.ValidateNickname(request);
 
                 switch (response.Status)
@@ -175,7 +175,7 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new StudentFacade(new StudentDatalayer());
+                var facade = new StudentFacade(new StudentDataLayer());
                 var response = facade.GenerateNickname();
 
                 switch (response.Status)

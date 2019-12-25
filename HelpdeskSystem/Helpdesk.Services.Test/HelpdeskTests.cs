@@ -59,7 +59,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
             var response = facade.AddHelpdesk(request);
@@ -82,7 +82,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
             var response = facade.GetHelpdesks();
@@ -115,7 +115,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
             var response = facade.GetActiveHelpdesks();
@@ -144,7 +144,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
             var response = facade.GetHelpdesk(data.Response.HelpdeskID);
@@ -164,7 +164,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
             var response = facade.GetHelpdesk(-1);
@@ -192,7 +192,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
             var response = facade.AddHelpdesk(request);
@@ -241,7 +241,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
             var updateRequest = new UpdateHelpdeskRequest()
@@ -431,7 +431,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
 
@@ -462,7 +462,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
 
@@ -578,7 +578,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
 
@@ -606,7 +606,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
 
@@ -641,7 +641,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
 
@@ -687,7 +687,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
             AddHelpdeskResponse addHelpdeskResponse = helpdeskFacade.AddHelpdesk(addHelpdeskRequest);
@@ -737,7 +737,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
             AddHelpdeskResponse addHelpdeskResponse = helpdeskFacade.AddHelpdesk(addHelpdeskRequest);
@@ -782,7 +782,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
 
@@ -802,7 +802,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
             var response = helpdeskFacade.ExportDatabase();
@@ -821,7 +821,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
 
@@ -864,7 +864,7 @@ namespace Helpdesk.Services.Test
                 , new UsersDataLayer()
                 , new UnitsDataLayer()
                 , new TopicsDataLayer()
-                , new StudentDatalayer()
+                , new StudentDataLayer()
                 , new QueueDataLayer()
                 , new CheckInDataLayer());
 
