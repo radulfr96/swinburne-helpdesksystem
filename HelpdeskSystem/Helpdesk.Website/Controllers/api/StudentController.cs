@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Helpdesk.Common.Requests.Students;
+using Helpdesk.Common.Responses.Students;
 using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -34,8 +35,13 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new StudentFacade(new StudentDataLayer());
-                var response = facade.GetAllNicknames();
+                var response = new GetAllNicknamesResponse();
+
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
+                {
+                    var facade = new StudentFacade(new StudentDataLayer());
+                    response = facade.GetAllNicknames();
+                }
 
                 switch (response.Status)
                 {
@@ -69,8 +75,12 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new StudentFacade(new StudentDataLayer());
-                var response = facade.GetStudentByNickname(nickname);
+                var response = new GetStudentResponse();
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
+                {
+                    var facade = new StudentFacade(new StudentDataLayer());
+                    response = facade.GetStudentByNickname(nickname);
+                }
 
                 switch (response.Status)
                 {
@@ -105,8 +115,13 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new StudentFacade(new StudentDataLayer());
-                var response = facade.EditStudentNickname(request);
+                var response = new EditStudentNicknameResponse();
+
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
+                {
+                    var facade = new StudentFacade(new StudentDataLayer());
+                    response = facade.EditStudentNickname(request);
+                }
 
                 switch (response.Status)
                 {
@@ -140,8 +155,12 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new StudentFacade(new StudentDataLayer());
-                var response = facade.ValidateNickname(request);
+                var response = new ValidateNicknameResponse();
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
+                {
+                    var facade = new StudentFacade(new StudentDataLayer());
+                    response = facade.ValidateNickname(request);
+                }
 
                 switch (response.Status)
                 {
@@ -175,8 +194,14 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new StudentFacade(new StudentDataLayer());
-                var response = facade.GenerateNickname();
+                var response = new GenerateNicknameResponse();
+
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
+                {
+                    var facade = new StudentFacade(new StudentDataLayer());
+                    response = facade.GenerateNickname();
+                }
+
 
                 switch (response.Status)
                 {
