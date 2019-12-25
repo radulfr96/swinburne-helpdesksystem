@@ -58,17 +58,17 @@ namespace Helpdesk.Services
 
                     if (!request.StudentID.HasValue)
                     {
-                        var addResponse = studentFacade.AddStudentNickname(new AddStudentRequest()
+                        var nickname = new Nicknames()
                         {
-                            Nickname = request.Nickname,
-                            SID = request.SID
-                        });
+                            Sid = request.SID,
+                            NickName = request.Nickname
+                        };
 
-                        if (addResponse.Status != HttpStatusCode.OK)
+                        if (nickname.StudentId == 0)
                         {
                             throw new Exception("Unable to add student nickname");
                         }
-                        request.StudentID = addResponse.StudentID;
+                        request.StudentID = nickname.StudentId;
                     }
 
                     var item = new Queueitem()

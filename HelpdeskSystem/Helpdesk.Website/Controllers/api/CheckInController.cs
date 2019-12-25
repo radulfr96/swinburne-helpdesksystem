@@ -1,4 +1,5 @@
 ﻿using Helpdesk.Common.Requests.CheckIn;
+using Helpdesk.Common.Responses.CheckIn;
 using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -31,8 +32,16 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDatalayer(), new QueueDataLayer());
-                var response = facade.CheckIn(request);
+                CheckInResponse response = new CheckInResponse();
+
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                {
+                    var facade = new CheckInFacade(checkInDataLayer, studentDataLayer, queueDataLayer);
+                    response = facade.CheckIn(request);
+
+                }
 
                 switch (response.Status)
                 {
@@ -65,8 +74,15 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDatalayer(), new QueueDataLayer());
-                var response = facade.CheckOut(request);
+                CheckOutResponse response = new CheckOutResponse();
+
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                {
+                    var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDatalayer(), new QueueDataLayer());
+                    response = facade.CheckOut(request);
+                }
 
                 switch (response.Status)
                 {
@@ -99,8 +115,15 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDatalayer(), new QueueDataLayer());
-                var response = facade.GetCheckInsByHelpdeskId(id);
+                GetCheckInsResponse response = new GetCheckInsResponse();
+
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                {
+                    var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDatalayer(), new QueueDataLayer());
+                    response = facade.GetCheckInsByHelpdeskId(id);
+                }
 
                 switch (response.Status)
                 {

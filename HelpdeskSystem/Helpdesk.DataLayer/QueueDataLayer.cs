@@ -22,6 +22,7 @@ namespace Helpdesk.DataLayer
         public QueueDataLayer()
         {
             context = new helpdesksystemContext();
+            context.Database.SetCommandTimeout(200000);
         }
 
         public void AddToQueue(Queueitem item)
