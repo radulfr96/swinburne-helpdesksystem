@@ -26,12 +26,14 @@ namespace Helpdesk.Services
         private IStudentDataLayer _studentDataLayer;
         private IQueueDataLayer _queueDataLayer;
         private ICheckInDataLayer _checkInDataLayer;
+        private ITopicsDataLayer _topicsDataLayer;
 
-        public QueueFacade(IQueueDataLayer queueDataLayer, IStudentDataLayer studentDataLayer, ICheckInDataLayer checkInDataLayer)
+        public QueueFacade(IQueueDataLayer queueDataLayer, IStudentDataLayer studentDataLayer, ICheckInDataLayer checkInDataLayer, ITopicsDataLayer topicsDataLayer)
         {
             _studentDataLayer = studentDataLayer;
             _queueDataLayer = queueDataLayer;
             _checkInDataLayer = checkInDataLayer;
+            _topicsDataLayer = topicsDataLayer;
         }
 
         /// <summary>
@@ -144,6 +146,15 @@ namespace Helpdesk.Services
                 }
                 else
                 {
+                    var topic = _topicsDataLayer.GetTopic(request.TopicID);
+
+                    if (topic == null)
+                    {
+                        response.Status = HttpStatusCode.NotFound;
+                        response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find topic."));
+                        return response;
+                    }
+
                     item.Description = request.Description;
                     item.TopicId = request.TopicID;
                     _queueDataLayer.Save();
@@ -185,6 +196,13 @@ namespace Helpdesk.Services
                 {
                     response.Status = HttpStatusCode.NotFound;
                     response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find queue item."));
+                    return response;
+                }
+                else if (item.TimeAdded > request.TimeRemoved)
+                {
+                    response.Status = HttpStatusCode.BadRequest;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Time removed is before time added."));
+                    return response;
                 }
                 else
                 {
@@ -196,6 +214,7 @@ namespace Helpdesk.Services
 
                     _queueDataLayer.Save();
                 }
+                response.Status = HttpStatusCode.OK;
             }
             catch (Exception ex)
             {

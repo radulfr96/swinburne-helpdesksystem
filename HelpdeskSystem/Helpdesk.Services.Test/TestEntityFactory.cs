@@ -123,7 +123,7 @@ namespace Helpdesk.Services.Test
                 , new CheckInDataLayer());
             UnitsFacade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
             TopicsFacade = new TopicsFacade(new TopicsDataLayer());
-            QueueFacade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer(), new CheckInDataLayer());
+            QueueFacade = new QueueFacade(new QueueDataLayer(), new StudentDatalayer(), new CheckInDataLayer(), new TopicsDataLayer());
             CheckInFacade = new CheckInFacade(new CheckInDataLayer(), new StudentDatalayer(), new QueueDataLayer());
             StudentFacade = new StudentFacade(new StudentDatalayer());
         }

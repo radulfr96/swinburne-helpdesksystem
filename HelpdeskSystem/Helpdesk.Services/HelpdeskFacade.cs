@@ -204,6 +204,14 @@ namespace Helpdesk.Services
                     return response;
 
                 var helpdesk = _helpdeskDataLayer.GetHelpdesk(request.HelpdeskID);
+
+                if (helpdesk == null)
+                {
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find helpdesk."));
+                    return response;
+                }
+
                 helpdesk.HasCheckIn = request.HasCheckIn;
                 helpdesk.HasQueue = request.HasQueue;
                 helpdesk.Name = request.Name;
@@ -364,7 +372,23 @@ namespace Helpdesk.Services
                 if (response.Status == HttpStatusCode.BadRequest)
                     return response;
 
+                var existingTimeSpan = _helpdeskDataLayer.GetTimeSpanByName(request.Name);
+
+                if (existingTimeSpan != null && existingTimeSpan.SpanId != request.TimeSpanID)
+                {
+                    response.Status = HttpStatusCode.BadRequest;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Timespan with that name already exists."));
+                    return response;
+                }
+
                 var timespan = _helpdeskDataLayer.GetTimeSpan(request.TimeSpanID);
+
+                if (timespan == null)
+                {
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find timespan."));
+                    return response;
+                }
 
                 timespan.EndDate = request.EndDate;
                 timespan.Name = request.Name;

@@ -513,7 +513,6 @@ namespace Helpdesk.Services.Test
             UpdateTimeSpanResponse updateTimespanResponse = testEntityFactory.HelpdeskFacade.UpdateTimeSpan(updateTimespanRequest);
 
             Assert.AreEqual(HttpStatusCode.OK, updateTimespanResponse.Status);
-            Assert.IsTrue(updateTimespanResponse.Result);
 
             using (helpdesksystemContext context = new helpdesksystemContext())
             {
@@ -566,7 +565,6 @@ namespace Helpdesk.Services.Test
             var updateTimespanResponse = testEntityFactory.HelpdeskFacade.UpdateTimeSpan(updateTimespanRequest);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, updateTimespanResponse.Status);
-            Assert.IsFalse(updateTimespanResponse.Result);
         }
 
         /// <summary>

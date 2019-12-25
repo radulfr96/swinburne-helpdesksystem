@@ -82,7 +82,7 @@ namespace Helpdesk.Services
                             {
                                 Code = request.Code,
                                 Name = request.Name,
-                                IsDeleted = false,
+                                IsDeleted = request.IsDeleted,
                             };
 
                             _unitsDataLayer.AddUnit(unit);
@@ -137,7 +137,7 @@ namespace Helpdesk.Services
 
                     Unit existingUnitWithName = _unitsDataLayer.GetUnitByNameAndHelpdeskId(request.Name, request.HelpdeskID);
 
-                    if (existingUnitWithName != null)
+                    if (existingUnitWithName != null && existingUnit.UnitId != request.UnitID)
                     {
                         response.Status = HttpStatusCode.BadRequest;
                         response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Unit with that name already exists"));
@@ -146,7 +146,7 @@ namespace Helpdesk.Services
 
                     Unit existingUnitCode = _unitsDataLayer.GetUnitByCodeAndHelpdeskId(request.Code, request.HelpdeskID);
 
-                    if (existingUnitCode != null)
+                    if (existingUnitCode != null && existingUnit.UnitId != request.UnitID)
                     {
                         response.Status = HttpStatusCode.BadRequest;
                         response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Unit with that code already exists"));
@@ -167,12 +167,15 @@ namespace Helpdesk.Services
                             {
                                 if (request.Topics.Contains(topic.Name))
                                 {
-                                    topic.IsDeleted = false;
+                                    var realTopic = _topicsDataLayer.GetTopic(topic.TopicId);
+                                    realTopic.IsDeleted = false;
                                 }
                                 else
                                 {
-                                    topic.IsDeleted = true;
+                                    var realTopic = _topicsDataLayer.GetTopic(topic.TopicId);
+                                    realTopic.IsDeleted = true;
                                 }
+                                _topicsDataLayer.Save();
                             }
 
                             foreach (string topic in request.Topics)
@@ -186,9 +189,9 @@ namespace Helpdesk.Services
                                         Name = topic,
                                     });
                                 }
+                                _topicsDataLayer.Save();
                             }
 
-                            _topicsDataLayer.Save();
                             response.UnitID = request.UnitID;
                             trans.Commit();
                         }
@@ -305,16 +308,14 @@ namespace Helpdesk.Services
                     return response;
                 }
 
-                var topicIds = unit.Topic.Select(t => t.TopicId).ToList();
-
-                foreach (int topicId in topicIds)
+                foreach (Topic topic in unit.Topic)
                 {
-                    var topic = _topicsDataLayer.GetTopic(topicId);
-                    _topicsDataLayer.DeleteTopic(topic);
+                    topic.IsDeleted = true;
                     _topicsDataLayer.Save();
                 }
 
-                _unitsDataLayer.DeleteUnit(unit);
+                unit.IsDeleted = true;
+
                 _unitsDataLayer.Save();
 
                 response.Status = HttpStatusCode.OK;
