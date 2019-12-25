@@ -37,8 +37,12 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
-                var response = facade.AddOrUpdateUnit(request);
+                var response = new AddUpdateUnitResponse();
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                {
+                    var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
+                    response = facade.AddOrUpdateUnit(request);
+                }
 
                 switch (response.Status)
                 {
@@ -74,8 +78,13 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
-                var response = facade.GetUnit(id);
+                var response =  new GetUnitResponse();
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                {
+                    var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
+                    response = facade.GetUnit(id);
+                }
 
                 switch (response.Status)
                 {
@@ -111,8 +120,15 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UnitsFacade( new UnitsDataLayer(), new TopicsDataLayer());
-                var response = facade.GetUnitsByHelpdeskID(id, false);
+                var response = new GetUnitsByHelpdeskIDResponse();
+
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                {
+                    var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
+                    response = facade.GetUnitsByHelpdeskID(id, false);
+                }
+
 
                 switch (response.Status)
                 {
@@ -147,8 +163,14 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
-                var response = facade.GetUnitsByHelpdeskID(id, true);
+                var response = new GetUnitsByHelpdeskIDResponse();
+
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                {
+                    var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
+                    response = facade.GetUnitsByHelpdeskID(id, true);
+                }
 
                 switch (response.Status)
                 {
@@ -184,8 +206,14 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
-                var response = facade.DeleteUnit(id);
+                var response = new DeleteUnitResponse();
+
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                {
+                    var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
+                    response = facade.DeleteUnit(id);
+                }
 
                 switch (response.Status)
                 {
