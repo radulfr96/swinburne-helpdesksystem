@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Helpdesk.Common.Requests.Users;
+using Helpdesk.Common.Responses.Users;
 using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -35,8 +36,14 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UsersFacade(new UsersDataLayer());
-                var response = facade.GetUser(id);
+                var response = new GetUserResponse();
+
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                { 
+                    var facade = new UsersFacade(new UsersDataLayer());
+                    response = facade.GetUser(id);
+                }
+
 
                 switch (response.Status)
                 {
@@ -73,8 +80,13 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UsersFacade(new UsersDataLayer());
-                var response = facade.GetUsers();
+                var response = new GetUsersResponse();
+
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                {
+                    var facade = new UsersFacade(new UsersDataLayer());
+                    response = facade.GetUsers();
+                }
 
                 switch (response.Status)
                 {
@@ -110,8 +122,13 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UsersFacade(new UsersDataLayer());
-                var response = facade.AddUser(request);
+                var response = new AddUserResponse();
+
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                {
+                    var facade = new UsersFacade(new UsersDataLayer());
+                    response = facade.AddUser(request);
+                }
 
                 switch (response.Status)
                 {
@@ -150,8 +167,13 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UsersFacade(new UsersDataLayer());
-                var response = facade.UpdateUser(request);
+                var response = new UpdateUserResponse();
+
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                {
+                    var facade = new UsersFacade(new UsersDataLayer());
+                    response = facade.UpdateUser(request);
+                }
 
                 switch (response.Status)
                 {
@@ -189,8 +211,13 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UsersFacade(new UsersDataLayer());
-                var response = facade.DeleteUser(id, GetUsername());
+                var response = new DeleteUserResponse();
+
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                {
+                    var facade = new UsersFacade(new UsersDataLayer());
+                    response = facade.DeleteUser(id, GetUsername());
+                }
 
                 switch (response.Status)
                 {
@@ -230,8 +257,13 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new UsersFacade(new UsersDataLayer());
-                var response = facade.LoginUser(request);
+                var response = new LoginResponse();
+
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                {
+                    var facade = new UsersFacade(new UsersDataLayer());
+                    response = facade.LoginUser(request);
+                }
 
                 switch (response.Status)
                 {
