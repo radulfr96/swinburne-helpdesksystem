@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Helpdesk.Common.Requests.Helpdesk;
+using Helpdesk.Common.Responses.Helpdesk;
 using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -34,15 +36,27 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new HelpdeskFacade(
-                new HelpdeskDataLayer()
-                , new UsersDataLayer()
-                , new UnitsDataLayer()
-                , new TopicsDataLayer()
-                , new StudentDatalayer()
-                , new QueueDataLayer()
-                , new CheckInDataLayer());
-                var response = facade.GetHelpdesks();
+                GetHelpdesksResponse response = new GetHelpdesksResponse();
+
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                {
+                    var facade = new HelpdeskFacade(
+                        helpdeskDataLayer,
+                        usersDataLayer,
+                        unitsDataLayer,
+                        topicsDataLayer,
+                        studentDataLayer,
+                        queueDataLayer,
+                        checkInDataLayer
+                    );
+                    response = facade.GetHelpdesks();
+                }
 
                 switch (response.Status)
                 {
@@ -76,15 +90,28 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new HelpdeskFacade(
-                new HelpdeskDataLayer()
-                , new UsersDataLayer()
-                , new UnitsDataLayer()
-                , new TopicsDataLayer()
-                , new StudentDatalayer()
-                , new QueueDataLayer()
-                , new CheckInDataLayer());
-                var response = facade.GetActiveHelpdesks();
+                GetHelpdesksResponse response = new GetHelpdesksResponse();
+
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                {
+                    var facade = new HelpdeskFacade
+                    (
+                        helpdeskDataLayer,
+                        usersDataLayer,
+                        unitsDataLayer,
+                        topicsDataLayer,
+                        studentDataLayer,
+                        queueDataLayer,
+                        checkInDataLayer
+                    );
+                    response = facade.GetActiveHelpdesks();
+                }
 
                 switch (response.Status)
                 {
@@ -118,15 +145,27 @@ namespace Helpdesk.Website.Controllers.api
         {
             try
             {
-                var facade = new HelpdeskFacade(
-                new HelpdeskDataLayer()
-                , new UsersDataLayer()
-                , new UnitsDataLayer()
-                , new TopicsDataLayer()
-                , new StudentDatalayer()
-                , new QueueDataLayer()
-                , new CheckInDataLayer());
-                var response = facade.GetHelpdesk(id);
+                var response = new GetHelpdeskResponse();
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                {
+                    var facade = new HelpdeskFacade
+                    (
+                        helpdeskDataLayer,
+                        usersDataLayer,
+                        unitsDataLayer,
+                        topicsDataLayer,
+                        studentDataLayer,
+                        queueDataLayer,
+                        checkInDataLayer
+                    );
+                    response = facade.GetHelpdesk(id);
+                }
 
                 switch (response.Status)
                 {
@@ -165,15 +204,28 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade(
-                new HelpdeskDataLayer()
-                , new UsersDataLayer()
-                , new UnitsDataLayer()
-                , new TopicsDataLayer()
-                , new StudentDatalayer()
-                , new QueueDataLayer()
-                , new CheckInDataLayer());
-                var response = facade.AddHelpdesk(request);
+                var response = new AddHelpdeskResponse();
+
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                {
+                    var facade = new HelpdeskFacade
+                    (
+                        helpdeskDataLayer,
+                        usersDataLayer,
+                        unitsDataLayer,
+                        topicsDataLayer,
+                        studentDataLayer,
+                        queueDataLayer,
+                        checkInDataLayer
+                    );
+                    response = facade.AddHelpdesk(request);
+                }
 
                 switch (response.Status)
                 {
@@ -213,15 +265,28 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade(
-                new HelpdeskDataLayer()
-                , new UsersDataLayer()
-                , new UnitsDataLayer()
-                , new TopicsDataLayer()
-                , new StudentDatalayer()
-                , new QueueDataLayer()
-                , new CheckInDataLayer());
-                var response = facade.UpdateHelpdesk(request);
+                var response = new UpdateHelpdeskResponse();
+
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                {
+                    var facade = new HelpdeskFacade
+                    (
+                        helpdeskDataLayer,
+                        usersDataLayer,
+                        unitsDataLayer,
+                        topicsDataLayer,
+                        studentDataLayer,
+                        queueDataLayer,
+                        checkInDataLayer
+                    );
+                    response = facade.UpdateHelpdesk(request);
+                }
 
                 switch (response.Status)
                 {
@@ -256,15 +321,28 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade(
-                new HelpdeskDataLayer()
-                , new UsersDataLayer()
-                , new UnitsDataLayer()
-                , new TopicsDataLayer()
-                , new StudentDatalayer()
-                , new QueueDataLayer()
-                , new CheckInDataLayer());
-                var response = facade.GetTimeSpans();
+                var response = new GetTimeSpansResponse();
+
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                {
+                    var facade = new HelpdeskFacade
+                    (
+                        helpdeskDataLayer,
+                        usersDataLayer,
+                        unitsDataLayer,
+                        topicsDataLayer,
+                        studentDataLayer,
+                        queueDataLayer,
+                        checkInDataLayer
+                    );
+                    response = facade.GetTimeSpans();
+                }
 
                 switch (response.Status)
                 {
@@ -298,17 +376,30 @@ namespace Helpdesk.Website.Controllers.api
             if (!IsAuthorized())
                 return Unauthorized();
 
+            var response = new GetTimeSpanResponse();
+
             try
             {
-                var facade = new HelpdeskFacade(
-                new HelpdeskDataLayer()
-                , new UsersDataLayer()
-                , new UnitsDataLayer()
-                , new TopicsDataLayer()
-                , new StudentDatalayer()
-                , new QueueDataLayer()
-                , new CheckInDataLayer());
-                var response = facade.GetTimeSpan(id);
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                {
+                    var facade = new HelpdeskFacade
+                    (
+                        helpdeskDataLayer,
+                        usersDataLayer,
+                        unitsDataLayer,
+                        topicsDataLayer,
+                        studentDataLayer,
+                        queueDataLayer,
+                        checkInDataLayer
+                    );
+                    response = facade.GetTimeSpan(id);
+                }
 
                 switch (response.Status)
                 {
@@ -344,15 +435,28 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade(
-                new HelpdeskDataLayer()
-                , new UsersDataLayer()
-                , new UnitsDataLayer()
-                , new TopicsDataLayer()
-                , new StudentDatalayer()
-                , new QueueDataLayer()
-                , new CheckInDataLayer());
-                var response = facade.AddTimeSpan(request);
+                var response = new AddTimeSpanResponse();
+
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                {
+                    var facade = new HelpdeskFacade
+                    (
+                        helpdeskDataLayer,
+                        usersDataLayer,
+                        unitsDataLayer,
+                        topicsDataLayer,
+                        studentDataLayer,
+                        queueDataLayer,
+                        checkInDataLayer
+                    );
+                    response = facade.AddTimeSpan(request);
+                }
 
                 switch (response.Status)
                 {
@@ -389,15 +493,28 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade(
-                new HelpdeskDataLayer()
-                , new UsersDataLayer()
-                , new UnitsDataLayer()
-                , new TopicsDataLayer()
-                , new StudentDatalayer()
-                , new QueueDataLayer()
-                , new CheckInDataLayer());
-                var response = facade.UpdateTimeSpan(request);
+                var response = new UpdateTimeSpanResponse();
+
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                {
+                    var facade = new HelpdeskFacade
+                    (
+                        helpdeskDataLayer,
+                        usersDataLayer,
+                        unitsDataLayer,
+                        topicsDataLayer,
+                        studentDataLayer,
+                        queueDataLayer,
+                        checkInDataLayer
+                    );
+                    response = facade.UpdateTimeSpan(request);
+                }
 
                 switch (response.Status)
                 {
@@ -433,15 +550,28 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade(
-                new HelpdeskDataLayer()
-                , new UsersDataLayer()
-                , new UnitsDataLayer()
-                , new TopicsDataLayer()
-                , new StudentDatalayer()
-                , new QueueDataLayer()
-                , new CheckInDataLayer());
-                var response = facade.DeleteTimeSpan(id);
+                var response = new DeleteTimeSpanResponse();
+
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                {
+                    var facade = new HelpdeskFacade
+                    (
+                        helpdeskDataLayer,
+                        usersDataLayer,
+                        unitsDataLayer,
+                        topicsDataLayer,
+                        studentDataLayer,
+                        queueDataLayer,
+                        checkInDataLayer
+                    );
+                    response = facade.DeleteTimeSpan(id);
+                }
 
                 switch (response.Status)
                 {
@@ -476,15 +606,28 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade(
-                new HelpdeskDataLayer()
-                , new UsersDataLayer()
-                , new UnitsDataLayer()
-                , new TopicsDataLayer()
-                , new StudentDatalayer()
-                , new QueueDataLayer()
-                , new CheckInDataLayer());
-                var response = facade.ExportDatabaseManual();
+                DatabaseExportResponse response = new DatabaseExportResponse();
+
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                {
+                    var facade = new HelpdeskFacade
+                    (
+                        helpdeskDataLayer,
+                        usersDataLayer,
+                        unitsDataLayer,
+                        topicsDataLayer,
+                        studentDataLayer,
+                        queueDataLayer,
+                        checkInDataLayer
+                    );
+                    response = facade.ExportDatabase();
+                }
                 var contentType = "application/zip";
                 Response.ContentType = contentType;
 
@@ -521,15 +664,28 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                var facade = new HelpdeskFacade(
-                new HelpdeskDataLayer()
-                , new UsersDataLayer()
-                , new UnitsDataLayer()
-                , new TopicsDataLayer()
-                , new StudentDatalayer()
-                , new QueueDataLayer()
-                , new CheckInDataLayer());
-                var response = facade.ForceCheckoutQueueRemove(id);
+                var response = new ForceCheckoutQueueRemoveResponse();
+
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                using (StudentDatalayer studentDataLayer = new StudentDatalayer())
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                {
+                    var facade = new HelpdeskFacade
+                    (
+                        helpdeskDataLayer,
+                        usersDataLayer,
+                        unitsDataLayer,
+                        topicsDataLayer,
+                        studentDataLayer,
+                        queueDataLayer,
+                        checkInDataLayer
+                    );
+                    response = facade.ForceCheckoutQueueRemove(id);
+                }
 
                 switch (response.Status)
                 {
