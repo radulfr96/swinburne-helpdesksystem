@@ -1,5 +1,6 @@
 ﻿using Helpdesk.Common.Requests.CheckIn;
 using Helpdesk.Common.Responses.CheckIn;
+using Helpdesk.Data.Models;
 using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,6 +22,8 @@ namespace Helpdesk.Website.Controllers.api
     [ApiController]
     public class CheckInController : BaseApiController
     {
+        public CheckInController(helpdesksystemContext _context) : base (_context) { }
+
         /// <summary>
         /// Checks into the database
         /// </summary>
@@ -34,9 +37,9 @@ namespace Helpdesk.Website.Controllers.api
             {
                 CheckInResponse response = new CheckInResponse();
 
-                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
                 {
                     var facade = new CheckInFacade(checkInDataLayer, studentDataLayer, queueDataLayer);
                     response = facade.CheckIn(request);
@@ -76,11 +79,11 @@ namespace Helpdesk.Website.Controllers.api
             {
                 CheckOutResponse response = new CheckOutResponse();
 
-                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
                 {
-                    var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
+                    var facade = new CheckInFacade(new CheckInDataLayer(context), new StudentDataLayer(context), new QueueDataLayer(context));
                     response = facade.CheckOut(request);
                 }
 
@@ -117,11 +120,11 @@ namespace Helpdesk.Website.Controllers.api
             {
                 GetCheckInsResponse response = new GetCheckInsResponse();
 
-                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
                 {
-                    var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
+                    var facade = new CheckInFacade(new CheckInDataLayer(context), new StudentDataLayer(context), new QueueDataLayer(context));
                     response = facade.GetCheckInsByHelpdeskId(id);
                 }
 

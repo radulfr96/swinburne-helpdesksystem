@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using Helpdesk.Common;
 using Helpdesk.Common.DTOs;
-using Helpdesk.Common.Extensions;
 using Helpdesk.Common.Requests.Helpdesk;
 using Helpdesk.Common.Requests.Units;
 using Helpdesk.Common.Responses;

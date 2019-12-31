@@ -7,6 +7,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Helpdesk.Common.Requests.Helpdesk;
 using Helpdesk.Common.Responses.Helpdesk;
+using Helpdesk.Data.Models;
 using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -25,6 +26,8 @@ namespace Helpdesk.Website.Controllers.api
     public class HelpdeskController : BaseApiController
     {
 
+        public HelpdeskController(helpdesksystemContext _context) : base (_context) { }
+
         /// <summary>
         /// Used to retreive all of the helpdesks
         /// </summary>
@@ -38,13 +41,13 @@ namespace Helpdesk.Website.Controllers.api
             {
                 GetHelpdesksResponse response = new GetHelpdesksResponse();
 
-                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
-                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
-                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
-                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer(context))
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer(context))
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
                 {
                     var facade = new HelpdeskFacade(
                         helpdeskDataLayer,
@@ -92,13 +95,13 @@ namespace Helpdesk.Website.Controllers.api
             {
                 GetHelpdesksResponse response = new GetHelpdesksResponse();
 
-                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
-                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
-                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
-                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer(context))
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer(context))
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
                 {
                     var facade = new HelpdeskFacade
                     (
@@ -146,13 +149,13 @@ namespace Helpdesk.Website.Controllers.api
             try
             {
                 var response = new GetHelpdeskResponse();
-                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
-                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
-                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
-                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer(context))
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer(context))
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
                 {
                     var facade = new HelpdeskFacade
                     (
@@ -206,13 +209,13 @@ namespace Helpdesk.Website.Controllers.api
             {
                 var response = new AddHelpdeskResponse();
 
-                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
-                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
-                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
-                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer(context))
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer(context))
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
                 {
                     var facade = new HelpdeskFacade
                     (
@@ -267,13 +270,13 @@ namespace Helpdesk.Website.Controllers.api
             {
                 var response = new UpdateHelpdeskResponse();
 
-                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
-                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
-                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
-                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer(context))
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer(context))
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
                 {
                     var facade = new HelpdeskFacade
                     (
@@ -323,13 +326,13 @@ namespace Helpdesk.Website.Controllers.api
             {
                 var response = new GetTimeSpansResponse();
 
-                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
-                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
-                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
-                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer(context))
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer(context))
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
                 {
                     var facade = new HelpdeskFacade
                     (
@@ -380,13 +383,13 @@ namespace Helpdesk.Website.Controllers.api
 
             try
             {
-                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
-                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
-                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
-                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer(context))
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer(context))
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
                 {
                     var facade = new HelpdeskFacade
                     (
@@ -437,13 +440,13 @@ namespace Helpdesk.Website.Controllers.api
             {
                 var response = new AddTimeSpanResponse();
 
-                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
-                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
-                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
-                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer(context))
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer(context))
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
                 {
                     var facade = new HelpdeskFacade
                     (
@@ -495,13 +498,13 @@ namespace Helpdesk.Website.Controllers.api
             {
                 var response = new UpdateTimeSpanResponse();
 
-                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
-                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
-                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
-                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer(context))
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer(context))
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
                 {
                     var facade = new HelpdeskFacade
                     (
@@ -552,13 +555,13 @@ namespace Helpdesk.Website.Controllers.api
             {
                 var response = new DeleteTimeSpanResponse();
 
-                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
-                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
-                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
-                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer(context))
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer(context))
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
                 {
                     var facade = new HelpdeskFacade
                     (
@@ -608,13 +611,13 @@ namespace Helpdesk.Website.Controllers.api
             {
                 DatabaseExportResponse response = new DatabaseExportResponse();
 
-                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
-                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
-                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
-                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer(context))
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer(context))
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
                 {
                     var facade = new HelpdeskFacade
                     (
@@ -666,13 +669,13 @@ namespace Helpdesk.Website.Controllers.api
             {
                 var response = new ForceCheckoutQueueRemoveResponse();
 
-                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer())
-                using (UsersDataLayer usersDataLayer = new UsersDataLayer())
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
-                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-                using (QueueDataLayer queueDataLayer = new QueueDataLayer())
-                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
+                using (HelpdeskDataLayer helpdeskDataLayer = new HelpdeskDataLayer(context))
+                using (UsersDataLayer usersDataLayer = new UsersDataLayer(context))
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+                using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
+                using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
                 {
                     var facade = new HelpdeskFacade
                     (

@@ -6,7 +6,6 @@ using System.Text;
 using Helpdesk.Data.Models;
 using Helpdesk.Common.Requests.Queue;
 using System.Linq;
-using Helpdesk.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Data.Common;
@@ -19,10 +18,9 @@ namespace Helpdesk.DataLayer
     {
         private helpdesksystemContext context;
 
-        public QueueDataLayer()
+        public QueueDataLayer(helpdesksystemContext _context)
         {
-            context = new helpdesksystemContext();
-            context.Database.SetCommandTimeout(200000);
+            context = _context;
         }
 
         public void AddToQueue(Queueitem item)

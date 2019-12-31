@@ -1,5 +1,4 @@
 ﻿using Helpdesk.Common.DTOs;
-using Helpdesk.Common.Extensions;
 using Helpdesk.Common.Requests.CheckIn;
 using Helpdesk.Data.Models;
 using Helpdesk.DataLayer.Contracts;
@@ -18,9 +17,9 @@ namespace Helpdesk.DataLayer
     {
         private helpdesksystemContext context;
 
-        public CheckInDataLayer()
+        public CheckInDataLayer(helpdesksystemContext _context)
         {
-            context = new helpdesksystemContext();
+            context = _context;
         }
 
         public void CheckIn(Checkinhistory checkIn)

@@ -2,6 +2,7 @@
 using System.Net;
 using Helpdesk.Common.Requests.Units;
 using Helpdesk.Common.Responses.Units;
+using Helpdesk.Data.Models;
 using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,6 +20,9 @@ namespace Helpdesk.Website.Controllers.api
     [ApiController]
     public class UnitsController : BaseApiController
     {
+
+        public UnitsController(helpdesksystemContext _context) : base(_context) { }
+
         /// <summary>
         /// Used to either add a new unit, or update an existing unit, in the database
         /// </summary>
@@ -38,9 +42,9 @@ namespace Helpdesk.Website.Controllers.api
             try
             {
                 var response = new AddUpdateUnitResponse();
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
                 {
-                    var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
+                    var facade = new UnitsFacade(new UnitsDataLayer(context), new TopicsDataLayer(context));
                     response = facade.AddOrUpdateUnit(request);
                 }
 
@@ -79,10 +83,10 @@ namespace Helpdesk.Website.Controllers.api
             try
             {
                 var response =  new GetUnitResponse();
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
-                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
                 {
-                    var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
+                    var facade = new UnitsFacade(new UnitsDataLayer(context), new TopicsDataLayer(context));
                     response = facade.GetUnit(id);
                 }
 
@@ -122,10 +126,10 @@ namespace Helpdesk.Website.Controllers.api
             {
                 var response = new GetUnitsByHelpdeskIDResponse();
 
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
-                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
                 {
-                    var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
+                    var facade = new UnitsFacade(new UnitsDataLayer(context), new TopicsDataLayer(context));
                     response = facade.GetUnitsByHelpdeskID(id, false);
                 }
 
@@ -165,10 +169,10 @@ namespace Helpdesk.Website.Controllers.api
             {
                 var response = new GetUnitsByHelpdeskIDResponse();
 
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
-                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
                 {
-                    var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
+                    var facade = new UnitsFacade(new UnitsDataLayer(context), new TopicsDataLayer(context));
                     response = facade.GetUnitsByHelpdeskID(id, true);
                 }
 
@@ -208,10 +212,10 @@ namespace Helpdesk.Website.Controllers.api
             {
                 var response = new DeleteUnitResponse();
 
-                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer())
-                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+                using (UnitsDataLayer unitsDataLayer = new UnitsDataLayer(context))
+                using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
                 {
-                    var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
+                    var facade = new UnitsFacade(new UnitsDataLayer(context), new TopicsDataLayer(context));
                     response = facade.DeleteUnit(id);
                 }
 

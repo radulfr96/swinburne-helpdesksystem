@@ -14,7 +14,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Helpdesk.Common.Extensions;
 using Helpdesk.DataLayer.Contracts;
 using Helpdesk.Data.Models;
 

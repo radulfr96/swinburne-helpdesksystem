@@ -107,7 +107,7 @@ export class HelpdeskService {
  * @param request the information for the status update
  */
   updateQueueItemStatus(request: UpdateQueueItemStatusRequest) {
-    return this.client.post<UpdateQueueItemStatusRequest>('/api/queue/UpdateQueueItemStatus', request);
+    return this.client.patch<UpdateQueueItemStatusRequest>('/api/queue/UpdateQueueItemStatus', request);
   }
 
   /**

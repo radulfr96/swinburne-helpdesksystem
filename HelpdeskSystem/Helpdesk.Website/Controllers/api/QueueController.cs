@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Helpdesk.Common.Requests.Queue;
 using Helpdesk.Common.Responses.Queue;
+using Helpdesk.Data.Models;
 using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,6 +22,8 @@ namespace Helpdesk.Website.Controllers.api
 	[ApiController]
 	public class QueueController : BaseApiController
 	{
+		public QueueController(helpdesksystemContext _context) : base (_context) { }
+
 		/// <summary>
 		/// Adds a queue item to the queue.
 		/// </summary>
@@ -34,10 +37,10 @@ namespace Helpdesk.Website.Controllers.api
 			{
 				var response = new AddToQueueResponse();
 
-				using (QueueDataLayer queueDataLayer = new QueueDataLayer())
-				using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-				using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
-				using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+				using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
+				using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+				using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
+				using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
 				{
 					var facade = new QueueFacade(
 						queueDataLayer
@@ -80,10 +83,10 @@ namespace Helpdesk.Website.Controllers.api
 			{
 				var response = new GetQueueItemsByHelpdeskIDResponse();
 
-				using (QueueDataLayer queueDataLayer = new QueueDataLayer())
-				using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-				using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
-				using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+				using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
+				using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+				using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
+				using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
 				{
 					var facade = new QueueFacade(
 						queueDataLayer
@@ -126,10 +129,10 @@ namespace Helpdesk.Website.Controllers.api
 			try
 			{
 				var response = new UpdateQueueItemResponse();
-				using (QueueDataLayer queueDataLayer = new QueueDataLayer())
-				using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-				using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
-				using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+				using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
+				using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+				using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
+				using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
 				{
 					var facade = new QueueFacade (
 						queueDataLayer
@@ -173,10 +176,10 @@ namespace Helpdesk.Website.Controllers.api
 			{
 				var response = new UpdateQueueItemStatusResponse();
 
-				using (QueueDataLayer queueDataLayer = new QueueDataLayer())
-				using (StudentDataLayer studentDataLayer = new StudentDataLayer())
-				using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer())
-				using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer())
+				using (QueueDataLayer queueDataLayer = new QueueDataLayer(context))
+				using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
+				using (CheckInDataLayer checkInDataLayer = new CheckInDataLayer(context))
+				using (TopicsDataLayer topicsDataLayer = new TopicsDataLayer(context))
 				{
 					var facade = new QueueFacade(
 						queueDataLayer

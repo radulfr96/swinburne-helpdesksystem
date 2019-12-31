@@ -1,6 +1,5 @@
 ﻿using Helpdesk.Common;
 using Helpdesk.Common.DTOs;
-using Helpdesk.Common.Extensions;
 using Helpdesk.Common.Requests;
 using Helpdesk.Common.Requests.CheckIn;
 using Helpdesk.Common.Requests.Students;

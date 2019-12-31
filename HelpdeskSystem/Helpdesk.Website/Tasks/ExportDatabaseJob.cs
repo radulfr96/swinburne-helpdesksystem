@@ -1,4 +1,5 @@
-﻿using Helpdesk.DataLayer;
+﻿using Helpdesk.Data.Models;
+using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using NLog;
 using Quartz;
@@ -17,18 +18,25 @@ namespace Helpdesk.Website
     {
         private static Logger s_logger = LogManager.GetCurrentClassLogger();
 
+        private helpdesksystemContext dbContext;
+
+        public ExportDatabaseJob()
+        {
+            dbContext = new helpdesksystemContext();
+        }
+
         public Task Execute(IJobExecutionContext context)
         {
             try
             {
                 var facade = new HelpdeskFacade(
-                new HelpdeskDataLayer()
-                , new UsersDataLayer()
-                , new UnitsDataLayer()
-                , new TopicsDataLayer()
-                , new StudentDataLayer()
-                , new QueueDataLayer()
-                , new CheckInDataLayer());
+                new HelpdeskDataLayer(dbContext)
+                , new UsersDataLayer(dbContext)
+                , new UnitsDataLayer(dbContext)
+                , new TopicsDataLayer(dbContext)
+                , new StudentDataLayer(dbContext)
+                , new QueueDataLayer(dbContext)
+                , new CheckInDataLayer(dbContext));
                 if (facade.ExportDatabase().Status != HttpStatusCode.OK)
                 {
                     s_logger.Error("Unable to export database.");

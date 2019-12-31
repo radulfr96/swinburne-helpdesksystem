@@ -1,6 +1,5 @@
 ﻿using Helpdesk.Common;
 using Helpdesk.Common.DTOs;
-using Helpdesk.Common.Extensions;
 using Helpdesk.Common.Requests.Queue;
 using Helpdesk.Common.Requests.Students;
 using Helpdesk.Common.Responses;
@@ -14,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using System.Transactions;
 
 namespace Helpdesk.Services
 {
@@ -45,24 +45,44 @@ namespace Helpdesk.Services
         {
             AddToQueueResponse response = new AddToQueueResponse();
 
-            using (IDbContextTransaction trans = _queueDataLayer.GetTransaction())
+            response = (AddToQueueResponse)request.CheckValidation(response);
+
+            if (response.Status == HttpStatusCode.BadRequest)
+                return response;
+
+            var nickname = new Nicknames()
+            {
+                Sid = request.SID,
+                NickName = request.Nickname
+            };
+
+            var item = new Queueitem()
+            {
+                Description = request.Description,
+                TimeAdded = DateTime.Now,
+                TopicId = request.TopicID
+            };
+
+            if (request.CheckInID.HasValue)
+            {
+                var checkIn = _checkInDataLayer.GetCheckIn(request.CheckInID.Value);
+
+                if (checkIn == null)
+                {
+                    response.Status = HttpStatusCode.NotFound;
+                    response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Check in not in database."));
+                    return response;
+                }
+            }
+
+            using (var trans = _queueDataLayer.GetTransaction())
             {
                 try
                 {
-                    response = (AddToQueueResponse)request.CheckValidation(response);
-
-                    if (response.Status == HttpStatusCode.BadRequest)
-                        return response;
-
-                    StudentFacade studentFacade = new StudentFacade(_studentDataLayer);
-
                     if (!request.StudentID.HasValue)
                     {
-                        var nickname = new Nicknames()
-                        {
-                            Sid = request.SID,
-                            NickName = request.Nickname
-                        };
+                        _studentDataLayer.AddStudentNickname(nickname);
+                        _studentDataLayer.Save();
 
                         if (nickname.StudentId == 0)
                         {
@@ -71,29 +91,13 @@ namespace Helpdesk.Services
                         request.StudentID = nickname.StudentId;
                     }
 
-                    var item = new Queueitem()
-                    {
-                        Description = request.Description,
-                        StudentId = request.StudentID.Value,
-                        TimeAdded = DateTime.Now,
-                        TopicId = request.TopicID
-                    };
+                    item.StudentId = request.StudentID.Value;
 
                     _queueDataLayer.AddToQueue(item);
                     _queueDataLayer.Save();
 
                     if (request.CheckInID.HasValue)
                     {
-                        var checkIn = _checkInDataLayer.GetCheckIn(request.CheckInID.Value);
-
-                        if (checkIn == null)
-                        {
-                            trans.Rollback();
-                            response.Status = HttpStatusCode.NotFound;
-                            response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Check in not in database."));
-                            return response;
-                        }
-
                         Checkinqueueitem checkinqueueitem = new Checkinqueueitem()
                         {
                             CheckInId = request.CheckInID.Value,
@@ -111,7 +115,7 @@ namespace Helpdesk.Services
                 }
                 catch (Exception ex)
                 {
-                    trans.Rollback();
+                    trans.Dispose();
                     s_logger.Error(ex, "Unable to add queue item");
                     response.Status = HttpStatusCode.InternalServerError;
                     response.StatusMessages.Add(new StatusMessage(HttpStatusCode.InternalServerError, "Unable to add queue item"));

@@ -17,9 +17,9 @@ namespace Helpdesk.DataLayer
     {
         private helpdesksystemContext context;
 
-        public StudentDataLayer()
+        public StudentDataLayer(helpdesksystemContext _context)
         {
-            context = new helpdesksystemContext();
+            context = _context;
         }
 
         public List<Nicknames> GetAllNicknames()

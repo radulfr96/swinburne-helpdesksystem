@@ -5,7 +5,6 @@ using Helpdesk.Data.Models;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Helpdesk.Common.Extensions;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
@@ -18,9 +17,9 @@ namespace Helpdesk.DataLayer
     {
         private helpdesksystemContext context;
 
-        public HelpdeskDataLayer()
+        public HelpdeskDataLayer(helpdesksystemContext _context)
         {
-            context = new helpdesksystemContext();
+            context = _context;
         }
 
         public void AddHelpdesk(Helpdesksettings helpdesk)

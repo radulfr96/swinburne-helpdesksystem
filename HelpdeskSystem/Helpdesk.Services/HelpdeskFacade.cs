@@ -1,6 +1,5 @@
 ﻿using Helpdesk.Common;
 using Helpdesk.Common.DTOs;
-using Helpdesk.Common.Extensions;
 using Helpdesk.Common.Requests.Helpdesk;
 using Helpdesk.Common.Responses;
 using Helpdesk.Common.Responses.Helpdesk;
@@ -541,15 +540,16 @@ namespace Helpdesk.Services
                 foreach(Queueitem queueitem in queueItems)
                 {
                     queueitem.TimeRemoved = DateTime.Now;
+                    _queueDataLayer.Save();
                 }
 
                 foreach (Checkinhistory item in checkIns)
                 {
                     item.ForcedCheckout = true;
                     item.CheckoutTime = DateTime.Now;
+                    _checkInDataLayer.Save();
                 }
 
-                _helpdeskDataLayer.Save();
                 response.Status = HttpStatusCode.OK;
             }
             catch (Exception ex)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using Helpdesk.Common.Responses.Topics;
+using Helpdesk.Data.Models;
 using Helpdesk.DataLayer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -41,7 +42,7 @@ namespace Helpdesk.Services.Test
             Assert.IsTrue(unitData.Response.UnitID > 0);
 
             // Get all topics associated with the unit id.
-            var topicsFacade = new TopicsFacade(new TopicsDataLayer());
+            var topicsFacade = new TopicsFacade(new TopicsDataLayer(new helpdesksystemContext()));
             GetTopicsByUnitIDResponse topicResponse = topicsFacade.GetTopicsByUnitID(unitData.Response.UnitID);
 
             // Check that the topics retrieved are correct.

@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Helpdesk.Common.Requests.Students;
 using Helpdesk.Common.Responses.Students;
+using Helpdesk.Data.Models;
 using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,6 +23,9 @@ namespace Helpdesk.Website.Controllers.api
     [ApiController]
     public class StudentController : BaseApiController
     {
+
+        public StudentController(helpdesksystemContext _context) : base (_context) { }
+
         /// <summary>
         /// Used to get all of the student nicknames
         /// </summary>
@@ -37,9 +41,9 @@ namespace Helpdesk.Website.Controllers.api
             {
                 var response = new GetAllNicknamesResponse();
 
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
                 {
-                    var facade = new StudentFacade(new StudentDataLayer());
+                    var facade = new StudentFacade(new StudentDataLayer(context));
                     response = facade.GetAllNicknames();
                 }
 
@@ -76,9 +80,9 @@ namespace Helpdesk.Website.Controllers.api
             try
             {
                 var response = new GetStudentResponse();
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
                 {
-                    var facade = new StudentFacade(new StudentDataLayer());
+                    var facade = new StudentFacade(new StudentDataLayer(context));
                     response = facade.GetStudentByNickname(nickname);
                 }
 
@@ -117,9 +121,9 @@ namespace Helpdesk.Website.Controllers.api
             {
                 var response = new EditStudentNicknameResponse();
 
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
                 {
-                    var facade = new StudentFacade(new StudentDataLayer());
+                    var facade = new StudentFacade(new StudentDataLayer(context));
                     response = facade.EditStudentNickname(request);
                 }
 
@@ -156,9 +160,9 @@ namespace Helpdesk.Website.Controllers.api
             try
             {
                 var response = new ValidateNicknameResponse();
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
                 {
-                    var facade = new StudentFacade(new StudentDataLayer());
+                    var facade = new StudentFacade(new StudentDataLayer(context));
                     response = facade.ValidateNickname(request);
                 }
 
@@ -196,9 +200,9 @@ namespace Helpdesk.Website.Controllers.api
             {
                 var response = new GenerateNicknameResponse();
 
-                using (StudentDataLayer studentDataLayer = new StudentDataLayer())
+                using (StudentDataLayer studentDataLayer = new StudentDataLayer(context))
                 {
-                    var facade = new StudentFacade(new StudentDataLayer());
+                    var facade = new StudentFacade(new StudentDataLayer(context));
                     response = facade.GenerateNickname();
                 }
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using Helpdesk.Common;
 using Helpdesk.Common.DTOs;
-using Helpdesk.Common.Extensions;
 using Helpdesk.Common.Responses;
 using Helpdesk.Common.Responses.Topics;
 using Helpdesk.Data.Models;

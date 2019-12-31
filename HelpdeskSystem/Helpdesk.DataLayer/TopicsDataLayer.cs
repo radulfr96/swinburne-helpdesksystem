@@ -17,9 +17,9 @@ namespace Helpdesk.DataLayer
         private static Logger s_Logger = LogManager.GetCurrentClassLogger();
         private helpdesksystemContext context;
 
-        public TopicsDataLayer()
+        public TopicsDataLayer(helpdesksystemContext _context)
         {
-            context = new helpdesksystemContext();
+            context = _context;
         }
 
         public void AddTopic(Topic topic)

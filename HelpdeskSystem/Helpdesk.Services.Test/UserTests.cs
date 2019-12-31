@@ -19,13 +19,21 @@ namespace Helpdesk.Services.Test
     [TestClass]
     public class UserTests
     {
+        private helpdesksystemContext context;
+
+        [TestInitialize]
+        public void Init()
+        {
+            context = new helpdesksystemContext();
+        }
+
         /// <summary>
         /// Tests adding a user to the database with a valid request.
         /// </summary>
         [TestMethod]
         public void AddUser()
         {
-            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer());
+            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer(context));
 
             AddUserRequest addUserRequest = new AddUserRequest();
             addUserRequest.Username = AlphaNumericStringGenerator.GetString(10);
@@ -44,7 +52,7 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void AddUserUsernameTooLong()
         {
-            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer());
+            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer(context));
 
             AddUserRequest addUserRequest = new AddUserRequest();
             addUserRequest.Username = AlphaNumericStringGenerator.GetString(21);
@@ -62,7 +70,7 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void AddUserEmptyUsername()
         {
-            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer());
+            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer(context));
 
             AddUserRequest addUserRequest = new AddUserRequest();
             addUserRequest.Username = "";
@@ -86,7 +94,7 @@ namespace Helpdesk.Services.Test
                 Username = "Admin"
             };
 
-            var facade = new UsersFacade(new UsersDataLayer());
+            var facade = new UsersFacade(new UsersDataLayer(context));
             var response = facade.LoginUser(request);
 
             Assert.AreEqual(HttpStatusCode.OK, response.Status);
@@ -105,7 +113,7 @@ namespace Helpdesk.Services.Test
                 Username = "fjQOFOJOIFJQO"
             };
 
-            var facade = new UsersFacade(new UsersDataLayer());
+            var facade = new UsersFacade(new UsersDataLayer(context));
             var response = facade.LoginUser(request);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, response.Status);
@@ -125,7 +133,7 @@ namespace Helpdesk.Services.Test
                 Username = ""
             };
 
-            var facade = new UsersFacade(new UsersDataLayer());
+            var facade = new UsersFacade(new UsersDataLayer(context));
             var response = facade.LoginUser(request);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, response.Status);
@@ -145,7 +153,7 @@ namespace Helpdesk.Services.Test
                 Username = "Admin"
             };
 
-            var facade = new UsersFacade(new UsersDataLayer());
+            var facade = new UsersFacade(new UsersDataLayer(context));
             var response = facade.LoginUser(request);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, response.Status);
@@ -158,7 +166,7 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void DeleteUser()
         {
-            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer());
+            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer(context));
 
             AddUserRequest addUserRequest = new AddUserRequest();
             addUserRequest.Username = AlphaNumericStringGenerator.GetString(10);
@@ -184,7 +192,7 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void DeleteUserNotFound()
         {
-            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer());
+            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer(context));
 
             DeleteUserResponse deleteResponse = usersFacade.DeleteUser(-1, "Admin");
 
@@ -197,7 +205,7 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void GetUsers()
         {
-            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer());
+            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer(context));
 
             AddUserRequest addUserRequest = new AddUserRequest()
             {
@@ -229,7 +237,7 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void GetUserFound()
         {
-            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer());
+            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer(context));
 
             GetUserResponse getUserResponse = usersFacade.GetUser(1);
 
@@ -250,7 +258,7 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void GetUserNotFound()
         {
-            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer());
+            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer(context));
 
             GetUserResponse getUserResponse = usersFacade.GetUser(-1);
 
@@ -264,7 +272,7 @@ namespace Helpdesk.Services.Test
         public void UpdateUserFound()
         {
 
-            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer());
+            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer(context));
 
             AddUserRequest addUserRequest = new AddUserRequest()
             {
@@ -325,7 +333,7 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void UpdateUserUsernameTooLong()
         {
-            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer());
+            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer(context));
 
             UpdateUserRequest updateUserRequest = new UpdateUserRequest()
             {
@@ -345,7 +353,7 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void UpdateUserPasswordTooShort()
         {
-            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer());
+            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer(context));
 
             UpdateUserRequest updateUserRequest = new UpdateUserRequest()
             {
@@ -366,7 +374,7 @@ namespace Helpdesk.Services.Test
         public void UpdateUserUsernameExists()
         {
 
-            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer());
+            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer(context));
 
             AddUserRequest addUserRequest = new AddUserRequest()
             {
@@ -406,7 +414,7 @@ namespace Helpdesk.Services.Test
         public void UpdateUserNoUsername()
         {
 
-            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer());
+            UsersFacade usersFacade = new UsersFacade(new UsersDataLayer(context));
 
             AddUserRequest addUserRequest = new AddUserRequest()
             {

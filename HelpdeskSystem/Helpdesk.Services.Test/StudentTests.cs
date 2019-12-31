@@ -18,6 +18,14 @@ namespace Helpdesk.Services.Test
     [TestClass]
     public class StudentTests
     {
+        private helpdesksystemContext context;
+
+        [TestInitialize]
+        public void Init()
+        {
+            context = new helpdesksystemContext();
+        }
+
         /// <summary>
         /// Used to ensure adding a new student works
         /// </summary>
@@ -30,7 +38,7 @@ namespace Helpdesk.Services.Test
                 SID = AlphaNumericStringGenerator.GetStudentIDString()
             };
 
-            var facade = new StudentFacade(new StudentDataLayer());
+            var facade = new StudentFacade(new StudentDataLayer(context));
             var response = facade.AddStudentNickname(request);
 
             Assert.AreEqual(HttpStatusCode.OK, response.Status);
@@ -56,7 +64,7 @@ namespace Helpdesk.Services.Test
                 SID = AlphaNumericStringGenerator.GetStudentIDString()
             };
 
-            var facade = new StudentFacade(new StudentDataLayer());
+            var facade = new StudentFacade(new StudentDataLayer(context));
             var response = facade.AddStudentNickname(request);
 
             Assert.AreEqual(HttpStatusCode.OK, response.Status);
@@ -84,7 +92,7 @@ namespace Helpdesk.Services.Test
                 SID = AlphaNumericStringGenerator.GetStudentIDString()
             };
 
-            var facade = new StudentFacade(new StudentDataLayer());
+            var facade = new StudentFacade(new StudentDataLayer(context));
             var response = facade.AddStudentNickname(request);
 
             Assert.AreEqual(HttpStatusCode.OK, response.Status);
@@ -114,7 +122,7 @@ namespace Helpdesk.Services.Test
                 SID = AlphaNumericStringGenerator.GetStudentIDString()
             };
 
-            StudentFacade studentFacade = new StudentFacade(new StudentDataLayer());
+            StudentFacade studentFacade = new StudentFacade(new StudentDataLayer(context));
             AddStudentResponse response = studentFacade.AddStudentNickname(request);
 
             Assert.AreEqual(HttpStatusCode.OK, response.Status);
@@ -143,7 +151,7 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void EditStudentNicknameNotFound()
         {
-            StudentFacade studentFacade = new StudentFacade(new StudentDataLayer());
+            StudentFacade studentFacade = new StudentFacade(new StudentDataLayer(context));
 
             EditStudentNicknameRequest editStudentNicknameRequest = new EditStudentNicknameRequest()
             {
@@ -168,7 +176,7 @@ namespace Helpdesk.Services.Test
                 SID = AlphaNumericStringGenerator.GetStudentIDString()
             };
 
-            StudentFacade studentFacade = new StudentFacade(new StudentDataLayer());
+            StudentFacade studentFacade = new StudentFacade(new StudentDataLayer(context));
             AddStudentResponse response = studentFacade.AddStudentNickname(request);
 
             Assert.AreEqual(HttpStatusCode.OK, response.Status);
@@ -196,7 +204,7 @@ namespace Helpdesk.Services.Test
                 SID = AlphaNumericStringGenerator.GetStudentIDString()
             };
 
-            StudentFacade studentFacade = new StudentFacade(new StudentDataLayer());
+            StudentFacade studentFacade = new StudentFacade(new StudentDataLayer(context));
             AddStudentResponse response = studentFacade.AddStudentNickname(request);
 
             Assert.AreEqual(HttpStatusCode.OK, response.Status);
@@ -224,7 +232,7 @@ namespace Helpdesk.Services.Test
                 SID = AlphaNumericStringGenerator.GetStudentIDString()
             };
 
-            var facade = new StudentFacade(new StudentDataLayer());
+            var facade = new StudentFacade(new StudentDataLayer(context));
 
             var response = facade.ValidateNickname(request);
 
@@ -255,7 +263,7 @@ namespace Helpdesk.Services.Test
                 SID = nickname.Sid
             };
 
-            var facade = new StudentFacade(new StudentDataLayer());
+            var facade = new StudentFacade(new StudentDataLayer(context));
 
             var response = facade.ValidateNickname(request);
 
@@ -286,7 +294,7 @@ namespace Helpdesk.Services.Test
                 SID = AlphaNumericStringGenerator.GetStudentIDString()
             };
 
-            var facade = new StudentFacade(new StudentDataLayer());
+            var facade = new StudentFacade(new StudentDataLayer(context));
 
             var response = facade.ValidateNickname(request);
 

@@ -13,6 +13,7 @@ using Helpdesk.Common.Responses.Queue;
 using Helpdesk.Common.Responses.Students;
 using Helpdesk.Common.Responses.Units;
 using Helpdesk.Common.Utilities;
+using Helpdesk.Data.Models;
 using Helpdesk.DataLayer;
 
 namespace Helpdesk.Services.Test
@@ -106,6 +107,8 @@ namespace Helpdesk.Services.Test
     /// </summary>
     public class TestEntityFactory
     {
+        private helpdesksystemContext context = new helpdesksystemContext(); 
+
         public TestEntityFactory(bool populateEmptyStrings = true)
         {
             PopulateEmptyStrings = populateEmptyStrings;
@@ -114,18 +117,18 @@ namespace Helpdesk.Services.Test
         public TestEntityFactory()
         {
             HelpdeskFacade = new HelpdeskFacade(
-                new HelpdeskDataLayer()
-                , new UsersDataLayer()
-                , new UnitsDataLayer()
-                , new TopicsDataLayer()
-                , new StudentDataLayer()
-                , new QueueDataLayer()
-                , new CheckInDataLayer());
-            UnitsFacade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
-            TopicsFacade = new TopicsFacade(new TopicsDataLayer());
-            QueueFacade = new QueueFacade(new QueueDataLayer(), new StudentDataLayer(), new CheckInDataLayer(), new TopicsDataLayer());
-            CheckInFacade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
-            StudentFacade = new StudentFacade(new StudentDataLayer());
+                new HelpdeskDataLayer(context)
+                , new UsersDataLayer(context)
+                , new UnitsDataLayer(context)
+                , new TopicsDataLayer(context)
+                , new StudentDataLayer(context)
+                , new QueueDataLayer(context)
+                , new CheckInDataLayer(context));
+            UnitsFacade = new UnitsFacade(new UnitsDataLayer(context), new TopicsDataLayer(context));
+            TopicsFacade = new TopicsFacade(new TopicsDataLayer(context));
+            QueueFacade = new QueueFacade(new QueueDataLayer(context), new StudentDataLayer(context), new CheckInDataLayer(context), new TopicsDataLayer(context));
+            CheckInFacade = new CheckInFacade(new CheckInDataLayer(context), new StudentDataLayer(context), new QueueDataLayer(context));
+            StudentFacade = new StudentFacade(new StudentDataLayer(context));
         }
 
         /// <summary>
@@ -197,7 +200,7 @@ namespace Helpdesk.Services.Test
             if (isDeleted != null) request.IsDeleted = (bool)isDeleted;
             if (topics != null) request.Topics = topics;
 
-            var facade = new UnitsFacade(new UnitsDataLayer(), new TopicsDataLayer());
+            var facade = new UnitsFacade(new UnitsDataLayer(context), new TopicsDataLayer(context));
             request.UnitID = unitID;
             var response = facade.AddOrUpdateUnit(request);
 

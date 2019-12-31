@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using NLog;
 using System.Text;
 using System.Linq;
-using Helpdesk.Common.Extensions;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
@@ -19,9 +18,9 @@ namespace Helpdesk.DataLayer
         private static Logger s_Logger = LogManager.GetCurrentClassLogger();
         private helpdesksystemContext context;
 
-        public UsersDataLayer()
+        public UsersDataLayer(helpdesksystemContext _context)
         {
-            context = new helpdesksystemContext();
+            context = _context;
         }
 
         public void AddUser(User user)

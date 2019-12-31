@@ -21,6 +21,13 @@ namespace Helpdesk.Services.Test
     public class CheckInTests
     {
         private static Logger s_logger = LogManager.GetCurrentClassLogger();
+        private helpdesksystemContext context;
+
+        [TestInitialize]
+        public void Init()
+        {
+            context = new helpdesksystemContext();
+        }
 
         /// <summary>
         /// Test checking in with a new student works
@@ -48,7 +55,7 @@ namespace Helpdesk.Services.Test
                 SID = AlphaNumericStringGenerator.GetStudentIDString()
             };
 
-            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
+            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(context), new StudentDataLayer(context), new QueueDataLayer(context));
 
             CheckInResponse response = facade.CheckIn(request);
 
@@ -106,7 +113,7 @@ namespace Helpdesk.Services.Test
                 SID = nickname.Sid
             };
 
-            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
+            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(context), new StudentDataLayer(context), new QueueDataLayer(context));
 
             CheckInResponse response = facade.CheckIn(request);
 
@@ -151,7 +158,7 @@ namespace Helpdesk.Services.Test
                 StudentID = -1
             };
 
-            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
+            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(context), new StudentDataLayer(context), new QueueDataLayer(context));
 
             CheckInResponse response = facade.CheckIn(request);
 
@@ -183,7 +190,7 @@ namespace Helpdesk.Services.Test
                 SID = AlphaNumericStringGenerator.GetStudentIDString()
             };
 
-            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
+            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(context), new StudentDataLayer(context), new QueueDataLayer(context));
 
             CheckInResponse response = facade.CheckIn(request);
 
@@ -223,7 +230,7 @@ namespace Helpdesk.Services.Test
                 Nickname = nickname.NickName
             };
 
-            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
+            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(context), new StudentDataLayer(context), new QueueDataLayer(context));
 
             CheckInResponse response = facade.CheckIn(request);
 
@@ -255,7 +262,7 @@ namespace Helpdesk.Services.Test
                 Nickname = AlphaNumericStringGenerator.GetString(10)
             };
 
-            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
+            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(context), new StudentDataLayer(context), new QueueDataLayer(context));
 
             CheckInResponse response = facade.CheckIn(request);
 
@@ -285,7 +292,7 @@ namespace Helpdesk.Services.Test
                 SID = nickname.Sid
             };
 
-            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
+            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(context), new StudentDataLayer(context), new QueueDataLayer(context));
 
             CheckInResponse response = facade.CheckIn(request);
 
@@ -318,7 +325,7 @@ namespace Helpdesk.Services.Test
                 SID = AlphaNumericStringGenerator.GetStudentIDString()
             };
 
-            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
+            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(context), new StudentDataLayer(context), new QueueDataLayer(context));
 
             CheckInResponse response = facade.CheckIn(request);
 
@@ -384,7 +391,7 @@ namespace Helpdesk.Services.Test
                 SID = AlphaNumericStringGenerator.GetStudentIDString()
             };
 
-            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
+            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(context), new StudentDataLayer(context), new QueueDataLayer(context));
 
             CheckInResponse response = facade.CheckIn(request);
 
@@ -474,7 +481,7 @@ namespace Helpdesk.Services.Test
                 SID = AlphaNumericStringGenerator.GetStudentIDString()
             };
 
-            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
+            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(context), new StudentDataLayer(context), new QueueDataLayer(context));
 
             CheckInResponse response = facade.CheckIn(request);
 
@@ -512,7 +519,7 @@ namespace Helpdesk.Services.Test
         [TestMethod]
         public void CheckOutNoCheckInItem()
         {
-            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
+            CheckInFacade facade = new CheckInFacade(new CheckInDataLayer(context), new StudentDataLayer(context), new QueueDataLayer(context));
 
             CheckOutRequest request = new CheckOutRequest()
             {
@@ -595,7 +602,7 @@ namespace Helpdesk.Services.Test
                 context.SaveChanges();
             }
 
-            var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
+            var facade = new CheckInFacade(new CheckInDataLayer(context), new StudentDataLayer(context), new QueueDataLayer(context));
             var response = facade.GetCheckInsByHelpdeskId(helpdesk.HelpdeskId);
 
             Assert.AreEqual(HttpStatusCode.OK, response.Status);
@@ -692,7 +699,7 @@ namespace Helpdesk.Services.Test
                 context.SaveChanges();
             }
 
-            var facade = new CheckInFacade(new CheckInDataLayer(), new StudentDataLayer(), new QueueDataLayer());
+            var facade = new CheckInFacade(new CheckInDataLayer(context), new StudentDataLayer(context), new QueueDataLayer(context));
             var response = facade.GetCheckInsByHelpdeskId(helpdesk.HelpdeskId);
 
             Assert.AreEqual(HttpStatusCode.OK, response.Status);

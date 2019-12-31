@@ -1,4 +1,5 @@
 using Helpdesk.Common;
+using Helpdesk.Data.Models;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -13,6 +15,7 @@ using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
 using System.Collections.Specialized;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -52,6 +55,11 @@ namespace Helpdesk.Website
                     ValidateAudience = false
                 };
             });
+            
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                services.AddDbContext<helpdesksystemContext>(options => options.UseSqlServer(appSettings.WindowsConnectionString));
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                services.AddDbContext<helpdesksystemContext>(options => options.UseSqlServer(appSettings.MacConnectionString));
 
             services.AddScoped<ILoginClass, UsersFacade>();
 

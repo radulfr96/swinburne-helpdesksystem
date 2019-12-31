@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Helpdesk.Common.Extensions;
 using Helpdesk.Common.Responses;
+using Helpdesk.Data.Models;
 using Helpdesk.DataLayer;
 using Helpdesk.Services;
 using Microsoft.AspNetCore.Http;
@@ -20,7 +20,15 @@ namespace Helpdesk.Website.Controllers.api
     [ApiController]
     public class BaseApiController : ControllerBase
     {
+        protected helpdesksystemContext context;
+
         protected static Logger s_logger = LogManager.GetCurrentClassLogger();
+
+        public BaseApiController(helpdesksystemContext _context)
+        {
+            context = _context;
+        }
+
         /// <summary>
         /// Used to generate a readable and formatted bad request message to return to the user
         /// </summary>
@@ -63,13 +71,8 @@ namespace Helpdesk.Website.Controllers.api
                     return false;
                 }
 
-                var facade = new UsersFacade(new UsersDataLayer());
+                var facade = new UsersFacade(new UsersDataLayer(context));
                 result = facade.VerifyUser(UserName, id);
-            }
-            catch (NotFoundException ex)
-            {
-                s_logger.Warn(ex, "User does not exist in system.");
-                result = false;
             }
             catch (Exception ex)
             {

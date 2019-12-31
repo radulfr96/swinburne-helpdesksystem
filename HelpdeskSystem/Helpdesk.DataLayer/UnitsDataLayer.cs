@@ -4,7 +4,6 @@ using Helpdesk.Data.Models;
 using NLog;
 using Helpdesk.Common.DTOs;
 using System.Linq;
-using Helpdesk.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Helpdesk.Common.Requests.Units;
 using System.Data;
@@ -19,9 +18,9 @@ namespace Helpdesk.DataLayer
         private static Logger s_Logger = LogManager.GetCurrentClassLogger();
         private helpdesksystemContext context;
 
-        public UnitsDataLayer()
+        public UnitsDataLayer(helpdesksystemContext _context)
         {
-            context = new helpdesksystemContext();
+            context = _context;
         }
 
         public void AddUnit(Unit newUnit)
