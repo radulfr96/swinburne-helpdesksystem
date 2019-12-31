@@ -71,8 +71,8 @@ export class HelpdeskService {
    * @param id the check in id
    * @param request request indicating the the checkout is not forced
    */
-  checkOut(id: number, request: CheckOutRequest) {
-    return this.client.post<CheckInResponse>('/api/checkin/' + id , request);
+  checkOut(request: CheckOutRequest) {
+    return this.client.patch<CheckInResponse>('/api/checkin/', request);
   }
 
   /**
@@ -103,7 +103,6 @@ export class HelpdeskService {
 
 /**
  * Used to call the the update Queue item status API
- * @param id the id of the queue item
  * @param request the information for the status update
  */
   updateQueueItemStatus(request: UpdateQueueItemStatusRequest) {

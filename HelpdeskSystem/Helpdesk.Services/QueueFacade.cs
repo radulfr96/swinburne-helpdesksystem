@@ -194,7 +194,7 @@ namespace Helpdesk.Services
                     return response;
                 }
 
-                var item = _queueDataLayer.GetQueueitem(request.QueueID);
+                var item = _queueDataLayer.GetQueueitem(request.ItemID);
 
                 if (item == null)
                 {
@@ -202,7 +202,7 @@ namespace Helpdesk.Services
                     response.StatusMessages.Add(new StatusMessage(HttpStatusCode.NotFound, "Unable to find queue item."));
                     return response;
                 }
-                else if (item.TimeAdded > request.TimeRemoved)
+                else if (item.TimeAdded < request.TimeRemoved)
                 {
                     response.Status = HttpStatusCode.BadRequest;
                     response.StatusMessages.Add(new StatusMessage(HttpStatusCode.BadRequest, "Time removed is before time added."));
@@ -210,11 +210,11 @@ namespace Helpdesk.Services
                 }
                 else
                 {
-                    if (item.TimeHelped == null && request.TimeHelped != null)
-                        item.TimeHelped = request.TimeHelped;
+                    if (item.TimeHelped == null && request.TimeHelped.HasValue)
+                        item.TimeHelped = request.TimeHelped.Value;
 
-                    if (item.TimeRemoved == null && request.TimeRemoved != null)
-                        item.TimeRemoved = request.TimeRemoved;
+                    if (item.TimeRemoved == null && request.TimeRemoved.HasValue)
+                        item.TimeRemoved = request.TimeRemoved.Value;
 
                     _queueDataLayer.Save();
                 }

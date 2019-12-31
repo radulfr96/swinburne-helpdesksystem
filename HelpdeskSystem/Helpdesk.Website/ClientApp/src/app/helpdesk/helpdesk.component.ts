@@ -196,8 +196,8 @@ export class HelpdeskComponent implements OnInit {
 
     const request = new CheckOutRequest();
     request.ForcedCheckout = false;
-    const id = this.checkOutForm.controls.checkOutStudentId.value;
-    this.service.checkOut(id, request).subscribe(
+    request.CheckInID = this.checkOutForm.controls.checkOutStudentId.value;
+    this.service.checkOut(request).subscribe(
       result => {
 
         if (this.helpdesk.hasQueue) {
@@ -207,7 +207,7 @@ export class HelpdeskComponent implements OnInit {
         this.notifier.notify('success', 'Checkout successful');
         $('#modal-check-out').modal('hide');
         this.checkOutForm.reset();
-        const checkIn = this.checkIns.find(c => c.checkInId === id);
+        const checkIn = this.checkIns.find(c => c.checkInId === request.CheckInID);
         this.checkIns.splice(this.checkIns.indexOf(checkIn), 1);
         this.checkOutForm.controls.checkOutStudentId.setValue('');
       },

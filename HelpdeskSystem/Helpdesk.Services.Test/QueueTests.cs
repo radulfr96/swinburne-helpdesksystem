@@ -818,7 +818,7 @@ namespace Helpdesk.Services.Test
             {
                 TimeHelped = DateTime.Now,
                 TimeRemoved = null,
-                QueueID = queueData.Response.ItemId
+                ItemID = queueData.Response.ItemId
             };
 
             // Update queue item TimeHelped.
@@ -833,7 +833,7 @@ namespace Helpdesk.Services.Test
             {
                 TimeHelped = null,
                 TimeRemoved = timeRemoved,
-                QueueID = queueData.Response.ItemId
+                ItemID = queueData.Response.ItemId
             };
 
             // Update queue item TimeRemoved.
@@ -854,7 +854,7 @@ namespace Helpdesk.Services.Test
             {
                 TimeHelped = timeHelped,
                 TimeRemoved = null,
-                QueueID = -1
+                ItemID = -1
             };
             var queueFacade = new QueueFacade(new QueueDataLayer(context), new StudentDataLayer(context), new CheckInDataLayer(context), new TopicsDataLayer(context));
             var response = queueFacade.UpdateQueueItemStatus(request);
@@ -874,7 +874,7 @@ namespace Helpdesk.Services.Test
             {
                 TimeHelped = null,
                 TimeRemoved = null,
-                QueueID = -1
+                ItemID = -1
             };
             var queueFacade = new QueueFacade(new QueueDataLayer(context), new StudentDataLayer(context), new CheckInDataLayer(context), new TopicsDataLayer(context));
             var response = queueFacade.UpdateQueueItemStatus(request);
@@ -895,7 +895,7 @@ namespace Helpdesk.Services.Test
             var request = new UpdateQueueItemStatusRequest{
                 TimeHelped = timeHelped,
                 TimeRemoved = timeRemoved,
-                QueueID = -1
+                ItemID = -1
             };
             var queueFacade = new QueueFacade(new QueueDataLayer(context), new StudentDataLayer(context), new CheckInDataLayer(context), new TopicsDataLayer(context));
             var response = queueFacade.UpdateQueueItemStatus(request);
@@ -947,7 +947,7 @@ namespace Helpdesk.Services.Test
             {
                 TimeHelped = DateTime.Now,
                 TimeRemoved = null,
-                QueueID = queueData.Response.ItemId
+                ItemID = queueData.Response.ItemId
             };
 
             // Update queue item TimeHelped.
@@ -963,7 +963,7 @@ namespace Helpdesk.Services.Test
             {
                 TimeHelped = null,
                 TimeRemoved = timeRemoved,
-                QueueID = queueData.Response.ItemId
+                ItemID = queueData.Response.ItemId
             };
 
             // Update queue item TimeRemoved.

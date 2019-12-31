@@ -34,7 +34,7 @@ namespace Helpdesk.DataLayer
 
             var unitIDs = context.Helpdeskunit.Include("Helpdeskunit").Where(hu => hu.HelpdeskId == id).Select(u => u.UnitId);
             var topicIDs = context.Topic.Where(t => unitIDs.Contains(t.UnitId)).Select(ti => ti.TopicId).ToList();
-            return context.Queueitem.Include("Topic.Unit").Include("Student").Where(qi => topicIDs.Contains(qi.TopicId)).ToList();
+            return context.Queueitem.Include("Topic.Unit").Include("Student").Where(qi => topicIDs.Contains(qi.TopicId) && !qi.TimeRemoved.HasValue).ToList();
         }
 
         public List<Queueitem> GetQueueItemsByCheckIn(int checkInId)
